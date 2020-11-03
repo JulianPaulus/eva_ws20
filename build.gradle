@@ -1,23 +1,24 @@
 plugins {
-    id 'java'
-    id 'application'
+	id 'java'
+	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 allprojects {
-    apply plugin: 'base'
-    apply plugin: 'java'
-    apply plugin: 'idea'
+	apply plugin: 'base'
+	apply plugin: 'java'
+	apply plugin: 'idea'
 
-    repositories {
-        mavenCentral()
-    }
+	repositories {
+		mavenCentral()
+	}
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+	java {
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+	}
 }
