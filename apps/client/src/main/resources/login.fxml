@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-padding: 50px;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship.client.login.LoginController">
+	<children>
+		<Label fx:id="ipLabel" contentDisplay="RIGHT" prefHeight="25.0" prefWidth="409.0" text="IP">
+			<graphic>
+				<TextField fx:id="ipField" prefHeight="25.0" prefWidth="228.0" />
+			</graphic>
+		</Label>
+		<Label fx:id="userLabel" contentDisplay="RIGHT" layoutX="60.0" layoutY="60.0" prefHeight="25.0" prefWidth="409.0" text="Username">
+			<graphic>
+				<TextField fx:id="userField" prefHeight="25.0" prefWidth="261.0" />
+			</graphic>
+		</Label>
+		<Label fx:id="pwLabel" contentDisplay="RIGHT" layoutX="60.0" layoutY="85.0" prefHeight="25.0" prefWidth="409.0" text="Passwort">
+			<graphic>
+				<PasswordField fx:id="pwField" />
+			</graphic>
+		</Label>
+		<Button fx:id="connectBtn" mnemonicParsing="false" onAction="#onConnect" text="Verbinden" />
+	</children>
+	<opaqueInsets>
+		<Insets />
+	</opaqueInsets>
+</VBox>
