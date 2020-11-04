@@ -1,4 +1,4 @@
-package battleships;
+package battleships.server;
 
 public class ServerMain {
 

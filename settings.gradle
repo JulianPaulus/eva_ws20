@@ -9,6 +9,6 @@
 
 rootProject.name = 'eva_ws20'
 
-include(':apps:client')
-include(':apps:common')
+include(':apps:battleship.client')
+include(':apps:battleship.common')
 include(':apps:server')

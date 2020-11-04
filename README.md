@@ -2,6 +2,6 @@
 
 ## Client per Gradle starten
 ### Windows
-`gradlew.bat -p apps/client clean run`
+`gradlew.bat -p apps/battleship.client clean run`
 ### Unix
-`./gradlew -p apps/client clean run`
+`./gradlew -p apps/battleship.client clean run`
