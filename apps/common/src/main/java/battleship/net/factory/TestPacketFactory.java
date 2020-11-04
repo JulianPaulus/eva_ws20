@@ -1,12 +1,12 @@
 package battleship.net.factory;
 
-import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.TestPacket;
 
 import java.io.DataInputStream;
 
-public class TestPacketFactory extends AbstractPacketFactory {
+public class TestPacketFactory extends AbstractPacketFactory<TestPacket> {
 	@Override
-	public AbstractPacket unmarshall(final DataInputStream stream) {
+	public TestPacket unmarshall(final DataInputStream stream) {
 		return null;
 	}
 }

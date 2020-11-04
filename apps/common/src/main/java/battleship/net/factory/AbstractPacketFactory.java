@@ -4,8 +4,8 @@ import battleship.net.packet.AbstractPacket;
 
 import java.io.DataInputStream;
 
-public abstract class AbstractPacketFactory {
+public abstract class AbstractPacketFactory<T extends AbstractPacket> {
 
-	public abstract AbstractPacket unmarshall(final DataInputStream stream);
+	public abstract T unmarshall(final DataInputStream stream);
 
 }
