@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(path: ':apps:battleship.common')
+    implementation project(path: ':apps:common')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
