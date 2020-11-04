@@ -1,6 +1,6 @@
 package battleship.net;
 
-import battleship.net.factory.PacketFactory;
+import battleship.net.factory.AbstractPacketFactory;
 import battleship.net.factory.TestPacketFactory;
 
 import java.util.Arrays;
@@ -11,9 +11,9 @@ public enum PacketType {
 	TEST((byte) 0x0, new TestPacketFactory());
 
 	private final byte identifier;
-	private final PacketFactory factory;
+	private final AbstractPacketFactory factory;
 
-	PacketType(final byte identifier, final PacketFactory factory) {
+	PacketType(final byte identifier, final AbstractPacketFactory factory) {
 		this.identifier = identifier;
 		this.factory = factory;
 	}
@@ -22,7 +22,7 @@ public enum PacketType {
 		return identifier;
 	}
 
-	public PacketFactory getFactory() {
+	public AbstractPacketFactory getFactory() {
 		return factory;
 	}
 
