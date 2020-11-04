@@ -14,5 +14,5 @@ test {
 }
 
 application {
-    mainClassName = 'battleships.ServerMain'
+    mainClassName = 'battleships.server.ServerMain'
 }
