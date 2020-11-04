@@ -1,5 +1,4 @@
 apply plugin: 'application'
-apply plugin: 'org.openjfx.javafxplugin'
 
 dependencies {
     implementation project(path: ':apps:common')
@@ -15,9 +14,5 @@ test {
 application {
     applicationName = 'EvaClient'
     mainClassName = 'client.BaseApplication'
-}
-
-javafx {
-	modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
