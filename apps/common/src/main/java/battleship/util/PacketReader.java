@@ -15,7 +15,7 @@ public class PacketReader extends Thread {
 	private final BlockingQueue<AbstractPacket> queue;
 	private final DataInputStream stream;
 
-	public PacketReader(InputStream stream) throws IOException {
+	public PacketReader(final InputStream stream) throws IOException {
 		this.queue = new LinkedBlockingQueue<>();
 		this.stream = new DataInputStream(stream);
 	}

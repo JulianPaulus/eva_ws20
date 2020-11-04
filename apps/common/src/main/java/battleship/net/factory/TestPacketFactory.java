@@ -6,7 +6,7 @@ import java.io.DataInputStream;
 
 public class TestPacketFactory extends PacketFactory{
 	@Override
-	public AbstractPacket unmarshall(DataInputStream stream) {
+	public AbstractPacket unmarshall(final DataInputStream stream) {
 		return null;
 	}
 }

@@ -9,10 +9,10 @@ public class Connection {
 	private final PacketReader reader;
 	private final PacketWriter writer;
 
-	public Connection(Socket socket) throws IOException {
+	public Connection(final Socket socket) throws IOException {
 		this.socket = socket;
 
-		this.reader = new PacketReader(null);
+		this.reader = new PacketReader(socket.getInputStream());
 		this.writer = new PacketWriter(socket.getOutputStream());
 	}
 

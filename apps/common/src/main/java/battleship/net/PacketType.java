@@ -13,7 +13,7 @@ public enum PacketType {
 	private final byte identifier;
 	private final PacketFactory factory;
 
-	PacketType(byte identifier, PacketFactory factory) {
+	PacketType(final byte identifier, final PacketFactory factory) {
 		this.identifier = identifier;
 		this.factory = factory;
 	}
@@ -26,7 +26,7 @@ public enum PacketType {
 		return factory;
 	}
 
-	public static Optional<PacketType> getByIdentifier(byte identifier) {
+	public static Optional<PacketType> getByIdentifier(final byte identifier) {
 		return Arrays.stream(PacketType.values()).filter(type -> type.identifier == identifier).findFirst();
 	}
 }

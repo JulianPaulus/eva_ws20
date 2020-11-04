@@ -32,7 +32,7 @@ public class PacketWriter extends Thread {
 
 	}
 
-	public void write(AbstractPacket packet) {
+	public void write(final AbstractPacket packet) {
 		queue.add(packet);
 	}
 }
