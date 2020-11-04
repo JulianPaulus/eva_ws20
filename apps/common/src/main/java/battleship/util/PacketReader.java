@@ -22,23 +22,23 @@ public class PacketReader extends Thread {
 
 	@Override
 	public void run() {
-
 		while(!isInterrupted()) {
 			try {
 				byte identifier = stream.readByte();
 				Optional<PacketType> optionalType = PacketType.getByIdentifier(identifier);
-				if (optionalType.isPresent()) {
-					PacketType type = optionalType.get();
-					AbstractPacket packet = type.getFactory().unmarshall(stream);
+				optionalType.ifPresent(type -> {
+					AbstractPacket packet = null;
+					try {
+						packet = type.getFactory().unmarshal(stream);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					queue.add(packet);
-				} else {
-					System.err.println("unknown identifier read");
-				}
+				});
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public AbstractPacket readBlocking() throws InterruptedException {

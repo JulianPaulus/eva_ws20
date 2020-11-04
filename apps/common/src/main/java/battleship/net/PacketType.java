@@ -2,13 +2,14 @@ package battleship.net;
 
 import battleship.net.factory.AbstractPacketFactory;
 import battleship.net.factory.TestPacketFactory;
+import battleship.net.packet.TestPacket;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 public enum PacketType {
 
-	TEST((byte) 0x0, new TestPacketFactory());
+	TEST(TestPacket.IDENTIFIER, new TestPacketFactory());
 
 	private final byte identifier;
 	private final AbstractPacketFactory factory;

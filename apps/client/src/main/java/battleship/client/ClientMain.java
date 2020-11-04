@@ -1,10 +1,11 @@
 package battleship.client;
 
+import battleship.net.packet.TestPacket;
+import battleship.util.Connection;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.net.Socket;
 
 public class ClientMain extends Application {
 
@@ -14,14 +15,9 @@ public class ClientMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("Hello World!");
-		Button btn = new Button();
-		btn.setText("Say 'Hello World'");
-		btn.setOnAction(event -> System.out.println("Hello World!"));
+		Socket socket = new Socket("localhost", 1234);
+		Connection connection = new Connection(socket);
 
-		StackPane root = new StackPane();
-		root.getChildren().add(btn);
-		primaryStage.setScene(new Scene(root, 300, 250));
-		primaryStage.show();
+		connection.writePacket(new TestPacket());
 	}
 }
