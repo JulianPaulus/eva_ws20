@@ -30,18 +30,6 @@
       </ToolBar>
    </top>
    <center>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <content>
-            <HBox>
-               <children>
-                  <ListView fx:id="listView" prefHeight="0.0" prefWidth="300.0" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </ListView>
-               </children>
-            </HBox>
-         </content>
-      </ScrollPane>
+      <ListView fx:id="listView" editable="true" prefHeight="58.0" prefWidth="248.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

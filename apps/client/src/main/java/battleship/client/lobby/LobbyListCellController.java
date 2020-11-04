@@ -37,19 +37,19 @@ public class LobbyListCellController extends ListCell<Lobby> {
 			if(fxmLLoader == null) {
 				fxmLLoader = new FXMLLoader(getClass().getResource("/fxml/LobbyListCell.fxml"));
 				fxmLLoader.setController(this);
-			}
-			try {
-				fxmLLoader.load();
-			} catch (IOException e) {
-				e.printStackTrace();
+				try {
+					fxmLLoader.load();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			nameLabel.setText(lobby.getName());
-			if(lobby.getMaxPlayers() < lobby.getPlayerCount()) {
-				stateLabel.setText("Im Spiel");
-				joinButton.setVisible(false);
-			} else {
+			if(lobby.getMaxPlayers() > lobby.getPlayerCount()) {
 				stateLabel.setText(lobby.getPlayerCount() + "/" + lobby.getMaxPlayers() + " Warte auf Spieler...");
 				joinButton.setVisible(true);
+			} else {
+				stateLabel.setText("Im Spiel");
+				joinButton.setVisible(false);
 			}
 			setGraphic(borderPane);
 		}
