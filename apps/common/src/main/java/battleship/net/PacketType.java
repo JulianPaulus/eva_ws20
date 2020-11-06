@@ -2,6 +2,7 @@ package battleship.net;
 
 import battleship.net.factory.AbstractPacketFactory;
 import battleship.net.factory.TestPacketFactory;
+import battleship.net.packet.AbstractPacket;
 import battleship.net.packet.TestPacket;
 
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public enum PacketType {
 		return identifier;
 	}
 
-	public AbstractPacketFactory getFactory() {
+	public AbstractPacketFactory<AbstractPacket> getFactory() {
 		return factory;
 	}
 
