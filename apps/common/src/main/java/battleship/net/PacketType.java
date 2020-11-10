@@ -19,9 +19,9 @@ public enum PacketType {
 	LOBBY_LIST_REQUEST(LobbyListRequestPacket.IDENTIFIER, new LobbyListRequestPacketFactory());
 
 	private final byte identifier;
-	private final AbstractPacketFactory factory;
+	private final AbstractPacketFactory<? extends AbstractPacket> factory;
 
-	PacketType(final byte identifier, final AbstractPacketFactory factory) {
+	PacketType(final byte identifier, final AbstractPacketFactory<? extends AbstractPacket> factory) {
 		this.identifier = identifier;
 		this.factory = factory;
 	}
@@ -30,7 +30,7 @@ public enum PacketType {
 		return identifier;
 	}
 
-	public AbstractPacketFactory<AbstractPacket> getFactory() {
+	public AbstractPacketFactory<? extends AbstractPacket> getFactory() {
 		return factory;
 	}
 
