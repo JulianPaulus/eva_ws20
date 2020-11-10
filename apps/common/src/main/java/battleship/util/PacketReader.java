@@ -1,14 +1,13 @@
 package battleship.util;
 
-import battleship.net.packet.AbstractPacket;
 import battleship.net.PacketType;
+import battleship.net.packet.AbstractPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
