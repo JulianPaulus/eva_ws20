@@ -22,6 +22,7 @@ public class ClientMain extends Application {
 
 		connection.writePacket(new TestPacket());
 
+
 		TimeUnit.SECONDS.sleep(1);
 		connection.close();
 		System.exit(0);
