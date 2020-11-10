@@ -11,14 +11,19 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientMain extends Application {
 
+	private static ClientMain instance;
+
+	private Connection connection;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		instance = this;
 		Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
-		Connection connection = new Connection(socket);
+		connection = new Connection(socket);
 
 		connection.writePacket(new TestPacket());
 
@@ -26,5 +31,13 @@ public class ClientMain extends Application {
 		TimeUnit.SECONDS.sleep(1);
 		connection.close();
 		System.exit(0);
+	}
+
+	public static ClientMain getInstance() {
+		return instance;
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 }

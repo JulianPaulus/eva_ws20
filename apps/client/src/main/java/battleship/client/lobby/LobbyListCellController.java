@@ -1,6 +1,5 @@
 package battleship.client.lobby;
 
-import battleship.packet.Lobby;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;

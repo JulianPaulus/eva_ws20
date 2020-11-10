@@ -1,7 +1,7 @@
 package battleship.client.lobby;
 
-import battleship.packet.Lobby;
-import battleship.packet.Player;
+import battleship.client.ClientMain;
+import battleship.net.packet.LobbyListRequestPacket;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,8 +24,9 @@ public class LobbyListController implements Initializable {
 	private ObservableList<String> lobbyObservableList;
 
 	public LobbyListController() {
+		LobbyListRequestPacket lobbyListRequestPacket = new LobbyListRequestPacket();
+		ClientMain.getInstance().getConnection().writePacket(lobbyListRequestPacket);
 		lobbyObservableList = FXCollections.observableArrayList();
-		lobbyObservableList.addAll("Test 1", "Test 2");
 	}
 
 
