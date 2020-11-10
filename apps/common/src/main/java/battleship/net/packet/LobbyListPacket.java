@@ -13,17 +13,16 @@ public class LobbyListPacket extends AbstractPacket {
 	}
 
 	@Override
-	public byte[] marshal() throws IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream dos = new DataOutputStream(bos);
+	public byte getIdentifier() {
+		return IDENTIFIER;
+	}
 
-		dos.writeByte(IDENTIFIER);
-
+	@Override
+	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		for (String lobby : lobbySet) {
 			dos.writeShort(lobbySet.size());
 			dos.writeUTF(lobby);
 		}
-
-		return bos.toByteArray();
+		return dos;
 	}
 }

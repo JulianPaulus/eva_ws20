@@ -7,7 +7,6 @@ import java.io.IOException;
 public class TestPacket extends AbstractPacket {
 
 	public static final byte IDENTIFIER = 0x0;
-	public static final int MARSHALLED_SIZE = 0x9;
 
 	private long timestamp;
 
@@ -20,14 +19,15 @@ public class TestPacket extends AbstractPacket {
 	}
 
 	@Override
-	public byte[] marshal() throws IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(MARSHALLED_SIZE);
-		DataOutputStream dos = new DataOutputStream(bos);
+	public byte getIdentifier() {
+		return IDENTIFIER;
+	}
 
+	@Override
+	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		dos.writeByte(IDENTIFIER);
 		dos.writeLong(timestamp);
-
-		return bos.toByteArray();
+		return dos;
 	}
 
 	public long getTimestamp() {
