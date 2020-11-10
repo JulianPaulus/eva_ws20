@@ -1,9 +1,11 @@
 package battleship.net.packet;
 
+import battleship.util.Connection;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class LobbyListRequestPacket extends AbstractPacket {
+public class LobbyListRequestPacket extends AbstractGeneralPacket {
 	public static final byte IDENTIFIER = 0x2;
 
 	@Override
@@ -14,5 +16,10 @@ public class LobbyListRequestPacket extends AbstractPacket {
 	@Override
 	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		return dos;
+	}
+
+	@Override
+	public void act(Connection connection) {
+
 	}
 }
