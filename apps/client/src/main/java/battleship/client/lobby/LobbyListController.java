@@ -16,17 +16,16 @@ import java.util.*;
 public class LobbyListController implements Initializable {
 
 	@FXML
-	private ListView<Lobby> listView;
+	private ListView<String> listView;
 
 	@FXML
 	private Button createLobbyButton;
 
-	private ObservableList<Lobby> lobbyObservableList;
+	private ObservableList<String> lobbyObservableList;
 
 	public LobbyListController() {
 		lobbyObservableList = FXCollections.observableArrayList();
-		lobbyObservableList.addAll(new Lobby("Test 1", Arrays.asList(new Player(1, "Player 1"), new Player(2, "Player 2"))),
-			new Lobby("Test 2", Arrays.asList(new Player(3, "Player 1"))));
+		lobbyObservableList.addAll("Test 1", "Test 2");
 	}
 
 
@@ -38,7 +37,7 @@ public class LobbyListController implements Initializable {
 		//TODO Implement
 	}
 
-	public void setLobbies(Collection<Lobby> lobbies) {
+	public void setLobbies(Collection<String> lobbies) {
 		lobbyObservableList.setAll(lobbies);
 	}
 

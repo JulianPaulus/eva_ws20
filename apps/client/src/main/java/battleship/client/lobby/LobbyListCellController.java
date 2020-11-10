@@ -10,7 +10,8 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 
-public class LobbyListCellController extends ListCell<Lobby> {
+public class LobbyListCellController extends ListCell<String> {
+	private static final int LOBBY_MAX_PLAYERS = 2;
 
 	@FXML
 	private Label nameLabel;
@@ -27,11 +28,11 @@ public class LobbyListCellController extends ListCell<Lobby> {
 	private FXMLLoader fxmLLoader;
 
 	@Override
-	protected void updateItem(Lobby lobby, boolean empty) {
-		super.updateItem(lobby, empty);
+	protected void updateItem(String lobbyName, boolean empty) {
+		super.updateItem(lobbyName, empty);
 
 		setText(null);
-		if(empty || lobby == null) {
+		if(empty || lobbyName == null) {
 			setGraphic(null);
 		} else {
 			if(fxmLLoader == null) {
@@ -43,14 +44,9 @@ public class LobbyListCellController extends ListCell<Lobby> {
 					e.printStackTrace();
 				}
 			}
-			nameLabel.setText(lobby.getName());
-			if(lobby.getMaxPlayers() > lobby.getPlayerCount()) {
-				stateLabel.setText(lobby.getPlayerCount() + "/" + lobby.getMaxPlayers() + " Warte auf Spieler...");
-				joinButton.setVisible(true);
-			} else {
-				stateLabel.setText("Im Spiel");
-				joinButton.setVisible(false);
-			}
+			nameLabel.setText(lobbyName);
+			stateLabel.setText(1 + "/" + LOBBY_MAX_PLAYERS + " Warte auf Spieler...");
+			joinButton.setVisible(true);
 			setGraphic(borderPane);
 		}
 	}
