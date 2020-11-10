@@ -6,7 +6,7 @@ import java.util.Set;
 public class LobbyListPacket extends AbstractPacket {
 
 	public static final byte IDENTIFIER = 0x1;
-	private Set<String> lobbySet;
+	private final Set<String> lobbySet;
 
 	public LobbyListPacket(Set<String> lobbySet) {
 		this.lobbySet = lobbySet;
@@ -20,11 +20,8 @@ public class LobbyListPacket extends AbstractPacket {
 		dos.writeByte(IDENTIFIER);
 
 		for (String lobby : lobbySet) {
+			dos.writeShort(lobbySet.size());
 			dos.writeUTF(lobby);
-
-
-
-
 		}
 
 		return bos.toByteArray();
