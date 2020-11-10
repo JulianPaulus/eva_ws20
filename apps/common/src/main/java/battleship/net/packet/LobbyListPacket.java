@@ -1,9 +1,11 @@
 package battleship.net.packet;
 
+import battleship.util.Connection;
+
 import java.io.*;
 import java.util.Set;
 
-public class LobbyListPacket extends AbstractPacket {
+public class LobbyListPacket extends AbstractGeneralPacket {
 
 	public static final byte IDENTIFIER = 0x1;
 	private final Set<String> lobbySet;
@@ -24,5 +26,10 @@ public class LobbyListPacket extends AbstractPacket {
 			dos.writeUTF(lobby);
 		}
 		return dos;
+	}
+
+	@Override
+	public void act(Connection connection) {
+
 	}
 }
