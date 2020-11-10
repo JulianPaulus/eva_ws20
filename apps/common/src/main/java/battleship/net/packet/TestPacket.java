@@ -1,10 +1,12 @@
 package battleship.net.packet;
 
-import java.io.ByteArrayOutputStream;
+import battleship.net.ConnectionSide;
+import battleship.util.Connection;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class TestPacket extends AbstractPacket {
+public class TestPacket extends AbstractGeneralPacket {
 
 	public static final byte IDENTIFIER = 0x0;
 
@@ -32,5 +34,16 @@ public class TestPacket extends AbstractPacket {
 
 	public long getTimestamp() {
 		return timestamp;
+	}
+
+	@Override
+	public void act(Connection connection) {
+		System.out.println(timestamp);
+		connection.writePacket(new TestPacket());
+	}
+
+	@Override
+	public ConnectionSide getConnectionSide() {
+		return ConnectionSide.BOTH;
 	}
 }

@@ -1,5 +1,6 @@
 package battleship.client;
 
+import battleship.net.packet.AbstractPacket;
 import battleship.net.packet.TestPacket;
 import battleship.util.Connection;
 import battleship.util.Constants;
@@ -29,6 +30,12 @@ public class ClientMain extends Application {
 
 
 		TimeUnit.SECONDS.sleep(1);
+
+		AbstractPacket packet = connection.readPacketBlocking();
+		if (packet instanceof TestPacket) {
+			System.out.println(((TestPacket) packet).getTimestamp());
+		}
+
 		connection.close();
 		System.exit(0);
 	}
