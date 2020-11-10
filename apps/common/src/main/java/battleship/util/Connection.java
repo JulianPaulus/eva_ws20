@@ -50,4 +50,13 @@ public class Connection {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Connection{" +
+			"socket=" + socket +
+			", reader=" + reader +
+			", writer=" + writer +
+			", closed=" + closed +
+			'}';
+	}
 }

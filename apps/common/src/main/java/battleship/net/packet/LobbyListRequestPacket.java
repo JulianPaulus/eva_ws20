@@ -1,5 +1,6 @@
 package battleship.net.packet;
 
+import battleship.net.ConnectionSide;
 import battleship.util.Connection;
 
 import java.io.DataOutputStream;
@@ -21,5 +22,11 @@ public class LobbyListRequestPacket extends AbstractGeneralPacket {
 	@Override
 	public void act(Connection connection) {
 
+	}
+
+
+	@Override
+	public ConnectionSide getConnectionSide() {
+		return ConnectionSide.SERVER;
 	}
 }

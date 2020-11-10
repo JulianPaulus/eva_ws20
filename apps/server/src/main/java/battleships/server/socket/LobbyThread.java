@@ -1,5 +1,6 @@
 package battleships.server.socket;
 
+import battleship.net.packet.AbstractGeneralPacket;
 import battleship.net.packet.AbstractPacket;
 import battleship.util.Connection;
 import org.slf4j.Logger;
@@ -23,11 +24,11 @@ public class LobbyThread extends Thread {
 		this.connections = new ArrayList<>();
 		this.connectionsLock = new ReentrantLock();
 
-		logger.info("lobby starting...");
 	}
 
 	@Override
 	public void run() {
+		logger.info("lobby starting...");
 		while(!isInterrupted()) {
 			connectionsLock.lock();
 			try {
@@ -49,7 +50,16 @@ public class LobbyThread extends Thread {
 	}
 
 	private void handlePacket(Connection connection, AbstractPacket packet) {
-
+		if (packet instanceof AbstractGeneralPacket) {
+			AbstractGeneralPacket generalPacket = (AbstractGeneralPacket) packet;
+			if (generalPacket.getConnectionSide().isServer()) {
+				generalPacket.act(connection);
+			} else {
+				logger.warn("received client packet on server side from {}", connection);
+			}
+		} else {
+			logger.warn("received unknown packet type from {}", connection);
+		}
 	}
 
 	public void addConnection(Connection connection) {
