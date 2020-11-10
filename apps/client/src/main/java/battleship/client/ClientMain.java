@@ -1,10 +1,13 @@
 package battleship.client;
 
+import battleship.net.packet.TestPacket;
+import battleship.util.Connection;
+import battleship.util.Constants;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 public class ClientMain extends Application {
 
@@ -14,19 +17,14 @@ public class ClientMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-	/*	primaryStage.setTitle("Hello World!");
-		Button btn = new Button();
-		btn.setText("Say 'Hello World'");
-		btn.setOnAction(event -> System.out.println("Hello World!"));
+		Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
+		Connection connection = new Connection(socket);
 
-		StackPane root = new StackPane();
-		root.getChildren().add(btn);
-		primaryStage.setScene(new Scene(root, 300, 250));
-		primaryStage.show();
-*/
-		Parent root = FXMLLoader.load(getClass().getResource("/fxml/LobbyListScreen.fxml"));
-		primaryStage.setTitle("LobbyTest");
-		primaryStage.setScene(new Scene(root, 640, 400));
-		primaryStage.show();
+		connection.writePacket(new TestPacket());
+
+
+		TimeUnit.SECONDS.sleep(1);
+		connection.close();
+		System.exit(0);
 	}
 }
