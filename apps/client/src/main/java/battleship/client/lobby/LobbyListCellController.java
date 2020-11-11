@@ -1,5 +1,6 @@
 package battleship.client.lobby;
 
+import battleship.packet.PacketLobby;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -9,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 
-public class LobbyListCellController extends ListCell<String> {
+public class LobbyListCellController extends ListCell<PacketLobby> {
 	private static final int LOBBY_MAX_PLAYERS = 2;
 
 	@FXML
@@ -27,11 +28,11 @@ public class LobbyListCellController extends ListCell<String> {
 	private FXMLLoader fxmLLoader;
 
 	@Override
-	protected void updateItem(String lobbyName, boolean empty) {
-		super.updateItem(lobbyName, empty);
+	protected void updateItem(PacketLobby lobby, boolean empty) {
+		super.updateItem(lobby, empty);
 
 		setText(null);
-		if(empty || lobbyName == null) {
+		if(empty || lobby == null) {
 			setGraphic(null);
 		} else {
 			if(fxmLLoader == null) {
@@ -43,7 +44,7 @@ public class LobbyListCellController extends ListCell<String> {
 					e.printStackTrace();
 				}
 			}
-			nameLabel.setText(lobbyName);
+			nameLabel.setText(lobby.getName());
 			stateLabel.setText(1 + "/" + LOBBY_MAX_PLAYERS + " Warte auf Spieler...");
 			joinButton.setVisible(true);
 			setGraphic(borderPane);

@@ -3,9 +3,9 @@ package battleship.net.packet;
 import battleship.net.ConnectionSide;
 import battleship.util.Connection;
 
-public abstract class AbstractGeneralPacket extends AbstractPacket {
+public abstract class AbstractGeneralPacket<T> extends AbstractPacket {
 
-	public abstract void act(Connection connection);
+	public abstract void act(T t, Connection connection);
 
 	public abstract ConnectionSide getConnectionSide();
 

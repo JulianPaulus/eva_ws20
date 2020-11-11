@@ -1,7 +1,9 @@
 package battleship.client.lobby;
 
 import battleship.client.ClientMain;
+import battleship.iface.ILobbyListController;
 import battleship.net.packet.LobbyListRequestPacket;
+import battleship.packet.PacketLobby;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,20 +15,27 @@ import javafx.scene.control.ListView;
 import java.net.URL;
 import java.util.*;
 
-public class LobbyListController implements Initializable {
+public class LobbyListController implements Initializable, ILobbyListController {
 
 	@FXML
-	private ListView<String> listView;
+	private ListView<PacketLobby> listView;
 
 	@FXML
 	private Button createLobbyButton;
 
-	private ObservableList<String> lobbyObservableList;
+	private ObservableList<PacketLobby> lobbyObservableList;
+
+	private static LobbyListController newestInstance;
 
 	public LobbyListController() {
 		LobbyListRequestPacket lobbyListRequestPacket = new LobbyListRequestPacket();
 		ClientMain.getInstance().getConnection().writePacket(lobbyListRequestPacket);
 		lobbyObservableList = FXCollections.observableArrayList();
+		newestInstance = this;
+	}
+
+	public static LobbyListController getNewestInstance() {
+		return newestInstance;
 	}
 
 
@@ -38,7 +47,7 @@ public class LobbyListController implements Initializable {
 		//TODO Implement
 	}
 
-	public void setLobbies(Collection<String> lobbies) {
+	public void setLobbies(Collection<PacketLobby> lobbies) {
 		lobbyObservableList.setAll(lobbies);
 	}
 

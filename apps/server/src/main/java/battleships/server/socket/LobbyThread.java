@@ -53,7 +53,7 @@ public class LobbyThread extends Thread {
 		if (packet instanceof AbstractGeneralPacket) {
 			AbstractGeneralPacket generalPacket = (AbstractGeneralPacket) packet;
 			if (generalPacket.getConnectionSide().isServer()) {
-				generalPacket.act(connection);
+				generalPacket.act(null, connection);
 			} else {
 				logger.warn("received client packet on server side from {}", connection);
 			}

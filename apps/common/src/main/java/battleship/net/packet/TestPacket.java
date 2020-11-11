@@ -6,7 +6,7 @@ import battleship.util.Connection;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class TestPacket extends AbstractGeneralPacket {
+public class TestPacket extends AbstractGeneralPacket<Object> {
 
 	public static final byte IDENTIFIER = 0x0;
 
@@ -37,7 +37,7 @@ public class TestPacket extends AbstractGeneralPacket {
 	}
 
 	@Override
-	public void act(Connection connection) {
+	public void act(Object object, Connection connection) {
 		System.out.println(timestamp);
 		connection.writePacket(new TestPacket());
 	}

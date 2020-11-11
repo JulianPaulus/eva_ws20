@@ -1,18 +1,20 @@
 package battleship.net.packet;
 
+import battleship.iface.ILobbyListController;
 import battleship.net.ConnectionSide;
+import battleship.packet.PacketLobby;
 import battleship.util.Connection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
-public class LobbyListPacket extends AbstractGeneralPacket {
+public class LobbyListPacket extends AbstractGeneralPacket<ILobbyListController> {
 
 	public static final byte IDENTIFIER = 0x1;
-	private final Set<String> lobbySet;
+	private final Set<PacketLobby> lobbySet;
 
-	public LobbyListPacket(Set<String> lobbySet) {
+	public LobbyListPacket(Set<PacketLobby> lobbySet) {
 		this.lobbySet = lobbySet;
 	}
 
@@ -23,16 +25,17 @@ public class LobbyListPacket extends AbstractGeneralPacket {
 
 	@Override
 	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
-		for (String lobby : lobbySet) {
-			dos.writeShort(lobbySet.size());
-			dos.writeUTF(lobby);
+		dos.writeShort(lobbySet.size());
+		for (PacketLobby lobby : lobbySet) {
+			dos.writeInt(lobby.getId());
+			dos.writeUTF(lobby.getName());
 		}
 		return dos;
 	}
 
 	@Override
-	public void act(Connection connection) {
-
+	public void act(ILobbyListController controller, Connection connection) {
+		controller.setLobbies(this.lobbySet);
 	}
 
 	@Override
