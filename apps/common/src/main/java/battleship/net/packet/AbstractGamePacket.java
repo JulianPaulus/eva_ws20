@@ -1,10 +1,10 @@
 package battleship.net.packet;
 
 import battleship.packet.Game;
-import battleship.util.Connection;
+import battleship.util.GameConnection;
 
 public abstract class AbstractGamePacket extends AbstractPacket {
 
-	public abstract void act(Game game, Connection connection);
+	public abstract void act(Game game, GameConnection connection);
 
 }

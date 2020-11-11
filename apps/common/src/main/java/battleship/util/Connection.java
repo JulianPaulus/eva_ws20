@@ -27,6 +27,12 @@ public class Connection {
 		writer.start();
 	}
 
+	protected Connection(Connection connection) {
+		this.socket = connection.socket;
+		this.reader = connection.reader;
+		this.writer = connection.writer;
+	}
+
 	public AbstractPacket readPacket() throws InterruptedException {
 		return reader.read();
 	}
