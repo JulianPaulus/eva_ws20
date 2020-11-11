@@ -1,7 +1,7 @@
-package refactor.packethandler;
+package battleship.net.connection.packethandler;
 
+import battleship.net.connection.GameConnection;
 import battleship.net.packet.AbstractGamePacket;
-import refactor.GameConnection;
 
 public class GamePacketHandler extends AbstractPacketHandler<AbstractGamePacket, GameConnection> {
 

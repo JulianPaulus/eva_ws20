@@ -1,8 +1,8 @@
 package battleship.net.packet;
 
 import battleship.net.ConnectionSide;
+import battleship.net.connection.AuthenticatedConnection;
 import battleship.packet.PacketLobby;
-import refactor.AuthenticatedConnection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,7 +24,11 @@ public class LobbyListRequestPacket extends AbstractLobbyPacket {
 
 	@Override
 	public void act(AuthenticatedConnection connection) {
-		connection.writePacket(new LobbyListPacket(new HashSet<>(Arrays.asList(new PacketLobby(1, "Test1"), new PacketLobby(2, "Test2")))));
+		try {
+			connection.writePacket(new LobbyListPacket(new HashSet<>(Arrays.asList(new PacketLobby(1, "Test1"), new PacketLobby(2, "Test2")))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 

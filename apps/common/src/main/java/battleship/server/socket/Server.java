@@ -1,9 +1,9 @@
 package battleship.server.socket;
 
-import battleship.util.Constants;
+import battleship.net.connection.Connection;
+import battleship.net.connection.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import refactor.Connection;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,22 +16,19 @@ public class Server extends Thread {
 	private static Server instance;
 
 	private final ServerSocket serverSocket;
-	private final LobbyThread lobbyThread;
 
 	private Server() throws IOException {
 		super("server");
 		this.serverSocket = new ServerSocket(Constants.DEFAULT_PORT);
-		this.lobbyThread = LobbyThread.getInstance();
 	}
 
 	@Override
 	public void run() {
 		logger.info("Server starting...");
-		lobbyThread.start();
 		while (!serverSocket.isClosed() && !isInterrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
-				logger.info("new connection from {}", socket.getInetAddress().getHostAddress());
+				logger.info("new battleship.net.connection from {}", socket.getInetAddress().getHostAddress());
 				Connection newConnection = new Connection(socket);
 			} catch (IOException e) {
 				logger.trace("error in serversocket loop", e);
@@ -44,11 +41,5 @@ public class Server extends Thread {
 			instance = new Server();
 		}
 		return instance;
-	}
-
-	@Override
-	public void interrupt() {
-		super.interrupt();
-		lobbyThread.interrupt();
 	}
 }

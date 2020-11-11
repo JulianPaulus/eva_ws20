@@ -1,12 +1,12 @@
 package battleship.net.packet;
 
 import battleship.net.ConnectionSide;
-import battleship.util.Connection;
+import battleship.net.connection.Connection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class TestPacket extends AbstractGeneralPacket<Object> {
+public class TestPacket extends AbstractPacket<Connection> {
 
 	public static final byte IDENTIFIER = 0x0;
 
@@ -37,9 +37,13 @@ public class TestPacket extends AbstractGeneralPacket<Object> {
 	}
 
 	@Override
-	public void act(Object object, Connection connection) {
+	public void act(Connection connection) {
 		System.out.println(timestamp);
-		connection.writePacket(new TestPacket());
+		try {
+			connection.writePacket(new TestPacket());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

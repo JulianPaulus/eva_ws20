@@ -1,8 +1,8 @@
 package battleship.net.packet;
 
 import battleship.net.ConnectionSide;
+import battleship.net.connection.AuthenticatedConnection;
 import battleship.packet.PacketLobby;
-import refactor.AuthenticatedConnection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

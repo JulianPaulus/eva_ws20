@@ -1,7 +1,7 @@
-package refactor.packethandler;
+package battleship.net.connection.packethandler;
 
+import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.packet.AbstractLobbyPacket;
-import refactor.AuthenticatedConnection;
 
 public class LobbyPacketHandler extends AbstractPacketHandler<AbstractLobbyPacket, AuthenticatedConnection> {
 

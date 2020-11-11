@@ -1,7 +1,7 @@
-package refactor.packethandler;
+package battleship.net.connection.packethandler;
 
+import battleship.net.connection.Connection;
 import battleship.net.packet.AbstractPacket;
-import refactor.Connection;
 
 public abstract class AbstractPacketHandler<PacketT extends AbstractPacket, ConnectionT extends Connection> {
 	private final Class<PacketT> packetTClass;
@@ -16,8 +16,8 @@ public abstract class AbstractPacketHandler<PacketT extends AbstractPacket, Conn
 		if(!packetTClass.isAssignableFrom(packet.getClass())) {
 			throw new IllegalArgumentException("Packet doesn't match the Packethandler packet-type");
 		}
-		if(!connectionTClass.isAssignableFrom(packet.getClass())) {
-			throw new IllegalArgumentException("Connection doesn't match the Packethandler connection-type");
+		if(!connectionTClass.isAssignableFrom(connection.getClass())) {
+			throw new IllegalArgumentException("Connection doesn't match the Packethandler battleship.net.connection-type");
 		}
 		handleImplementedPacketType(packetTClass.cast(packet), connectionTClass.cast(connection));
 	}

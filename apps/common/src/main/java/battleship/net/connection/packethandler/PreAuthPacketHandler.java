@@ -1,7 +1,7 @@
-package refactor.packethandler;
+package battleship.net.connection.packethandler;
 
+import battleship.net.connection.Connection;
 import battleship.net.packet.AbstractPacket;
-import refactor.Connection;
 
 public class PreAuthPacketHandler extends AbstractPacketHandler<AbstractPacket, Connection> {
 

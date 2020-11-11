@@ -1,7 +1,6 @@
 package battleship.net.packet;
 
-import battleship.packet.Lobby;
-import refactor.AuthenticatedConnection;
+import battleship.net.connection.AuthenticatedConnection;
 
 public abstract class AbstractLobbyPacket extends AbstractPacket<AuthenticatedConnection> {
 

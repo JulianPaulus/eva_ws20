@@ -1,6 +1,6 @@
 package battleship.net.packet;
 
-import refactor.GameConnection;
+import battleship.net.connection.GameConnection;
 
 public abstract class AbstractGamePacket extends AbstractPacket<GameConnection> {
 

@@ -1,7 +1,7 @@
 package battleship.net.packet;
 
 import battleship.net.ConnectionSide;
-import refactor.Connection;
+import battleship.net.connection.Connection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

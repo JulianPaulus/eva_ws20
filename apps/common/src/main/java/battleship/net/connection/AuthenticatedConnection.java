@@ -1,4 +1,4 @@
-package refactor;
+package battleship.net.connection;
 
 import battleship.packet.Player;
 

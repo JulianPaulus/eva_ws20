@@ -1,10 +1,10 @@
-package refactor;
+package battleship.net.connection;
 
+import battleship.net.connection.packethandler.AbstractPacketHandler;
+import battleship.net.connection.packethandler.PreAuthPacketHandler;
 import battleship.net.packet.AbstractPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import refactor.packethandler.AbstractPacketHandler;
-import refactor.packethandler.PreAuthPacketHandler;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -35,7 +35,7 @@ public class Connection {
 		this.abstractPacketHandler = connection.abstractPacketHandler;
 	}
 
-	public void writePacket(AbstractPacket packet) {
+	public void writePacket(AbstractPacket<? extends Connection> packet) throws IOException {
 		writer.write(packet);
 	}
 
@@ -45,7 +45,7 @@ public class Connection {
 			reader.close();
 			socket.close();
 
-			logger.debug("closing connection with {}", socket.getInetAddress().getHostAddress());
+			logger.debug("closing battleship.net.connection with {}", socket.getInetAddress().getHostAddress());
 			closed = true;
 		}
 	}

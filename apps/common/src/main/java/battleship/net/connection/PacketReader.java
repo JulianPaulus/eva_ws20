@@ -1,4 +1,4 @@
-package battleship.util;
+package battleship.net.connection;
 
 import battleship.net.PacketType;
 import battleship.net.packet.AbstractPacket;
@@ -9,19 +9,14 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class PacketReader extends Thread {
-
 	private static final Logger logger = LoggerFactory.getLogger(PacketReader.class);
 
-	private final BlockingQueue<AbstractPacket> queue;
 	private final DataInputStream stream;
 	private final Connection connection;
 
 	public PacketReader(final InputStream stream, final Connection connection) {
-		this.queue = new LinkedBlockingQueue<>();
 		this.stream = new DataInputStream(stream);
 		this.connection = connection;
 	}
@@ -35,7 +30,7 @@ public class PacketReader extends Thread {
 				if (optionalType.isPresent()) {
 					PacketType type = optionalType.get();
 					AbstractPacket packet = type.getFactory().unmarshal(stream);
-					queue.add(packet);
+					connection.getPacketHandler().handle(packet, connection);
 				}
 			} catch (IOException e) {
 				try {
@@ -48,17 +43,8 @@ public class PacketReader extends Thread {
 		}
 	}
 
-	public AbstractPacket readBlocking() throws InterruptedException {
-		return queue.take();
-	}
-
-	public AbstractPacket read() throws InterruptedException {
-		return queue.isEmpty() ? null : queue.take();
-	}
-
 	public void close() throws IOException {
 		this.interrupt();
 		stream.close();
 	}
-
 }
