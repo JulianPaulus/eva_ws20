@@ -1,4 +1,4 @@
-package battleships.server.service;
+package battleship.server.service;
 
 public class LobbyService {
 

@@ -40,7 +40,7 @@ public class ClientMain extends Application {
 		if (packet instanceof LobbyListPacket) {
 			LobbyListController controller = LobbyListController.getNewestInstance();
 			if(controller != null) {
-				((LobbyListPacket) packet).act(controller, connection);
+				((LobbyListPacket) packet).act(connection);
 			}
 		}
 

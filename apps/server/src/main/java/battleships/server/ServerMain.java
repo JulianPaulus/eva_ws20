@@ -1,6 +1,6 @@
 package battleships.server;
 
-import battleships.server.socket.Server;
+import battleship.server.socket.Server;
 
 import java.io.IOException;
 

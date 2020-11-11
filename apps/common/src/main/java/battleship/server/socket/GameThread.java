@@ -1,4 +1,4 @@
-package battleships.server.socket;
+package battleship.server.socket;
 
 import battleship.packet.Game;
 import battleship.util.AuthenticatedConnection;

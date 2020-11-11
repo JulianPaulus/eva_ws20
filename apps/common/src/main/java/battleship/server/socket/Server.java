@@ -1,4 +1,4 @@
-package battleships.server.socket;
+package battleship.server.socket;
 
 import battleship.util.Constants;
 import org.slf4j.Logger;

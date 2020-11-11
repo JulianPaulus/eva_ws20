@@ -1,11 +1,11 @@
-package battleships.server.socket;
+package battleship.server.socket;
 
 import battleship.net.packet.AbstractPacket;
 import battleship.net.packet.LoginPacket;
 import battleship.packet.Player;
+import battleship.server.service.PlayerService;
 import battleship.util.AuthenticatedConnection;
 import battleship.util.Connection;
-import battleships.server.service.PlayerService;
 
 public class AuthenticateThread extends Thread {
 
