@@ -1,6 +1,6 @@
 package battleship.net.factory;
 
-import battleship.net.packet.LobbyListPacket;
+import battleship.net.packet.client.LobbyListPacket;
 import battleship.packet.PacketLobby;
 
 import java.io.DataInputStream;

@@ -1,7 +1,7 @@
 package battleship.client.lobby;
 
 import battleship.iface.ILobbyListController;
-import battleship.net.packet.LobbyListRequestPacket;
+import battleship.net.packet.server.LobbyListRequestPacket;
 import battleship.packet.PacketLobby;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

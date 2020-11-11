@@ -1,7 +1,9 @@
-package battleship.net.packet;
+package battleship.net.packet.server;
 
 import battleship.net.ConnectionSide;
 import battleship.net.connection.AuthenticatedConnection;
+import battleship.net.packet.AbstractLobbyPacket;
+import battleship.net.packet.client.LobbyListPacket;
 import battleship.packet.PacketLobby;
 
 import java.io.DataOutputStream;

@@ -2,7 +2,7 @@ package battleship.client;
 
 import battleship.net.connection.Connection;
 import battleship.net.connection.Constants;
-import battleship.net.packet.LoginPacket;
+import battleship.net.packet.server.LoginPacket;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

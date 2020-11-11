@@ -1,6 +1,6 @@
 package battleship.net.factory;
 
-import battleship.net.packet.LoginPacket;
+import battleship.net.packet.server.LoginPacket;
 
 import java.io.DataInputStream;
 import java.io.IOException;

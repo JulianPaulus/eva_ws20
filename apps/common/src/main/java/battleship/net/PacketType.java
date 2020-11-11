@@ -6,10 +6,10 @@ import battleship.net.factory.LobbyListRequestPacketFactory;
 import battleship.net.factory.LoginPacketFactory;
 import battleship.net.factory.TestPacketFactory;
 import battleship.net.packet.AbstractPacket;
-import battleship.net.packet.LobbyListPacket;
-import battleship.net.packet.LobbyListRequestPacket;
-import battleship.net.packet.LoginPacket;
 import battleship.net.packet.TestPacket;
+import battleship.net.packet.client.LobbyListPacket;
+import battleship.net.packet.server.LobbyListRequestPacket;
+import battleship.net.packet.server.LoginPacket;
 
 import java.util.Arrays;
 import java.util.Optional;
