@@ -4,10 +4,12 @@ import battleship.net.factory.AbstractPacketFactory;
 import battleship.net.factory.LobbyListPacketFactory;
 import battleship.net.factory.LobbyListRequestPacketFactory;
 import battleship.net.factory.LoginPacketFactory;
+import battleship.net.factory.LoginResponseFactory;
 import battleship.net.factory.TestPacketFactory;
 import battleship.net.packet.AbstractPacket;
 import battleship.net.packet.TestPacket;
 import battleship.net.packet.client.LobbyListPacket;
+import battleship.net.packet.client.LoginResponsePacket;
 import battleship.net.packet.server.LobbyListRequestPacket;
 import battleship.net.packet.server.LoginPacket;
 
@@ -19,7 +21,8 @@ public enum PacketType {
 	TEST(TestPacket.IDENTIFIER, new TestPacketFactory()),
 	LOBBY_LIST(LobbyListPacket.IDENTIFIER, new LobbyListPacketFactory()),
 	LOBBY_LIST_REQUEST(LobbyListRequestPacket.IDENTIFIER, new LobbyListRequestPacketFactory()),
-	LOGIN(LoginPacket.IDENTIFIER, new LoginPacketFactory());
+	LOGIN(LoginPacket.IDENTIFIER, new LoginPacketFactory()),
+	LOGIN_RESPONSE(LoginResponsePacket.IDENTIFIER, new LoginResponseFactory());
 
 	private final byte identifier;
 	private final AbstractPacketFactory<? extends AbstractPacket> factory;

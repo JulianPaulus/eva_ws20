@@ -16,15 +16,15 @@ public class Connection {
 	protected final Socket socket;
 	protected final PacketReader reader;
 	protected final PacketWriter writer;
-	protected final AbstractPacketHandler abstractPacketHandler;
+	protected AbstractPacketHandler packetHandler;
 
 	protected boolean closed = false;
 
 	public Connection(final Socket socket) throws IOException {
 		this.socket = socket;
 		this.reader = new PacketReader(socket.getInputStream(), this);
-		this.writer = new PacketWriter(socket.getOutputStream(), this);
-		this.abstractPacketHandler = new PreAuthPacketHandler();
+		this.writer = new PacketWriter(socket.getOutputStream());
+		this.packetHandler = new PreAuthPacketHandler();
 		reader.start();
 	}
 
@@ -32,7 +32,7 @@ public class Connection {
 		this.socket = connection.socket;
 		this.reader = connection.reader;
 		this.writer = connection.writer;
-		this.abstractPacketHandler = connection.abstractPacketHandler;
+		this.packetHandler = connection.packetHandler;
 	}
 
 	public void writePacket(AbstractPacket<? extends Connection> packet) throws IOException {
@@ -45,13 +45,13 @@ public class Connection {
 			reader.close();
 			socket.close();
 
-			logger.debug("closing battleship.net.connection with {}", socket.getInetAddress().getHostAddress());
+			logger.debug("closing connection with {}", socket.getInetAddress().getHostAddress());
 			closed = true;
 		}
 	}
 
 	public AbstractPacketHandler getPacketHandler() {
-		return this.abstractPacketHandler;
+		return this.packetHandler;
 	}
 
 	public boolean isAuthenticated() {

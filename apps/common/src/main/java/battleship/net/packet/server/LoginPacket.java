@@ -1,8 +1,12 @@
 package battleship.net.packet.server;
 
 import battleship.net.ConnectionSide;
+import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.connection.Connection;
 import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.client.LoginResponsePacket;
+import battleship.packet.Player;
+import battleship.server.service.PlayerService;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -20,7 +24,21 @@ public class LoginPacket extends AbstractPacket<Connection> {
 
 	@Override
 	public void act(Connection connection) {
-
+		Player player = PlayerService.getInstance().authenticate(username, password);
+		if (player != null) {
+			AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
+			try {
+				authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				connection.writePacket(new LoginResponsePacket(-1, false));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

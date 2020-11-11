@@ -14,7 +14,7 @@ public class PacketReader extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(PacketReader.class);
 
 	private final DataInputStream stream;
-	private final Connection connection;
+	private Connection connection;
 
 	public PacketReader(final InputStream stream, final Connection connection) {
 		this.stream = new DataInputStream(stream);
@@ -41,6 +41,10 @@ public class PacketReader extends Thread {
 				}
 			}
 		}
+	}
+
+	protected void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
 	public void close() throws IOException {

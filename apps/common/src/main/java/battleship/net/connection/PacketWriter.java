@@ -11,11 +11,9 @@ public class PacketWriter {
 	private static final Logger logger = LoggerFactory.getLogger(PacketWriter.class);
 
 	private final OutputStream stream;
-	private final Connection connection;
 
-	public PacketWriter(final OutputStream stream, final Connection connection) {
+	public PacketWriter(final OutputStream stream) {
 		this.stream = stream;
-		this.connection = connection;
 	}
 
 	public void write(final AbstractPacket<? extends Connection> packet) throws IOException {

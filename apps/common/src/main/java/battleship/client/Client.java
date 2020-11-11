@@ -32,8 +32,6 @@ public class Client extends Application {
 		primaryStage.show();
 
 		connection.writePacket(new LoginPacket("test123", "123456"));
-		//battleship.net.connection.close();
-		//System.exit(0);
 	}
 
 	public static Client getInstance() {

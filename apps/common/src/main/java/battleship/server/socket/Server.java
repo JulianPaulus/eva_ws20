@@ -28,7 +28,7 @@ public class Server extends Thread {
 		while (!serverSocket.isClosed() && !isInterrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
-				logger.info("new battleship.net.connection from {}", socket.getInetAddress().getHostAddress());
+				logger.info("new connection from {}", socket.getInetAddress().getHostAddress());
 				Connection newConnection = new Connection(socket);
 			} catch (IOException e) {
 				logger.trace("error in serversocket loop", e);

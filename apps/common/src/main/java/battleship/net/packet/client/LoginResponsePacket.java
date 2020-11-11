@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public class LoginResponsePacket extends AbstractPacket<Connection> {
 
+	public static final byte IDENTIFIER = 0x4;
+
 	private final int playerId;
 	private final boolean successful;
 
@@ -19,7 +21,9 @@ public class LoginResponsePacket extends AbstractPacket<Connection> {
 
 	@Override
 	public void act(Connection connection) {
-
+		System.out.println("response");
+		System.out.println(playerId);
+		System.out.println(successful);
 	}
 
 	@Override
@@ -29,7 +33,7 @@ public class LoginResponsePacket extends AbstractPacket<Connection> {
 
 	@Override
 	public byte getIdentifier() {
-		return 0;
+		return IDENTIFIER;
 	}
 
 	@Override
