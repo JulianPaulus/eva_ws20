@@ -33,7 +33,8 @@ public class Server extends Thread {
 				Socket socket = serverSocket.accept();
 				logger.info("new connection from {}", socket.getInetAddress().getHostAddress());
 				Connection newConnection = new Connection(socket);
-				lobbyThread.addConnection(newConnection);
+				AuthenticateThread authThread = new AuthenticateThread(newConnection);
+				authThread.start();
 			} catch (IOException e) {
 				logger.trace("error in serversocket loop", e);
 			}

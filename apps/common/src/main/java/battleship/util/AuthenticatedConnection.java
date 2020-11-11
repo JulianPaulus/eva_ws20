@@ -14,4 +14,9 @@ public class AuthenticatedConnection extends Connection {
 		super(connection);
 		this.player = connection.player;
 	}
+
+	@Override
+	public boolean isAuthenticated() {
+		return true;
+	}
 }

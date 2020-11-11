@@ -56,6 +56,10 @@ public class Connection {
 		}
 	}
 
+	public boolean isAuthenticated() {
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		return "Connection{" +

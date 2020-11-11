@@ -2,7 +2,7 @@ package battleships.server.socket;
 
 import battleship.net.packet.AbstractGeneralPacket;
 import battleship.net.packet.AbstractPacket;
-import battleship.util.Connection;
+import battleship.util.AuthenticatedConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,14 +16,24 @@ public class LobbyThread extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(LobbyThread.class);
 	private static LobbyThread instance;
 
-	private final List<Connection> connections;
+	private final List<AuthenticatedConnection> connections;
 	private final Lock connectionsLock;
+
+	private final List<AuthenticatedConnection> addConnections;
+	private final Lock addLock;
+	private final List<AuthenticatedConnection> removeConnections;
+	private final Lock removeLock;
 
 	private LobbyThread() {
 		super("lobby");
 		this.connections = new ArrayList<>();
 		this.connectionsLock = new ReentrantLock();
 
+		this.addConnections = new ArrayList<>();
+		this.addLock = new ReentrantLock();
+
+		this.removeConnections = new ArrayList<>();
+		this.removeLock = new ReentrantLock();
 	}
 
 	@Override
@@ -32,7 +42,7 @@ public class LobbyThread extends Thread {
 		while(!isInterrupted()) {
 			connectionsLock.lock();
 			try {
-				for (Connection connection : connections) {
+				for (AuthenticatedConnection connection : connections) {
 					AbstractPacket packet = null;
 					try {
 						packet = connection.readPacket();
@@ -43,13 +53,30 @@ public class LobbyThread extends Thread {
 						handlePacket(connection, packet);
 					}
 				}
+
+				removeLock.lock();
+				try {
+					connections.removeAll(removeConnections);
+					removeConnections.clear();
+				} finally {
+					removeLock.unlock();
+				}
+
+				addLock.lock();
+				try {
+					connections.addAll(addConnections);
+					addConnections.clear();
+				} finally {
+					addLock.unlock();
+				}
+
 			} finally {
 				connectionsLock.unlock();
 			}
 		}
 	}
 
-	private void handlePacket(Connection connection, AbstractPacket packet) {
+	private void handlePacket(AuthenticatedConnection connection, AbstractPacket packet) {
 		if (packet instanceof AbstractGeneralPacket) {
 			AbstractGeneralPacket generalPacket = (AbstractGeneralPacket) packet;
 			if (generalPacket.getConnectionSide().isServer()) {
@@ -62,12 +89,21 @@ public class LobbyThread extends Thread {
 		}
 	}
 
-	public void addConnection(Connection connection) {
-		connectionsLock.lock();
+	public void addConnection(AuthenticatedConnection connection) {
+		addLock.lock();
 		try {
-			connections.add(connection);
+			addConnections.add(connection);
 		} finally {
-			connectionsLock.unlock();
+			addLock.unlock();
+		}
+	}
+
+	public void removeConnection(AuthenticatedConnection connection) {
+		removeLock.lock();
+		try {
+			removeConnections.add(connection);
+		} finally {
+			removeLock.unlock();
 		}
 	}
 
