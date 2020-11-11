@@ -1,10 +1,12 @@
 package battleship.net.packet;
 
+import battleship.net.ConnectionSide;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public abstract class AbstractPacket {
+public abstract class AbstractPacket<ConnectionType extends refactor.Connection> {
 
 	public byte[] marshal() throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -17,5 +19,9 @@ public abstract class AbstractPacket {
 	public abstract byte getIdentifier();
 
 	protected abstract DataOutputStream writeContent(DataOutputStream dos) throws IOException;
+
+	public abstract ConnectionSide getConnectionSide();
+
+	public abstract void act(ConnectionType connection);
 
 }

@@ -1,12 +1,12 @@
 package battleship.net.packet;
 
 import battleship.net.ConnectionSide;
-import battleship.util.Connection;
+import refactor.Connection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class LoginPacket extends AbstractGeneralPacket<Object> {
+public class LoginPacket extends AbstractPacket<Connection> {
 	public static final byte IDENTIFIER = 0x3;
 
 	private final String username;
@@ -18,7 +18,7 @@ public class LoginPacket extends AbstractGeneralPacket<Object> {
 	}
 
 	@Override
-	public void act(Object o, Connection connection) {
+	public void act(Connection connection) {
 
 	}
 

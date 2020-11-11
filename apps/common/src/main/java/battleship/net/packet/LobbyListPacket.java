@@ -1,15 +1,14 @@
 package battleship.net.packet;
 
-import battleship.iface.ILobbyListController;
 import battleship.net.ConnectionSide;
 import battleship.packet.PacketLobby;
-import battleship.util.Connection;
+import refactor.AuthenticatedConnection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
-public class LobbyListPacket extends AbstractGeneralPacket<ILobbyListController> {
+public class LobbyListPacket extends AbstractLobbyPacket {
 
 	public static final byte IDENTIFIER = 0x1;
 	private final Set<PacketLobby> lobbySet;
@@ -34,8 +33,9 @@ public class LobbyListPacket extends AbstractGeneralPacket<ILobbyListController>
 	}
 
 	@Override
-	public void act(ILobbyListController controller, Connection connection) {
-		controller.setLobbies(this.lobbySet);
+	public void act(AuthenticatedConnection connection) {
+		//TODO set lobbies
+		//controller.setLobbies(this.lobbySet);
 	}
 
 	@Override

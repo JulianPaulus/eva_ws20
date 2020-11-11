@@ -2,14 +2,14 @@ package battleship.net.packet;
 
 import battleship.net.ConnectionSide;
 import battleship.packet.PacketLobby;
-import battleship.util.Connection;
+import refactor.AuthenticatedConnection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class LobbyListRequestPacket extends AbstractGeneralPacket<Object> {
+public class LobbyListRequestPacket extends AbstractLobbyPacket {
 	public static final byte IDENTIFIER = 0x2;
 
 	@Override
@@ -23,7 +23,7 @@ public class LobbyListRequestPacket extends AbstractGeneralPacket<Object> {
 	}
 
 	@Override
-	public void act(Object object, Connection connection) {
+	public void act(AuthenticatedConnection connection) {
 		connection.writePacket(new LobbyListPacket(new HashSet<>(Arrays.asList(new PacketLobby(1, "Test1"), new PacketLobby(2, "Test2")))));
 	}
 

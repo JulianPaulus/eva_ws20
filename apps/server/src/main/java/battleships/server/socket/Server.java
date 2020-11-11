@@ -1,9 +1,9 @@
 package battleships.server.socket;
 
-import battleship.util.Connection;
 import battleship.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import refactor.Connection;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -33,8 +33,6 @@ public class Server extends Thread {
 				Socket socket = serverSocket.accept();
 				logger.info("new connection from {}", socket.getInetAddress().getHostAddress());
 				Connection newConnection = new Connection(socket);
-				AuthenticateThread authThread = new AuthenticateThread(newConnection);
-				authThread.start();
 			} catch (IOException e) {
 				logger.trace("error in serversocket loop", e);
 			}

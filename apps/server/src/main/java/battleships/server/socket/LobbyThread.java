@@ -1,6 +1,5 @@
 package battleships.server.socket;
 
-import battleship.net.packet.AbstractGeneralPacket;
 import battleship.net.packet.AbstractPacket;
 import battleship.util.AuthenticatedConnection;
 import org.slf4j.Logger;
