@@ -21,6 +21,7 @@ import java.util.Map;
 public class ClientMain extends Application {
 
 	private static ClientMain instance;
+	private Stage stage;
 
 	private Connection connection;
 
@@ -39,15 +40,12 @@ public class ClientMain extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		instance = this;
+		this.stage = primaryStage;
 		Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
 		connection = new Connection(socket);
 
-		connection.writePacket(new TestPacket());
+		//connection.writePacket(new TestPacket());
 		connection.writePacket(new LoginPacket("test123", "123456"));
-		/*
-		Parent root = FXMLLoader.load(getClass().getResource("/fxml/LobbyListScreen.fxml"));
-		primaryStage.setScene(new Scene(root));
-		primaryStage.show();*/
 	}
 
 	public static ClientMain getInstance() {
@@ -56,5 +54,9 @@ public class ClientMain extends Application {
 
 	public Connection getConnection() {
 		return connection;
+	}
+
+	public Stage getStage() {
+		return this.stage;
 	}
 }

@@ -2,7 +2,6 @@ package battleships.server.packet.receive;
 
 import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.packet.ILobbyReceivePacket;
-import battleship.net.packet.IReceivePacket;
 import battleship.packet.PacketLobby;
 import battleships.server.packet.send.LobbyListPacket;
 

@@ -1,7 +1,5 @@
 package battleship.client.packet.send;
 
-import battleship.net.connection.Connection;
-import battleship.net.packet.IPacket;
 import battleship.net.packet.SendPacket;
 
 import java.io.DataOutputStream;

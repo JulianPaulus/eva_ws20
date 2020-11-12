@@ -1,11 +1,13 @@
 package battleship.client.packet.receive;
 
+import battleship.client.ClientMain;
 import battleship.net.connection.Connection;
-import battleship.net.packet.IPacket;
 import battleship.net.packet.IPreAuthReceivePacket;
-import battleship.net.packet.IReceivePacket;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class LoginResponsePacket implements IPreAuthReceivePacket {
@@ -25,6 +27,17 @@ public class LoginResponsePacket implements IPreAuthReceivePacket {
 		System.out.println("response");
 		System.out.println(playerId);
 		System.out.println(successful);
+		if (successful) {
+			try {
+				final Parent root = FXMLLoader.load(getClass().getResource("/fxml/LobbyListScreen.fxml"));
+				Platform.runLater(() -> {
+					ClientMain.getInstance().getStage().setScene(new Scene(root));
+					ClientMain.getInstance().getStage().show();
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package battleship.client.packet.send;
 
-import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.packet.SendPacket;
 
 import java.io.DataOutputStream;

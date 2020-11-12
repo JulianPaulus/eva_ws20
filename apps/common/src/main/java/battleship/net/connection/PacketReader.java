@@ -2,7 +2,6 @@ package battleship.net.connection;
 
 import battleship.net.exception.IllegalPacketTypeException;
 import battleship.net.factory.AbstractPacketFactory;
-import battleship.net.packet.IPacket;
 import battleship.net.packet.IReceivePacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
