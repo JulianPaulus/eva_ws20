@@ -1,10 +1,9 @@
-package battleship.net.packet.server;
+package battleships.server.packet.receive;
 
-import battleship.net.ConnectionSide;
 import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.packet.AbstractLobbyPacket;
-import battleship.net.packet.client.LobbyListPacket;
 import battleship.packet.PacketLobby;
+import battleships.server.packet.send.LobbyListPacket;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -31,11 +30,5 @@ public class LobbyListRequestPacket extends AbstractLobbyPacket {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-
-	@Override
-	public ConnectionSide getConnectionSide() {
-		return ConnectionSide.SERVER;
 	}
 }

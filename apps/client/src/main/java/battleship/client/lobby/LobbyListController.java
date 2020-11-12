@@ -1,7 +1,8 @@
 package battleship.client.lobby;
 
+import battleship.client.Client;
+import battleship.client.packet.send.LobbyListRequestPacket;
 import battleship.iface.ILobbyListController;
-import battleship.net.packet.server.LobbyListRequestPacket;
 import battleship.packet.PacketLobby;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -29,11 +31,11 @@ public class LobbyListController implements Initializable, ILobbyListController 
 
 	public LobbyListController() {
 		LobbyListRequestPacket lobbyListRequestPacket = new LobbyListRequestPacket();
-//		try {
-//			Client.getInstance().getConnection().writePacket(lobbyListRequestPacket);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			Client.getInstance().getConnection().writePacket(lobbyListRequestPacket);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		lobbyObservableList = FXCollections.observableArrayList();
 		newestInstance = this;
 	}

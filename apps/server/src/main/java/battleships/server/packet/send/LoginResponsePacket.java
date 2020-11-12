@@ -1,6 +1,5 @@
-package battleship.net.packet.client;
+package battleships.server.packet.send;
 
-import battleship.net.ConnectionSide;
 import battleship.net.connection.Connection;
 import battleship.net.packet.AbstractPacket;
 
@@ -21,14 +20,7 @@ public class LoginResponsePacket extends AbstractPacket<Connection> {
 
 	@Override
 	public void act(Connection connection) {
-		System.out.println("response");
-		System.out.println(playerId);
-		System.out.println(successful);
-	}
-
-	@Override
-	public ConnectionSide getConnectionSide() {
-		return null;
+		//Nothing
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package battleship.net.connection;
 
+import battleship.net.connection.packethandler.GamePacketHandler;
 import battleship.packet.Game;
 
 public class GameConnection extends AuthenticatedConnection {
@@ -7,6 +8,8 @@ public class GameConnection extends AuthenticatedConnection {
 
 	public GameConnection(AuthenticatedConnection connection, Game game) {
 		super(connection);
+		super.packetHandler = new GamePacketHandler();
+		super.reader.setConnection(this);
 		this.game = game;
 	}
 

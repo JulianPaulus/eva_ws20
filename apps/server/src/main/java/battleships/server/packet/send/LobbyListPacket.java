@@ -1,6 +1,5 @@
-package battleship.net.packet.client;
+package battleships.server.packet.send;
 
-import battleship.net.ConnectionSide;
 import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.packet.AbstractLobbyPacket;
 import battleship.packet.PacketLobby;
@@ -35,12 +34,6 @@ public class LobbyListPacket extends AbstractLobbyPacket {
 
 	@Override
 	public void act(AuthenticatedConnection connection) {
-		//TODO set lobbies
-		//controller.setLobbies(this.lobbySet);
-	}
-
-	@Override
-	public ConnectionSide getConnectionSide() {
-		return ConnectionSide.CLIENT;
+		//Nothing
 	}
 }

@@ -1,6 +1,5 @@
 package battleship.net.packet;
 
-import battleship.net.ConnectionSide;
 import battleship.net.connection.Connection;
 
 import java.io.DataOutputStream;
@@ -44,10 +43,5 @@ public class TestPacket extends AbstractPacket<Connection> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public ConnectionSide getConnectionSide() {
-		return ConnectionSide.BOTH;
 	}
 }

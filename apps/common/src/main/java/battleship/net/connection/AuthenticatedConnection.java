@@ -8,15 +8,13 @@ public class AuthenticatedConnection extends Connection {
 
 	public AuthenticatedConnection(Connection connection, Player player) {
 		super(connection);
+		super.packetHandler = new LobbyPacketHandler();
+		super.reader.setConnection(this);
 		this.player = player;
 	}
 
 	protected AuthenticatedConnection(AuthenticatedConnection connection) {
-		super(connection);
-		super.packetHandler = new LobbyPacketHandler();
-		this.player = connection.player;
-
-		super.reader.setConnection(this);
+		this(connection, connection.player);
 	}
 
 	@Override

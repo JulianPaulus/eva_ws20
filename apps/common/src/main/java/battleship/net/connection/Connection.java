@@ -54,6 +54,10 @@ public class Connection {
 		return this.packetHandler;
 	}
 
+	public PacketReader getPacketReader() {
+		return reader;
+	}
+
 	public boolean isAuthenticated() {
 		return false;
 	}
