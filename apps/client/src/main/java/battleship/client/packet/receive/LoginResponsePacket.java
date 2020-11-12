@@ -2,12 +2,13 @@ package battleship.client.packet.receive;
 
 import battleship.net.connection.Connection;
 import battleship.net.packet.IPacket;
+import battleship.net.packet.IPreAuthReceivePacket;
 import battleship.net.packet.IReceivePacket;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class LoginResponsePacket implements IReceivePacket<Connection> {
+public class LoginResponsePacket implements IPreAuthReceivePacket {
 
 	public static final byte IDENTIFIER = 0x4;
 

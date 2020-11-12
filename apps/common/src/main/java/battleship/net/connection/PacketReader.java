@@ -1,7 +1,9 @@
 package battleship.net.connection;
 
+import battleship.net.exception.IllegalPacketTypeException;
 import battleship.net.factory.AbstractPacketFactory;
 import battleship.net.packet.IPacket;
+import battleship.net.packet.IReceivePacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +36,12 @@ public class PacketReader extends Thread {
 				byte identifier = stream.readByte();
 				AbstractPacketFactory<?> packetFactory = factoryMap.get(identifier);
 				if (packetFactory != null) {
-					IPacket packet = packetFactory.unmarshal(stream);
-					connection.getPacketHandler().handle(packet, connection);
+					IReceivePacket<?> packet = packetFactory.unmarshal(stream);
+					try {
+						connection.getPacketHandler().handle(packet, connection);
+					} catch (IllegalPacketTypeException e) {
+						logger.warn(e.getMessage());
+					}
 				}
 			} catch (IOException e) {
 				try {

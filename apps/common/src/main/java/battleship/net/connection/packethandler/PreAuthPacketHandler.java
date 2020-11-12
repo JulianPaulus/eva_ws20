@@ -1,18 +1,16 @@
 package battleship.net.connection.packethandler;
 
 import battleship.net.connection.Connection;
-import battleship.net.packet.IPacket;
-import battleship.net.packet.IReceivePacketConnection;
-import battleship.net.packet.IReceivePacketGameConnection;
+import battleship.net.packet.IPreAuthReceivePacket;
 
-public class PreAuthPacketHandler extends AbstractPacketHandler<Connection, IReceivePacketConnection> {
+public class PreAuthPacketHandler extends AbstractPacketHandler<Connection, IPreAuthReceivePacket> {
 
 	public PreAuthPacketHandler() {
-		super(Connection.class, IReceivePacketConnection.class);
+		super(Connection.class, IPreAuthReceivePacket.class);
 	}
 
 	@Override
-	protected void handleImplementedPacketType(IReceivePacketConnection packet, Connection connection) {
+	protected void handleImplementedPacketType(IPreAuthReceivePacket packet, Connection connection) {
 		packet.act(connection);
 	}
 }

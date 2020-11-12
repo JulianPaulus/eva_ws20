@@ -2,7 +2,6 @@ package battleship.client.lobby;
 
 import battleship.client.ClientMain;
 import battleship.client.packet.send.LobbyListRequestPacket;
-import battleship.iface.ILobbyListController;
 import battleship.packet.PacketLobby;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +16,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-public class LobbyListController implements Initializable, ILobbyListController {
+public class LobbyListController implements Initializable {
 
 	@FXML
 	private ListView<PacketLobby> listView;

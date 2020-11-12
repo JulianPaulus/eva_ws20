@@ -5,7 +5,7 @@ import battleship.net.connection.Connection;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class TestPacket extends IPacket<Connection> {
+public class TestPacket extends SendPacket implements IPreAuthReceivePacket {
 
 	public static final byte IDENTIFIER = 0x0;
 

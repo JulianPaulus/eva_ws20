@@ -2,14 +2,14 @@ package battleships.server.packet.receive;
 
 import battleship.net.connection.AuthenticatedConnection;
 import battleship.net.connection.Connection;
-import battleship.net.packet.IReceivePacket;
+import battleship.net.packet.IPreAuthReceivePacket;
 import battleship.packet.Player;
 import battleship.server.service.PlayerService;
 import battleships.server.packet.send.LoginResponsePacket;
 
 import java.io.IOException;
 
-public class LoginPacket implements IReceivePacket<Connection> {
+public class LoginPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = 0x3;
 
 	private final String username;

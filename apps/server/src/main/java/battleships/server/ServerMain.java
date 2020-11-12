@@ -2,6 +2,8 @@ package battleships.server;
 
 import battleship.net.connection.PacketReader;
 import battleship.net.factory.AbstractPacketFactory;
+import battleship.net.factory.TestPacketFactory;
+import battleship.net.packet.TestPacket;
 import battleship.server.socket.Server;
 import battleships.server.packet.receive.LobbyListRequestPacket;
 import battleships.server.packet.receive.LoginPacket;
@@ -16,6 +18,7 @@ public class ServerMain {
 
 	static {
 		Map<Byte, AbstractPacketFactory<?>> packetFactoryMap = new HashMap<>();
+		packetFactoryMap.put(TestPacket.IDENTIFIER, new TestPacketFactory());
 		packetFactoryMap.put(LobbyListRequestPacket.IDENTIFIER, new LobbyListRequestPacketFactory());
 		packetFactoryMap.put(LoginPacket.IDENTIFIER, new LoginPacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
