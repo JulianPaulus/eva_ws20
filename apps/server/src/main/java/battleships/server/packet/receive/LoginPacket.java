@@ -1,11 +1,11 @@
 package battleships.server.packet.receive;
 
-import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.connection.Connection;
-import battleship.net.packet.IPreAuthReceivePacket;
-import battleship.packet.Player;
-import battleship.server.service.PlayerService;
+import battleships.net.connection.AuthenticatedConnection;
+import battleships.net.connection.Connection;
+import battleships.net.packet.IPreAuthReceivePacket;
+import battleships.packet.Player;
 import battleships.server.packet.send.LoginResponsePacket;
+import battleships.server.service.PlayerService;
 
 import java.io.IOException;
 

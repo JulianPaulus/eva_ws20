@@ -1,8 +1,8 @@
 package battleships.server.packet.receive;
 
-import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.packet.ILobbyReceivePacket;
-import battleship.packet.PacketLobby;
+import battleships.net.connection.AuthenticatedConnection;
+import battleships.net.packet.ILobbyReceivePacket;
+import battleships.packet.PacketLobby;
 import battleships.server.packet.send.LobbyListPacket;
 
 import java.io.IOException;

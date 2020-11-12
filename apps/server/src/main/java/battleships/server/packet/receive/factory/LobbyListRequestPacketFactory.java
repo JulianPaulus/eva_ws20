@@ -1,6 +1,6 @@
 package battleships.server.packet.receive.factory;
 
-import battleship.net.factory.AbstractPacketFactory;
+import battleships.net.factory.AbstractPacketFactory;
 import battleships.server.packet.receive.LobbyListRequestPacket;
 
 import java.io.DataInputStream;

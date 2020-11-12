@@ -17,6 +17,6 @@ test {
 
 application {
     applicationName = 'EvaClient'
-    mainClassName = 'battleship.client.ClientMain'
+    mainClassName = 'battleships.client.ClientMain'
 }
 

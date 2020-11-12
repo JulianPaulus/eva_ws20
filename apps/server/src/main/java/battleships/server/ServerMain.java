@@ -1,14 +1,14 @@
 package battleships.server;
 
-import battleship.net.connection.PacketReader;
-import battleship.net.factory.AbstractPacketFactory;
-import battleship.net.factory.TestPacketFactory;
-import battleship.net.packet.TestPacket;
-import battleship.server.socket.Server;
+import battleships.net.connection.PacketReader;
+import battleships.net.factory.AbstractPacketFactory;
+import battleships.net.factory.TestPacketFactory;
+import battleships.net.packet.TestPacket;
 import battleships.server.packet.receive.LobbyListRequestPacket;
 import battleships.server.packet.receive.LoginPacket;
 import battleships.server.packet.receive.factory.LobbyListRequestPacketFactory;
 import battleships.server.packet.receive.factory.LoginPacketFactory;
+import battleships.server.socket.Server;
 
 import java.io.IOException;
 import java.util.HashMap;
