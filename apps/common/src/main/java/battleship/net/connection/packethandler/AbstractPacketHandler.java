@@ -7,13 +7,13 @@ import battleship.net.packet.IReceivePacket;
 
 import java.util.Arrays;
 
-public abstract class AbstractPacketHandler<ConnectionT extends Connection> {
+public abstract class AbstractPacketHandler<ConnectionT extends Connection, PacketT extends IReceivePacket<ConnectionT>> {
 	private final Class<ConnectionT> connectionTClass;
-	private final Class<IReceivePacket<ConnectionT>> packetClass;
+	private final Class<PacketT> packetClass;
 
-	public AbstractPacketHandler(Class<IReceivePacket<ConnectionT>> packetClass, Class<ConnectionT> connectionTClass) {
-		this.connectionTClass = connectionTClass;
+	public AbstractPacketHandler(Class<ConnectionT> connectionTClass, Class<PacketT> packetClass) {
 		this.packetClass = packetClass;
+		this.connectionTClass = connectionTClass;
 	}
 
 
@@ -27,6 +27,6 @@ public abstract class AbstractPacketHandler<ConnectionT extends Connection> {
 		handleImplementedPacketType(packetClass.cast(packet), connectionTClass.cast(connection));
 	}
 
-	protected abstract void handleImplementedPacketType(IReceivePacket packet, ConnectionT connection);
+	protected abstract void handleImplementedPacketType(PacketT packet, ConnectionT connection);
 
 }

@@ -1,15 +1,16 @@
 package battleship.net.connection.packethandler;
 
 import battleship.net.connection.AuthenticatedConnection;
+import battleship.net.packet.IReceivePacketLobbyConnection;
 
-public class LobbyPacketHandler extends AbstractPacketHandler<AbstractLobbyPacket, AuthenticatedConnection> {
+public class LobbyPacketHandler extends AbstractPacketHandler<AuthenticatedConnection, IReceivePacketLobbyConnection> {
 
 	public LobbyPacketHandler() {
-		super(AbstractLobbyPacket.class, AuthenticatedConnection.class);
+		super(AuthenticatedConnection.class, IReceivePacketLobbyConnection.class);
 	}
 
 	@Override
-	protected void handleImplementedPacketType(AbstractLobbyPacket packet, AuthenticatedConnection connection) {
+	protected void handleImplementedPacketType(IReceivePacketLobbyConnection packet, AuthenticatedConnection connection) {
 		packet.act(connection);
 	}
 }

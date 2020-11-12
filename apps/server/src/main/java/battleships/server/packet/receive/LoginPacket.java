@@ -26,11 +26,6 @@ public class LoginPacket implements IReceivePacket<Connection> {
 	}
 
 	@Override
-	public Class<Connection> getConnectionType() {
-		return Connection.class;
-	}
-
-	@Override
 	public void act(Connection connection) {
 		Player player = PlayerService.getInstance().authenticate(username, password);
 		if (player != null) {
