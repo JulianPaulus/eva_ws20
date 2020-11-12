@@ -13,11 +13,17 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ClientMain extends Application {
+
+	private static final Logger logger = LoggerFactory.getLogger(ClientMain.class);
 
 	private static ClientMain instance;
 	private Stage stage;
@@ -47,6 +53,15 @@ public class ClientMain extends Application {
 		loader.load(getClass().getResourceAsStream("/login.fxml"));
 		stage.setScene(new Scene(loader.getRoot()));
 		stage.show();
+	}
+
+	public void connect(final String address, final int port) throws IOException {
+		if (connection != null) {
+			Socket socket = new Socket(address, port);
+			connection = new Connection(socket);
+		} else {
+			logger.warn("client tried establishing a connection while a connection was present");
+		}
 	}
 
 	public static ClientMain getInstance() {
