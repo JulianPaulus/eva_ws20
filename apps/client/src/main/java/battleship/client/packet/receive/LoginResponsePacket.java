@@ -1,12 +1,13 @@
 package battleship.client.packet.receive;
 
 import battleship.net.connection.Connection;
-import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.IPacket;
+import battleship.net.packet.IReceivePacket;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class LoginResponsePacket extends AbstractPacket<Connection> {
+public class LoginResponsePacket implements IReceivePacket<Connection> {
 
 	public static final byte IDENTIFIER = 0x4;
 
@@ -28,12 +29,6 @@ public class LoginResponsePacket extends AbstractPacket<Connection> {
 	@Override
 	public byte getIdentifier() {
 		return IDENTIFIER;
-	}
-
-	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
-		//Nothing
-		return dos;
 	}
 
 	public int getPlayerId() {

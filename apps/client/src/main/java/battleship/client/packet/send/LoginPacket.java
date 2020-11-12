@@ -1,12 +1,13 @@
 package battleship.client.packet.send;
 
 import battleship.net.connection.Connection;
-import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.IPacket;
+import battleship.net.packet.SendPacket;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class LoginPacket extends AbstractPacket<Connection> {
+public class LoginPacket extends SendPacket {
 	public static final byte IDENTIFIER = 0x3;
 
 	private final String username;
@@ -27,10 +28,5 @@ public class LoginPacket extends AbstractPacket<Connection> {
 		dos.writeUTF(username);
 		dos.writeUTF(password);
 		return dos;
-	}
-
-	@Override
-	public void act(Connection connection) {
-		//Nothing
 	}
 }

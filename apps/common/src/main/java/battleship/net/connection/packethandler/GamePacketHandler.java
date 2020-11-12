@@ -1,16 +1,16 @@
 package battleship.net.connection.packethandler;
 
 import battleship.net.connection.GameConnection;
-import battleship.net.packet.AbstractGamePacket;
+import battleship.net.packet.IReceivePacket;
 
-public class GamePacketHandler extends AbstractPacketHandler<AbstractGamePacket, GameConnection> {
+public class GamePacketHandler extends AbstractPacketHandler<GameConnection> {
 
 	public GamePacketHandler() {
-		super(AbstractGamePacket.class, GameConnection.class);
+		super( , GameConnection.class);
 	}
 
 	@Override
-	protected void handleImplementedPacketType(AbstractGamePacket packet, GameConnection connection) {
+	protected void handleImplementedPacketType(IReceivePacket packet, GameConnection connection) {
 		packet.act(connection);
 	}
 }

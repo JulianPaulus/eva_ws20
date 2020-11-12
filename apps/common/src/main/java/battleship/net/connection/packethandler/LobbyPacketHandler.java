@@ -1,7 +1,6 @@
 package battleship.net.connection.packethandler;
 
 import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.packet.AbstractLobbyPacket;
 
 public class LobbyPacketHandler extends AbstractPacketHandler<AbstractLobbyPacket, AuthenticatedConnection> {
 

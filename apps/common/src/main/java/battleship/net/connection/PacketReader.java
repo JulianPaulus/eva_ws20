@@ -1,7 +1,7 @@
 package battleship.net.connection;
 
 import battleship.net.factory.AbstractPacketFactory;
-import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.IPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class PacketReader extends Thread {
 				byte identifier = stream.readByte();
 				AbstractPacketFactory<?> packetFactory = factoryMap.get(identifier);
 				if (packetFactory != null) {
-					AbstractPacket packet = packetFactory.unmarshal(stream);
+					IPacket packet = packetFactory.unmarshal(stream);
 					connection.getPacketHandler().handle(packet, connection);
 				}
 			} catch (IOException e) {

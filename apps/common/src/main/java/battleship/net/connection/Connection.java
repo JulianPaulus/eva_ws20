@@ -2,7 +2,7 @@ package battleship.net.connection;
 
 import battleship.net.connection.packethandler.AbstractPacketHandler;
 import battleship.net.connection.packethandler.PreAuthPacketHandler;
-import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.IPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class Connection {
 		this.packetHandler = connection.packetHandler;
 	}
 
-	public void writePacket(AbstractPacket<? extends Connection> packet) throws IOException {
+	public void writePacket(IPacket<? extends Connection> packet) throws IOException {
 		writer.write(packet);
 	}
 

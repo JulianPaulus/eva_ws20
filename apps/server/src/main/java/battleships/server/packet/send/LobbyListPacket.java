@@ -1,14 +1,13 @@
 package battleships.server.packet.send;
 
-import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.packet.AbstractLobbyPacket;
+import battleship.net.packet.SendPacket;
 import battleship.packet.PacketLobby;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
-public class LobbyListPacket extends AbstractLobbyPacket {
+public class LobbyListPacket extends SendPacket {
 
 	public static final byte IDENTIFIER = 0x1;
 	private final Set<PacketLobby> lobbySet;
@@ -30,10 +29,5 @@ public class LobbyListPacket extends AbstractLobbyPacket {
 			dos.writeUTF(lobby.getName());
 		}
 		return dos;
-	}
-
-	@Override
-	public void act(AuthenticatedConnection connection) {
-		//Nothing
 	}
 }

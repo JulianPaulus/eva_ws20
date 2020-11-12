@@ -1,26 +1,20 @@
 package battleships.server.packet.receive;
 
 import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.packet.AbstractLobbyPacket;
+import battleship.net.packet.IReceivePacket;
 import battleship.packet.PacketLobby;
 import battleships.server.packet.send.LobbyListPacket;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class LobbyListRequestPacket extends AbstractLobbyPacket {
+public class LobbyListRequestPacket implements IReceivePacket<AuthenticatedConnection> {
 	public static final byte IDENTIFIER = 0x2;
 
 	@Override
 	public byte getIdentifier() {
 		return IDENTIFIER;
-	}
-
-	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
-		return dos;
 	}
 
 	@Override

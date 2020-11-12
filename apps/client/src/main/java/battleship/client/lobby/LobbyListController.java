@@ -1,6 +1,6 @@
 package battleship.client.lobby;
 
-import battleship.client.Client;
+import battleship.client.ClientMain;
 import battleship.client.packet.send.LobbyListRequestPacket;
 import battleship.iface.ILobbyListController;
 import battleship.packet.PacketLobby;
@@ -32,7 +32,7 @@ public class LobbyListController implements Initializable, ILobbyListController 
 	public LobbyListController() {
 		LobbyListRequestPacket lobbyListRequestPacket = new LobbyListRequestPacket();
 		try {
-			Client.getInstance().getConnection().writePacket(lobbyListRequestPacket);
+			ClientMain.getInstance().getConnection().writePacket(lobbyListRequestPacket);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

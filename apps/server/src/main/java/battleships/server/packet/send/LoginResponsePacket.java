@@ -1,12 +1,11 @@
 package battleships.server.packet.send;
 
-import battleship.net.connection.Connection;
-import battleship.net.packet.AbstractPacket;
+import battleship.net.packet.SendPacket;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class LoginResponsePacket extends AbstractPacket<Connection> {
+public class LoginResponsePacket extends SendPacket {
 
 	public static final byte IDENTIFIER = 0x4;
 
@@ -16,11 +15,6 @@ public class LoginResponsePacket extends AbstractPacket<Connection> {
 	public LoginResponsePacket(int playerId, boolean successful) {
 		this.playerId = playerId;
 		this.successful = successful;
-	}
-
-	@Override
-	public void act(Connection connection) {
-		//Nothing
 	}
 
 	@Override
