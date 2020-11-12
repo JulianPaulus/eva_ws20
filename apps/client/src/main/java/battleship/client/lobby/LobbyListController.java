@@ -1,7 +1,8 @@
 package battleship.client.lobby;
 
-import battleship.packet.Lobby;
-import battleship.packet.Player;
+import battleship.client.ClientMain;
+import battleship.client.packet.send.LobbyListRequestPacket;
+import battleship.packet.PacketLobby;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,23 +11,36 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.ResourceBundle;
 
 public class LobbyListController implements Initializable {
 
 	@FXML
-	private ListView<Lobby> listView;
+	private ListView<PacketLobby> listView;
 
 	@FXML
 	private Button createLobbyButton;
 
-	private ObservableList<Lobby> lobbyObservableList;
+	private ObservableList<PacketLobby> lobbyObservableList;
+
+	private static LobbyListController newestInstance;
 
 	public LobbyListController() {
+		LobbyListRequestPacket lobbyListRequestPacket = new LobbyListRequestPacket();
+		try {
+			ClientMain.getInstance().getConnection().writePacket(lobbyListRequestPacket);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		lobbyObservableList = FXCollections.observableArrayList();
-		lobbyObservableList.addAll(new Lobby("Test 1", Arrays.asList(new Player(1, "Player 1"), new Player(2, "Player 2"))),
-			new Lobby("Test 2", Arrays.asList(new Player(3, "Player 1"))));
+		newestInstance = this;
+	}
+
+	public static LobbyListController getNewestInstance() {
+		return newestInstance;
 	}
 
 
@@ -38,7 +52,7 @@ public class LobbyListController implements Initializable {
 		//TODO Implement
 	}
 
-	public void setLobbies(Collection<Lobby> lobbies) {
+	public void setLobbies(Collection<PacketLobby> lobbies) {
 		lobbyObservableList.setAll(lobbies);
 	}
 
