@@ -4,17 +4,16 @@ import battleship.client.packet.receive.LobbyListPacket;
 import battleship.client.packet.receive.LoginResponsePacket;
 import battleship.client.packet.receive.factory.LobbyListPacketFactory;
 import battleship.client.packet.receive.factory.LoginResponseFactory;
-import battleship.client.packet.send.LoginPacket;
 import battleship.net.connection.Connection;
-import battleship.net.connection.Constants;
 import battleship.net.connection.PacketReader;
 import battleship.net.factory.AbstractPacketFactory;
 import battleship.net.factory.TestPacketFactory;
 import battleship.net.packet.TestPacket;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,11 +40,13 @@ public class ClientMain extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		instance = this;
 		this.stage = primaryStage;
-		Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
-		connection = new Connection(socket);
 
-		//connection.writePacket(new TestPacket());
-		connection.writePacket(new LoginPacket("test123", "123456"));
+		stage.setTitle("Schiffe Versenken - EVA WS20/21");
+
+		FXMLLoader loader = new FXMLLoader();
+		loader.load(getClass().getResourceAsStream("/login.fxml"));
+		stage.setScene(new Scene(loader.getRoot()));
+		stage.show();
 	}
 
 	public static ClientMain getInstance() {

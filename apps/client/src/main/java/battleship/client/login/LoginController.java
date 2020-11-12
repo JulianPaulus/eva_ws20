@@ -8,17 +8,17 @@ import javafx.scene.control.TextField;
 public class LoginController {
 
 	@FXML
-	private TextField ipField;
+	private TextField addressField;
 	@FXML
-	private TextField userField;
+	private TextField nameField;
 	@FXML
-	private PasswordField pwField;
+	private PasswordField passwordField;
 	@FXML
-	private Button connectBtn;
+	private Button loginButton;
 
 	@FXML
-	private void onConnect() {
-		System.out.println(ipField.getText());
+	private void onLogin() {
+		System.out.println(addressField.getText());
 	}
 
 }
