@@ -7,6 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.util.Pair;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginController {
@@ -38,11 +39,19 @@ public class LoginController {
 	@FXML
 	public void initialize() {
 		client = ClientMain.getInstance();
+
+		addressField.textProperty().addListener(((observable, oldValue, newValue) -> {
+			Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
+			if (!matcher.matches()) {
+				System.err.println("doesnt match");
+			} else {
+				System.err.println("matches");
+			}
+		}));
 	}
 
 	@FXML
 	private void onLogin() {
-
 	}
 
 	private Pair<String, Integer> decodeAddress() {
