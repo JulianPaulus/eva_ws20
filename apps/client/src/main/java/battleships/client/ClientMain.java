@@ -78,4 +78,13 @@ public class ClientMain extends Application {
 	public Stage getStage() {
 		return this.stage;
 	}
+
+	@Override
+	public void stop() throws Exception {
+		super.stop();
+
+		if (connection != null) {
+			connection.close();
+		}
+	}
 }
