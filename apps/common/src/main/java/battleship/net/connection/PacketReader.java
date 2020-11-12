@@ -40,7 +40,7 @@ public class PacketReader extends Thread {
 					try {
 						connection.getPacketHandler().handle(packet, connection);
 					} catch (IllegalPacketTypeException e) {
-						logger.warn(e.getMessage());
+						logger.warn("The received packet produced an error!: " + e.getMessage());
 					}
 				}
 			} catch (IOException e) {
