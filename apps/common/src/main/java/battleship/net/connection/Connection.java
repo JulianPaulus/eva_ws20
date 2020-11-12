@@ -26,6 +26,8 @@ public class Connection {
 		this.writer = new PacketWriter(socket.getOutputStream());
 		this.packetHandler = new PreAuthPacketHandler();
 		reader.start();
+
+		logger.info("established connection with {}", socket.getInetAddress().getHostAddress());
 	}
 
 	protected Connection(Connection connection) {

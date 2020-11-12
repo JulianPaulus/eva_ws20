@@ -1,12 +1,16 @@
 package battleship.client.login;
 
 import battleship.client.ClientMain;
+import battleship.client.packet.send.LoginPacket;
+import battleship.net.connection.Connection;
+import battleship.net.connection.Constants;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,9 +56,23 @@ public class LoginController {
 
 	@FXML
 	private void onLogin() {
+		Pair<String, Integer> address = decodeAddress();
+		try {
+			Connection connection = client.connect(address.getKey(), address.getValue());
+			connection.writePacket(new LoginPacket(nameField.getText(), passwordField.getText()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private Pair<String, Integer> decodeAddress() {
+		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
+		if (matcher.matches()) {
+			String host = matcher.group(0);
+			Integer port = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : Constants.DEFAULT_PORT;
+
+			return new Pair<>(host, port);
+		}
 		return new Pair<>(null, null);
 	}
 

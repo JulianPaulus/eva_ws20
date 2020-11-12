@@ -55,13 +55,16 @@ public class ClientMain extends Application {
 		stage.show();
 	}
 
-	public void connect(final String address, final int port) throws IOException {
-		if (connection != null) {
+	public Connection connect(final String address, final int port) throws IOException {
+		if (connection == null) {
 			Socket socket = new Socket(address, port);
 			connection = new Connection(socket);
-		} else {
-			logger.warn("client tried establishing a connection while a connection was present");
+
+			return connection;
 		}
+
+		logger.warn("client tried establishing a connection while a connection was present");
+		return connection;
 	}
 
 	public static ClientMain getInstance() {
