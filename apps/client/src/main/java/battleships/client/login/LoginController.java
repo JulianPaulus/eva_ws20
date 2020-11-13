@@ -6,7 +6,6 @@ import battleships.net.connection.Connection;
 import battleships.net.connection.Constants;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
@@ -43,21 +42,12 @@ public class LoginController {
 	private TextField nameField;
 	@FXML
 	private PasswordField passwordField;
-	@FXML
-	private Button loginButton;
 
 	@FXML
 	private void initialize() {
 		client = ClientMain.getInstance();
 
-		addressField.textProperty().addListener(((observable, oldValue, newValue) -> {
-			Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
-			if (!matcher.matches()) {
-				System.err.println("doesnt match");
-			} else {
-				System.err.println("matches");
-			}
-		}));
+		setAddressValidator();
 	}
 
 	@FXML
@@ -77,6 +67,19 @@ public class LoginController {
 			alert.setContentText(e.getMessage());
 			alert.show();
 		}
+	}
+
+	private void setAddressValidator() {
+		addressField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+			Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
+			if (!matcher.matches()) {
+				if (!addressField.getStyleClass().contains("error")) {
+					addressField.getStyleClass().add("error");
+				}
+			} else {
+				addressField.getStyleClass().remove("error");
+			}
+		}));
 	}
 
 	private Pair<String, Integer> decodeAddress() {

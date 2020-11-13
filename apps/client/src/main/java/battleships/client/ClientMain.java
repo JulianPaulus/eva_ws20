@@ -49,9 +49,12 @@ public class ClientMain extends Application {
 
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
 
+
 		FXMLLoader loader = new FXMLLoader();
 		loader.load(getClass().getResourceAsStream("/login.fxml"));
-		stage.setScene(new Scene(loader.getRoot()));
+		Scene scene = new Scene(loader.getRoot());
+		scene.getStylesheets().add(getClass().getResource("/style.css").toString());
+		stage.setScene(scene);
 		stage.show();
 	}
 
