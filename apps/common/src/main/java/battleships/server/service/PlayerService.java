@@ -10,7 +10,7 @@ public class PlayerService {
 
 	}
 
-	public Player authenticate(String username, String password) {
+	public Player authenticate(final String username, final String password) {
 		return new Player((int) (Math.random() * 10000), username);
 	}
 

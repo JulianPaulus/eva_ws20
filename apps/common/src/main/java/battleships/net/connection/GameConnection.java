@@ -6,7 +6,7 @@ import battleships.packet.Game;
 public class GameConnection extends AuthenticatedConnection {
 	private Game game;
 
-	public GameConnection(AuthenticatedConnection connection, Game game) {
+	public GameConnection(final AuthenticatedConnection connection, final Game game) {
 		super(connection);
 		super.packetHandler = new GamePacketHandler();
 		super.reader.setConnection(this);

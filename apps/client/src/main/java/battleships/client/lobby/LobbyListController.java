@@ -24,7 +24,7 @@ public class LobbyListController implements Initializable {
 	@FXML
 	private Button createLobbyButton;
 
-	private ObservableList<PacketLobby> lobbyObservableList;
+	private final ObservableList<PacketLobby> lobbyObservableList;
 
 	private static LobbyListController newestInstance;
 
@@ -44,7 +44,7 @@ public class LobbyListController implements Initializable {
 	}
 
 
-	public void onClickCreateLobbyButton(ActionEvent actionEvent) {
+	public void onClickCreateLobbyButton(final ActionEvent actionEvent) {
 		if(actionEvent.getSource() != this.createLobbyButton) {
 			return;
 		}
@@ -52,13 +52,13 @@ public class LobbyListController implements Initializable {
 		//TODO Implement
 	}
 
-	public void setLobbies(Collection<PacketLobby> lobbies) {
+	public void setLobbies(final Collection<PacketLobby> lobbies) {
 		lobbyObservableList.setAll(lobbies);
 	}
 
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	public void initialize(final URL location, final ResourceBundle resources) {
 		listView.setItems(lobbyObservableList);
 		listView.setCellFactory(x -> new LobbyListCellController());
 	}

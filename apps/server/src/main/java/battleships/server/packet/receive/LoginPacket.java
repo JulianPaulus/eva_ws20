@@ -15,7 +15,7 @@ public class LoginPacket implements IPreAuthReceivePacket {
 	private final String username;
 	private final String password;
 
-	public LoginPacket(String username, String password) {
+	public LoginPacket(final String username, final String password) {
 		this.username = username;
 		this.password = password;
 	}
@@ -26,7 +26,7 @@ public class LoginPacket implements IPreAuthReceivePacket {
 	}
 
 	@Override
-	public void act(Connection connection) {
+	public void act(final Connection connection) {
 		Player player = PlayerService.getInstance().authenticate(username, password);
 		if (player != null) {
 			AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);

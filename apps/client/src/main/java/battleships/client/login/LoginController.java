@@ -1,9 +1,9 @@
 package battleships.client.login;
 
+import battleships.Constants;
 import battleships.client.ClientMain;
 import battleships.client.packet.send.LoginPacket;
 import battleships.net.connection.Connection;
-import battleships.net.connection.Constants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

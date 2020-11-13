@@ -28,7 +28,7 @@ public class LobbyListCellController extends ListCell<PacketLobby> {
 	private FXMLLoader fxmLLoader;
 
 	@Override
-	protected void updateItem(PacketLobby lobby, boolean empty) {
+	protected void updateItem(final PacketLobby lobby, final boolean empty) {
 		super.updateItem(lobby, empty);
 
 		setText(null);

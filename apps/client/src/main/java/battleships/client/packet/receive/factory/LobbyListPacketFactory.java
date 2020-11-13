@@ -12,7 +12,7 @@ import java.util.Set;
 public class LobbyListPacketFactory extends AbstractPacketFactory<LobbyListPacket> {
 
 	@Override
-	public LobbyListPacket unmarshal(DataInputStream stream) throws IOException {
+	public LobbyListPacket unmarshal(final DataInputStream stream) throws IOException {
 		Set<PacketLobby> lobbyList = new HashSet<>();
 		short lobbyCount = stream.readShort();
 

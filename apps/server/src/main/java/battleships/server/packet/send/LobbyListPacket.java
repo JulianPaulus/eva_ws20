@@ -12,7 +12,7 @@ public class LobbyListPacket extends SendPacket {
 	public static final byte IDENTIFIER = 0x1;
 	private final Set<PacketLobby> lobbySet;
 
-	public LobbyListPacket(Set<PacketLobby> lobbySet) {
+	public LobbyListPacket(final Set<PacketLobby> lobbySet) {
 		this.lobbySet = lobbySet;
 	}
 
@@ -24,7 +24,7 @@ public class LobbyListPacket extends SendPacket {
 	@Override
 	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		dos.writeShort(lobbySet.size());
-		for (PacketLobby lobby : lobbySet) {
+		for (final PacketLobby lobby : lobbySet) {
 			dos.writeInt(lobby.getId());
 			dos.writeUTF(lobby.getName());
 		}

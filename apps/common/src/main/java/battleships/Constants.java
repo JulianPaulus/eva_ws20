@@ -1,4 +1,4 @@
-package battleships.net.connection;
+package battleships;
 
 public class Constants {
 

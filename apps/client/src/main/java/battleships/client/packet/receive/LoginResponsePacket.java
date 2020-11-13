@@ -17,13 +17,13 @@ public class LoginResponsePacket implements IPreAuthReceivePacket {
 	private final int playerId;
 	private final boolean successful;
 
-	public LoginResponsePacket(int playerId, boolean successful) {
+	public LoginResponsePacket(final int playerId, final boolean successful) {
 		this.playerId = playerId;
 		this.successful = successful;
 	}
 
 	@Override
-	public void act(Connection connection) {
+	public void act(final Connection connection) {
 		System.out.println("response");
 		System.out.println(playerId);
 		System.out.println(successful);

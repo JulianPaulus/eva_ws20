@@ -14,7 +14,7 @@ public class LobbyListRequestPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
+	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
 		return dos;
 	}
 }

@@ -9,7 +9,7 @@ public class TestPacket extends SendPacket implements IPreAuthReceivePacket {
 
 	public static final byte IDENTIFIER = 0x0;
 
-	private long timestamp;
+	private final long timestamp;
 
 	public TestPacket() {
 		this.timestamp = System.currentTimeMillis();

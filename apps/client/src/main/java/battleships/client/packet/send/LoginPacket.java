@@ -11,7 +11,7 @@ public class LoginPacket extends SendPacket {
 	private final String username;
 	private final String password;
 
-	public LoginPacket(String username, String password) {
+	public LoginPacket(final String username, final String password) {
 		this.username = username;
 		this.password = password;
 	}

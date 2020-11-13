@@ -16,7 +16,7 @@ public class Connection {
 	protected final Socket socket;
 	protected final PacketReader reader;
 	protected final PacketWriter writer;
-	protected AbstractPacketHandler packetHandler;
+	protected AbstractPacketHandler<?, ?> packetHandler;
 
 	protected boolean closed = false;
 
@@ -35,6 +35,7 @@ public class Connection {
 		this.reader = connection.reader;
 		this.writer = connection.writer;
 		this.packetHandler = connection.packetHandler;
+		this.closed = connection.closed;
 	}
 
 	public void writePacket(SendPacket packet) throws IOException {
@@ -52,16 +53,12 @@ public class Connection {
 		}
 	}
 
-	public AbstractPacketHandler getPacketHandler() {
+	public AbstractPacketHandler<?, ?> getPacketHandler() {
 		return this.packetHandler;
 	}
 
 	public PacketReader getPacketReader() {
 		return reader;
-	}
-
-	public boolean isAuthenticated() {
-		return false;
 	}
 
 	@Override

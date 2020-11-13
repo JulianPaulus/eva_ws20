@@ -18,7 +18,7 @@ public class LobbyListRequestPacket implements ILobbyReceivePacket {
 	}
 
 	@Override
-	public void act(AuthenticatedConnection connection) {
+	public void act(final AuthenticatedConnection connection) {
 		try {
 			connection.writePacket(new LobbyListPacket(new HashSet<>(Arrays.asList(new PacketLobby(1, "Test1"), new PacketLobby(2, "Test2")))));
 		} catch (IOException e) {

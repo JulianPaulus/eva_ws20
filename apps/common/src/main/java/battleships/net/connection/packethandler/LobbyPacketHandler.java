@@ -10,7 +10,7 @@ public class LobbyPacketHandler extends AbstractPacketHandler<AuthenticatedConne
 	}
 
 	@Override
-	protected void handleImplementedPacketType(ILobbyReceivePacket packet, AuthenticatedConnection connection) {
+	protected void handleImplementedPacketType(final ILobbyReceivePacket packet, final AuthenticatedConnection connection) {
 		packet.act(connection);
 	}
 }

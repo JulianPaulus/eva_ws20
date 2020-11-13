@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class LoginResponseFactory extends AbstractPacketFactory<LoginResponsePacket> {
 	@Override
-	public LoginResponsePacket unmarshal(DataInputStream stream) throws IOException {
+	public LoginResponsePacket unmarshal(final DataInputStream stream) throws IOException {
 		return new LoginResponsePacket(stream.readInt(), stream.readBoolean());
 	}
 }

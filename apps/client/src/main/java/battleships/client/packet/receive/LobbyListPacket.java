@@ -12,7 +12,7 @@ public class LobbyListPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = 0x1;
 	private final Set<PacketLobby> lobbySet;
 
-	public LobbyListPacket(Set<PacketLobby> lobbySet) {
+	public LobbyListPacket(final Set<PacketLobby> lobbySet) {
 		this.lobbySet = lobbySet;
 	}
 
@@ -22,7 +22,7 @@ public class LobbyListPacket implements IPreAuthReceivePacket {
 	}
 
 	@Override
-	public void act(Connection connection) {
+	public void act(final Connection connection) {
 		LobbyListController llc = LobbyListController.getNewestInstance();
 		if(llc != null) {
 			llc.setLobbies(this.lobbySet);

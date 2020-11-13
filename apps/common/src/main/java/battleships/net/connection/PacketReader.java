@@ -24,7 +24,7 @@ public class PacketReader extends Thread {
 		this.connection = connection;
 	}
 
-	public static void setFactoryMap(Map<Byte, AbstractPacketFactory<?>> factoryMap) {
+	public static void setFactoryMap(final Map<Byte, AbstractPacketFactory<?>> factoryMap) {
 		PacketReader.factoryMap = factoryMap;
 	}
 
@@ -47,18 +47,19 @@ public class PacketReader extends Thread {
 					connection.close();
 					interrupt();
 				} catch (IOException ioException) {
-					ioException.printStackTrace();
+					logger.error("error while closing connection", ioException);
 				}
 			}
 		}
 	}
 
-	protected void setConnection(Connection connection) {
+	protected void setConnection(final Connection connection) {
 		this.connection = connection;
 	}
 
 	public void close() throws IOException {
 		this.interrupt();
 		stream.close();
+		this.connection = null;
 	}
 }

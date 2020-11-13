@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class LoginPacketFactory extends AbstractPacketFactory<LoginPacket> {
 	@Override
-	public LoginPacket unmarshal(DataInputStream stream) throws IOException {
+	public LoginPacket unmarshal(final DataInputStream stream) throws IOException {
 		return new LoginPacket(stream.readUTF(), stream.readUTF());
 	}
 }

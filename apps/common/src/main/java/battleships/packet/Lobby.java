@@ -8,7 +8,7 @@ public class Lobby {
 	private String name;
 	private List<Player> players = new ArrayList<Player>();
 
-	public Lobby(String name, List<Player> players) {
+	public Lobby(final String name, final List<Player> players) {
 		this.name = name;
 		this.players = players;
 	}
@@ -17,7 +17,7 @@ public class Lobby {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -25,7 +25,7 @@ public class Lobby {
 		return players;
 	}
 
-	public void setPlayers(List<Player> players) {
+	public void setPlayers(final List<Player> players) {
 		this.players = players;
 	}
 
