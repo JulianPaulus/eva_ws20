@@ -4,6 +4,7 @@ import battleships.client.ClientMain;
 import battleships.client.packet.send.LoginPacket;
 import battleships.net.connection.Connection;
 import battleships.net.connection.Constants;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -53,20 +54,24 @@ public class LoginController {
 	@FXML
 	private void onLogin() {
 		Pair<String, Integer> address = decodeAddress();
-		try {
-			//maybe move this to a task so the client doesn't lag while connecting
-			Connection connection = client.connect(address.getKey(), address.getValue());
-			connection.writePacket(new LoginPacket(nameField.getText(), passwordField.getText()));
-		} catch (IOException e) {
-			logger.trace("unable to connect to the server", e);
+		Thread connectThread = new Thread(() -> {
+			try {
+				Connection connection = client.connect(address.getKey(), address.getValue());
+				connection.writePacket(new LoginPacket(nameField.getText(), passwordField.getText()));
+			} catch (IOException e) {
+				logger.trace("unable to connect to the server", e);
 
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.initModality(Modality.APPLICATION_MODAL);
-			alert.initOwner(client.getStage());
-			alert.setHeaderText("Verbindung fehlgeschlagen");
-			alert.setContentText(e.getMessage());
-			alert.show();
-		}
+				Platform.runLater(() -> {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.initModality(Modality.APPLICATION_MODAL);
+					alert.initOwner(client.getStage());
+					alert.setHeaderText("Verbindung fehlgeschlagen");
+					alert.setContentText(e.getMessage());
+					alert.show();
+				});
+			}
+		});
+		connectThread.start();
 	}
 
 	private void setAddressValidator() {
