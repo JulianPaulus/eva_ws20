@@ -49,7 +49,7 @@ public class LobbyListController implements Initializable {
 			return;
 		}
 
-		//TODO Implement
+		//Implement
 	}
 
 	public void setLobbies(final Collection<PacketLobby> lobbies) {
