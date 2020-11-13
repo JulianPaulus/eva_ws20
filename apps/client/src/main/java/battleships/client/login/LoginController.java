@@ -5,10 +5,14 @@ import battleships.client.packet.send.LoginPacket;
 import battleships.net.connection.Connection;
 import battleships.net.connection.Constants;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -29,6 +33,8 @@ public class LoginController {
 	private static final Pattern ADDRESS_PATTTERN = Pattern
 		.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|localhost|.*\\..{2,3})(:(\\d{4,5}))?");
 
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
 	private ClientMain client;
 
 	@FXML
@@ -41,7 +47,7 @@ public class LoginController {
 	private Button loginButton;
 
 	@FXML
-	public void initialize() {
+	private void initialize() {
 		client = ClientMain.getInstance();
 
 		addressField.textProperty().addListener(((observable, oldValue, newValue) -> {
@@ -58,10 +64,18 @@ public class LoginController {
 	private void onLogin() {
 		Pair<String, Integer> address = decodeAddress();
 		try {
+			//maybe move this to a task so the client doesn't lag while connecting
 			Connection connection = client.connect(address.getKey(), address.getValue());
 			connection.writePacket(new LoginPacket(nameField.getText(), passwordField.getText()));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.trace("unable to connect to the server", e);
+
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.initModality(Modality.APPLICATION_MODAL);
+			alert.initOwner(client.getStage());
+			alert.setHeaderText("Verbindung fehlgeschlagen");
+			alert.setContentText(e.getMessage());
+			alert.show();
 		}
 	}
 
