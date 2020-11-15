@@ -44,7 +44,9 @@ public class PacketReader extends Thread {
 				}
 			} catch (IOException e) {
 				try {
-					connection.close();
+					if (connection != null) {
+						connection.close();
+					}
 					interrupt();
 				} catch (IOException ioException) {
 					logger.error("error while closing connection", ioException);
