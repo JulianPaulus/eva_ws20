@@ -52,9 +52,9 @@
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
          </padding>
          <children>
-            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="addressField" GridPane.columnIndex="1" />
+            <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="Serveradresse" />
             <Label text="Benutzername" GridPane.rowIndex="1" />
             <Label text="Passwort" GridPane.rowIndex="2" />
