@@ -1,5 +1,6 @@
 package battleships.server.packet.send;
 
+import battleships.Constants;
 import battleships.net.packet.SendPacket;
 
 import java.io.DataOutputStream;
@@ -7,7 +8,7 @@ import java.io.IOException;
 
 public class LoginResponsePacket extends SendPacket {
 
-	public static final byte IDENTIFIER = 0x4;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_RESPONSE;
 
 	private final int playerId;
 	private final boolean successful;

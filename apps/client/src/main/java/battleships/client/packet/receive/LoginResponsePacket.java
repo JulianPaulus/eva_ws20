@@ -1,5 +1,6 @@
 package battleships.client.packet.receive;
 
+import battleships.Constants;
 import battleships.client.ClientMain;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
@@ -12,7 +13,7 @@ import java.io.IOException;
 
 public class LoginResponsePacket implements IPreAuthReceivePacket {
 
-	public static final byte IDENTIFIER = 0x4;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_RESPONSE;
 
 	private final int playerId;
 	private final boolean successful;

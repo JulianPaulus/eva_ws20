@@ -1,5 +1,6 @@
 package battleships.server.packet.receive;
 
+import battleships.Constants;
 import battleships.net.connection.AuthenticatedConnection;
 import battleships.net.packet.ILobbyReceivePacket;
 import battleships.packet.PacketLobby;
@@ -10,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class LobbyListRequestPacket implements ILobbyReceivePacket {
-	public static final byte IDENTIFIER = 0x2;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOBBY_LIST_REQUEST;
 
 	@Override
 	public byte getIdentifier() {

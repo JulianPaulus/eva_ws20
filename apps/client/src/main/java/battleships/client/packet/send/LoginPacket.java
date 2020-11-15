@@ -1,12 +1,13 @@
 package battleships.client.packet.send;
 
+import battleships.Constants;
 import battleships.net.packet.SendPacket;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class LoginPacket extends SendPacket {
-	public static final byte IDENTIFIER = 0x3;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_REQUEST;
 
 	private final String username;
 	private final String password;
