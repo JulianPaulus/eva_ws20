@@ -6,8 +6,10 @@ import battleships.net.factory.TestPacketFactory;
 import battleships.net.packet.TestPacket;
 import battleships.server.packet.receive.LobbyListRequestPacket;
 import battleships.server.packet.receive.LoginPacket;
+import battleships.server.packet.receive.RegisterPacket;
 import battleships.server.packet.receive.factory.LobbyListRequestPacketFactory;
 import battleships.server.packet.receive.factory.LoginPacketFactory;
+import battleships.server.packet.receive.factory.RegisterPacketFactory;
 import battleships.server.socket.Server;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ public class ServerMain {
 		packetFactoryMap.put(TestPacket.IDENTIFIER, new TestPacketFactory());
 		packetFactoryMap.put(LobbyListRequestPacket.IDENTIFIER, new LobbyListRequestPacketFactory());
 		packetFactoryMap.put(LoginPacket.IDENTIFIER, new LoginPacketFactory());
+		packetFactoryMap.put(RegisterPacket.IDENTIFIER, new RegisterPacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 
