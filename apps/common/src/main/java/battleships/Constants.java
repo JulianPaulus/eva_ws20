@@ -12,6 +12,9 @@ public class Constants {
 		public static final byte LOGIN_REQUEST = 0x3;
 		public static final byte LOGIN_RESPONSE = 0x4;
 
+		public static final byte REGISTER_REQUEST = 0x5;
+		public static final byte REGISTER_RESPONSE = 0x6;
+
 	}
 
 }

@@ -30,7 +30,7 @@ public class Connection {
 		logger.info("established connection with {}", socket.getInetAddress().getHostAddress());
 	}
 
-	protected Connection(Connection connection) {
+	protected Connection(final Connection connection) {
 		this.socket = connection.socket;
 		this.reader = connection.reader;
 		this.writer = connection.writer;
@@ -38,7 +38,7 @@ public class Connection {
 		this.closed = connection.closed;
 	}
 
-	public void writePacket(SendPacket packet) throws IOException {
+	public void writePacket(final SendPacket packet) throws IOException {
 		writer.write(packet);
 	}
 
@@ -48,7 +48,7 @@ public class Connection {
 			reader.close();
 			socket.close();
 
-			logger.debug("closing connection with {}", socket.getInetAddress().getHostAddress());
+			logger.info("closing connection with {}", socket.getInetAddress().getHostAddress());
 			closed = true;
 		}
 	}
@@ -67,6 +67,7 @@ public class Connection {
 			"socket=" + socket +
 			", reader=" + reader +
 			", writer=" + writer +
+			", packetHandler=" + packetHandler +
 			", closed=" + closed +
 			'}';
 	}

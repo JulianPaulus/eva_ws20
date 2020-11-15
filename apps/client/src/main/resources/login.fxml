@@ -17,6 +17,11 @@
 	<bottom>
 		<HBox BorderPane.alignment="CENTER">
 			<children>
+            <Button fx:id="registerButton" mnemonicParsing="false" onAction="#onRegister" text="Registrieren">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
 				<Region HBox.hgrow="ALWAYS" />
 				<Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLogin" text="Anmelden">
 					<HBox.margin>

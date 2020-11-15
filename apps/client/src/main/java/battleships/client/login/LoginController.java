@@ -3,6 +3,7 @@ package battleships.client.login;
 import battleships.Constants;
 import battleships.client.ClientMain;
 import battleships.client.packet.send.LoginPacket;
+import battleships.client.packet.send.RegisterPacket;
 import battleships.net.connection.Connection;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -53,11 +54,20 @@ public class LoginController {
 
 	@FXML
 	private void onLogin() {
+		connect(new LoginPacket(nameField.getText(), passwordField.getText()));
+	}
+
+	@FXML
+	private void onRegister() {
+		connect(new RegisterPacket(nameField.getText(), passwordField.getText()));
+	}
+
+	private void connect(final LoginPacket packet) {
 		Pair<String, Integer> address = decodeAddress();
 		Thread connectThread = new Thread(() -> {
 			try {
 				Connection connection = client.connect(address.getKey(), address.getValue());
-				connection.writePacket(new LoginPacket(nameField.getText(), passwordField.getText()));
+				connection.writePacket(packet);
 			} catch (IOException e) {
 				logger.trace("unable to connect to the server", e);
 
