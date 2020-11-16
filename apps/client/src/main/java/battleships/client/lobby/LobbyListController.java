@@ -11,7 +11,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -30,11 +29,7 @@ public class LobbyListController implements Initializable {
 
 	public LobbyListController() {
 		LobbyListRequestPacket lobbyListRequestPacket = new LobbyListRequestPacket();
-		try {
-			ClientMain.getInstance().getConnection().writePacket(lobbyListRequestPacket);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		ClientMain.getInstance().getConnection().writePacket(lobbyListRequestPacket);
 		lobbyObservableList = FXCollections.observableArrayList();
 		newestInstance = this;
 	}

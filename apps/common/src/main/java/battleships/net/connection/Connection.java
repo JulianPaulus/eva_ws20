@@ -38,8 +38,17 @@ public class Connection {
 		this.closed = connection.closed;
 	}
 
-	public void writePacket(final SendPacket packet) throws IOException {
-		writer.write(packet);
+	public void writePacket(final SendPacket packet) {
+		try {
+			writer.write(packet);
+		} catch (final IOException e) {
+			logger.error("error while writing a packet to {}", this, e);
+			try {
+				close();
+			} catch (final IOException ioException) {
+				logger.error("error while closing connection {}", this, e);
+			}
+		}
 	}
 
 	public synchronized void close() throws IOException {

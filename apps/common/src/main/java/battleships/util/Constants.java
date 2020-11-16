@@ -1,4 +1,4 @@
-package battleships;
+package battleships.util;
 
 public class Constants {
 
@@ -13,7 +13,7 @@ public class Constants {
 		public static final byte LOGIN_RESPONSE = 0x4;
 
 		public static final byte REGISTER_REQUEST = 0x5;
-		public static final byte REGISTER_RESPONSE = 0x6;
+		public static final byte REGISTER_ERROR_RESPONSE = 0x6;
 
 	}
 

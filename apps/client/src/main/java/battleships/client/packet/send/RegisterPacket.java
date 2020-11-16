@@ -1,6 +1,6 @@
 package battleships.client.packet.send;
 
-import battleships.Constants;
+import battleships.util.Constants;
 
 public class RegisterPacket extends LoginPacket {
 

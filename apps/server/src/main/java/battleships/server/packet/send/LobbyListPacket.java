@@ -1,8 +1,8 @@
 package battleships.server.packet.send;
 
-import battleships.Constants;
 import battleships.net.packet.SendPacket;
 import battleships.packet.PacketLobby;
+import battleships.util.Constants;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

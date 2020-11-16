@@ -1,6 +1,7 @@
 package battleships.server.service;
 
 import battleships.packet.Player;
+import battleships.server.exception.RegistrationException;
 
 public class PlayerService {
 
@@ -12,6 +13,10 @@ public class PlayerService {
 
 	public Player authenticate(final String username, final String password) {
 		return new Player((int) (Math.random() * 10000), username);
+	}
+
+	public Player register(final String username, final String password) throws RegistrationException {
+		return authenticate(username, password);
 	}
 
 

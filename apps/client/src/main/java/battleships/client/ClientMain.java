@@ -2,13 +2,13 @@ package battleships.client;
 
 import battleships.client.packet.receive.LobbyListPacket;
 import battleships.client.packet.receive.LoginResponsePacket;
+import battleships.client.packet.receive.RegistrationErrorResponsePacket;
 import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
+import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
 import battleships.net.connection.Connection;
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
-import battleships.net.factory.TestPacketFactory;
-import battleships.net.packet.TestPacket;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,9 +32,9 @@ public class ClientMain extends Application {
 
 	static {
 		Map<Byte, AbstractPacketFactory<?>> packetFactoryMap = new HashMap<>();
-		packetFactoryMap.put(TestPacket.IDENTIFIER, new TestPacketFactory());
 		packetFactoryMap.put(LobbyListPacket.IDENTIFIER, new LobbyListPacketFactory());
 		packetFactoryMap.put(LoginResponsePacket.IDENTIFIER, new LoginResponseFactory());
+		packetFactoryMap.put(RegistrationErrorResponsePacket.IDENTIFIER, new RegistrationErrorResponseFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 

@@ -1,9 +1,9 @@
 package battleships.client.packet.receive;
 
-import battleships.Constants;
 import battleships.client.ClientMain;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
+import battleships.util.Constants;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

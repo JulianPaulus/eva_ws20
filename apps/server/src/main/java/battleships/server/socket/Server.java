@@ -1,7 +1,7 @@
 package battleships.server.socket;
 
-import battleships.Constants;
 import battleships.net.connection.Connection;
+import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

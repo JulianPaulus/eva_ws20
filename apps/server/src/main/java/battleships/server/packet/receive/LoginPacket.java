@@ -1,14 +1,12 @@
 package battleships.server.packet.receive;
 
-import battleships.Constants;
 import battleships.net.connection.AuthenticatedConnection;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.packet.Player;
 import battleships.server.packet.send.LoginResponsePacket;
 import battleships.server.service.PlayerService;
-
-import java.io.IOException;
+import battleships.util.Constants;
 
 public class LoginPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_REQUEST;
@@ -31,17 +29,9 @@ public class LoginPacket implements IPreAuthReceivePacket {
 		Player player = PlayerService.getInstance().authenticate(username, password);
 		if (player != null) {
 			AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
-			try {
-				authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
 		} else {
-			try {
-				connection.writePacket(new LoginResponsePacket(-1, false));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			connection.writePacket(new LoginResponsePacket(-1, false));
 		}
 	}
 }
