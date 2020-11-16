@@ -4,7 +4,7 @@ import battleships.net.connection.packethandler.LobbyPacketHandler;
 import battleships.packet.Player;
 
 public class AuthenticatedConnection extends Connection {
-	private Player player;
+	private final Player player;
 
 	public AuthenticatedConnection(final Connection connection, final Player player) {
 		super(connection);

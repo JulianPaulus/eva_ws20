@@ -4,7 +4,7 @@ import battleships.net.connection.packethandler.GamePacketHandler;
 import battleships.packet.Game;
 
 public class GameConnection extends AuthenticatedConnection {
-	private Game game;
+	private final Game game;
 
 	public GameConnection(final AuthenticatedConnection connection, final Game game) {
 		super(connection);

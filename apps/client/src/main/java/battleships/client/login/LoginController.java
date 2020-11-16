@@ -68,7 +68,7 @@ public class LoginController {
 			try {
 				Connection connection = client.connect(address.getKey(), address.getValue());
 				connection.writePacket(packet);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				logger.trace("unable to connect to the server", e);
 
 				Platform.runLater(() -> {
