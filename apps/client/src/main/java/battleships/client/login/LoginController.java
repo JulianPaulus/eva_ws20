@@ -100,8 +100,8 @@ public class LoginController {
 	private Pair<String, Integer> decodeAddress() {
 		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
 		if (matcher.matches()) {
-			String host = matcher.group(0);
-			Integer port = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : Constants.DEFAULT_PORT;
+			String host = matcher.group(1);
+			Integer port = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Constants.DEFAULT_PORT;
 
 			return new Pair<>(host, port);
 		}
