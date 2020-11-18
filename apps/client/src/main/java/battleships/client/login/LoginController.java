@@ -3,16 +3,14 @@ package battleships.client.login;
 import battleships.client.ClientMain;
 import battleships.client.packet.send.LoginPacket;
 import battleships.client.packet.send.RegisterPacket;
+import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.util.Constants;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,15 +74,7 @@ public class LoginController {
 				connection.writePacket(packet);
 			} catch (final IOException e) {
 				logger.trace("unable to connect to the server", e);
-
-				Platform.runLater(() -> {
-					Alert alert = new Alert(Alert.AlertType.ERROR);
-					alert.initModality(Modality.APPLICATION_MODAL);
-					alert.initOwner(client.getStage());
-					alert.setHeaderText("Verbindung fehlgeschlagen");
-					alert.setContentText(e.getMessage());
-					alert.show();
-				});
+				ErrorDialog.show(client.getStage(), "Verbindung fehlgeschlagen!");
 			}
 		});
 		connectThread.start();

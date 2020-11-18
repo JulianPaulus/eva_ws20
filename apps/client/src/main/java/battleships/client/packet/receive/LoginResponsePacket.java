@@ -1,6 +1,7 @@
 package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
+import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
@@ -25,9 +26,6 @@ public class LoginResponsePacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		System.out.println("response");
-		System.out.println(playerId);
-		System.out.println(successful);
 		if (successful) {
 			try {
 				final Parent root = FXMLLoader.load(getClass().getResource("/fxml/LobbyListScreen.fxml"));
@@ -38,6 +36,8 @@ public class LoginResponsePacket implements IPreAuthReceivePacket {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else {
+			ErrorDialog.show(ClientMain.getInstance().getStage(), "Login fehlgeschlagen!");
 		}
 	}
 
