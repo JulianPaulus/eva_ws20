@@ -2,7 +2,7 @@ package battleships.server.exception;
 
 import battleships.util.RegistrationError;
 
-public class RegistrationException extends Exception {
+public class RegistrationException extends IllegalArgumentException {
 
 	private final RegistrationError registrationError;
 

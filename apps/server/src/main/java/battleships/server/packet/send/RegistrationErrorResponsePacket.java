@@ -13,16 +13,19 @@ public class RegistrationErrorResponsePacket extends SendPacket {
 
 	private final boolean successful;
 	private final RegistrationError registrationError;
+	private final String message;
 
-	public RegistrationErrorResponsePacket(final boolean successful, final RegistrationError registrationError) {
+	public RegistrationErrorResponsePacket(final boolean successful, final RegistrationError registrationError, final String message) {
 		this.successful = successful;
 		this.registrationError = registrationError;
+		this.message = message;
 	}
 
 	@Override
 	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeBoolean(successful);
 		dos.writeUTF(registrationError.toString());
+		dos.writeUTF(message);
 
 		return dos;
 	}

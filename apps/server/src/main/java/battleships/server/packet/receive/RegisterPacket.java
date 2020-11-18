@@ -30,7 +30,7 @@ public class RegisterPacket implements IPreAuthReceivePacket {
 			AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
 			authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
 		} catch (final RegistrationException e) {
-			connection.writePacket(new RegistrationErrorResponsePacket(false, e.getRegistrationError()));
+			connection.writePacket(new RegistrationErrorResponsePacket(false, e.getRegistrationError(), e.getMessage()));
 		}
 	}
 

@@ -8,6 +8,8 @@ import battleships.server.packet.send.LoginResponsePacket;
 import battleships.server.service.PlayerService;
 import battleships.util.Constants;
 
+import javax.security.auth.login.LoginException;
+
 public class LoginPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_REQUEST;
 
@@ -26,12 +28,15 @@ public class LoginPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		Player player = PlayerService.getInstance().authenticate(username, password);
-		if (player != null) {
-			AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
-			authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
-		} else {
+		Player player = null;
+		try {
+			player = PlayerService.getInstance().authenticate(username, password);
+		} catch (LoginException e) {
 			connection.writePacket(new LoginResponsePacket(-1, false));
+			return;
 		}
+
+		AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
+		authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
 	}
 }

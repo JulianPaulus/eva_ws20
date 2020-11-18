@@ -17,15 +17,19 @@ public class PasswordHasher {
 		return new SecureRandom().generateSeed(saltLength);
 	}
 
-	public static String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-		SecretKey key = skf.generateSecret(new PBEKeySpec(password.toCharArray(), salt, iterations, 128));
-		String saltAsString = Base64.getEncoder().encodeToString(salt);
-		String saltedPassword = Base64.getEncoder().encodeToString(key.getEncoded());
-		return saltAsString + '$' + saltedPassword;
+	public static String hashPassword(String password, byte[] salt) {
+		try {
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			SecretKey key = skf.generateSecret(new PBEKeySpec(password.toCharArray(), salt, iterations, 128));
+			String saltAsString = Base64.getEncoder().encodeToString(salt);
+			String saltedPassword = Base64.getEncoder().encodeToString(key.getEncoded());
+			return saltAsString + '$' + saltedPassword;
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			throw new RuntimeException("Error hashing password!");
+		}
 	}
 
-	public static boolean checkPassword(String password, String storedPassword) throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public static boolean checkPassword(String password, String storedPassword) {
 		String[] saltAndPassword = storedPassword.split("\\$");
 		byte[] salt = Base64.getDecoder().decode(saltAndPassword[0]);
 		String hashedPassword = hashPassword(password, salt);
