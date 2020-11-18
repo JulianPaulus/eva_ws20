@@ -37,7 +37,7 @@ public class UserDatabase {
 	}
 
 	private Player loadPlayerByName(String username, Connection connection) throws SQLException {
-		PreparedStatement pstmt = connection.prepareStatement("SELECT rowid, username, password FROM players WHERE username = ?");
+		PreparedStatement pstmt = connection.prepareStatement("SELECT id, username, password FROM players WHERE username = ?");
 		pstmt.setString(1, username);
 		pstmt.execute();
 		ResultSet rs = pstmt.getResultSet();

@@ -18,7 +18,7 @@ public class PlayerService {
 
 	public Player authenticate(final String username, final String password) throws LoginException {
 		Player player = userDatabase.loadPlayerByName(username);
-		if(player == null || !PasswordHasher.checkPassword(player.getPassword(), password)) {
+		if(player == null || !PasswordHasher.checkPassword(password, player.getPassword())) {
 			throw new LoginException("Username or password wrong");
 		}
 		return player;
