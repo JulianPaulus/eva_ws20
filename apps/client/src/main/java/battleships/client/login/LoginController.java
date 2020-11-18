@@ -120,12 +120,6 @@ public class LoginController {
 		}
 	}
 
-	private void setAddressValidator() {
-		addressField.onKeyTypedProperty().addListener(((observable, oldValue, newValue) -> {
-
-		}));
-	}
-
 	private Pair<String, Integer> decodeAddress() {
 		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText().trim());
 		if (matcher.matches()) {
