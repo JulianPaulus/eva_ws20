@@ -8,8 +8,10 @@ import battleships.util.Constants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.util.Pair;
 import org.slf4j.Logger;
@@ -32,7 +34,7 @@ public class LoginController {
 	 * 3rd Capture group matches ports with 4-5 digits (without the :)
 	 */
 	private static final Pattern ADDRESS_PATTTERN = Pattern
-		.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|localhost|.*\\..{2,3})(:(\\d{4,5}))?");
+		.compile("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|localhost|.*\\..{2,3})(:([1-9]\\d{3,4}))?$");
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -46,10 +48,14 @@ public class LoginController {
 	private PasswordField passwordField;
 
 	@FXML
+	private Button registerButton;
+
+	@FXML
+	private Button loginButton;
+
+	@FXML
 	private void initialize() {
 		client = ClientMain.getInstance();
-
-		setAddressValidator();
 	}
 
 	@FXML
@@ -84,21 +90,44 @@ public class LoginController {
 		connectThread.start();
 	}
 
-	private void setAddressValidator() {
-		addressField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
-			Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
-			if (!matcher.matches()) {
-				if (!addressField.getStyleClass().contains("error")) {
-					addressField.getStyleClass().add("error");
-				}
-			} else {
-				addressField.getStyleClass().remove("error");
+	@FXML
+	private void onFieldChange(KeyEvent keyEvent) {
+		TextField source = (TextField) keyEvent.getSource();
+
+		boolean isFieldValid;
+		if(source == addressField) {
+			isFieldValid = ADDRESS_PATTTERN.matcher(addressField.getText().trim()).matches();
+		} else {
+			isFieldValid = !source.getText().trim().isEmpty();
+		}
+
+		if(!isFieldValid) {
+			if (!source.getStyleClass().contains("error")) {
+				source.getStyleClass().add("error");
 			}
+		} else {
+			source.getStyleClass().remove("error");
+		}
+
+		if(!ADDRESS_PATTTERN.matcher(addressField.getText().trim()).matches()
+			|| nameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
+
+			registerButton.setDisable(true);
+			loginButton.setDisable(true);
+		} else {
+			registerButton.setDisable(false);
+			loginButton.setDisable(false);
+		}
+	}
+
+	private void setAddressValidator() {
+		addressField.onKeyTypedProperty().addListener(((observable, oldValue, newValue) -> {
+
 		}));
 	}
 
 	private Pair<String, Integer> decodeAddress() {
-		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText());
+		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText().trim());
 		if (matcher.matches()) {
 			String host = matcher.group(1);
 			Integer port = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Constants.DEFAULT_PORT;
