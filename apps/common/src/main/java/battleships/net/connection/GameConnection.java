@@ -16,4 +16,16 @@ public class GameConnection extends AuthenticatedConnection {
 	public Game getGame() {
 		return game;
 	}
+
+	@Override
+	public String toString() {
+		return "GameConnection{" +
+			"game=" + game +
+			", socket=" + socket +
+			", reader=" + reader +
+			", writer=" + writer +
+			", packetHandler=" + packetHandler +
+			", closed=" + closed +
+			'}';
+	}
 }

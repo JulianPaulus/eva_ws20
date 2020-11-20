@@ -16,4 +16,16 @@ public class AuthenticatedConnection extends Connection {
 	protected AuthenticatedConnection(final AuthenticatedConnection connection) {
 		this(connection, connection.player);
 	}
+
+	@Override
+	public String toString() {
+		return "AuthenticatedConnection{" +
+			"player=" + player +
+			", socket=" + socket +
+			", reader=" + reader +
+			", writer=" + writer +
+			", packetHandler=" + packetHandler +
+			", closed=" + closed +
+			'}';
+	}
 }

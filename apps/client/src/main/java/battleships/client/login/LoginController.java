@@ -32,7 +32,7 @@ public class LoginController {
 	 * 3rd Capture group matches ports with 4-5 digits (without the :)
 	 */
 	private static final Pattern ADDRESS_PATTTERN = Pattern
-		.compile("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|localhost|.*\\..{2,3})(:([1-9]\\d{3,4}))?$");
+		.compile("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|localhost|.*\\.[a-zA-Z]{2,3})(:([1-9]\\d{3,4}))?$");
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -81,12 +81,12 @@ public class LoginController {
 	}
 
 	@FXML
-	private void onFieldChange(KeyEvent keyEvent) {
+	private void onFieldChange(final KeyEvent keyEvent) {
 		TextField source = (TextField) keyEvent.getSource();
 
 		boolean isFieldValid;
-		if(source == addressField) {
-			isFieldValid = ADDRESS_PATTTERN.matcher(addressField.getText().trim()).matches();
+		if(source.equals(addressField)) {
+			isFieldValid = ADDRESS_PATTTERN.matcher(source.getText().trim()).matches();
 		} else {
 			isFieldValid = !source.getText().trim().isEmpty();
 		}
