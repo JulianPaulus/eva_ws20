@@ -6,6 +6,7 @@ import battleships.client.packet.send.RegisterPacket;
 import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.util.Constants;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -68,6 +69,8 @@ public class LoginController {
 
 	private void connect(final LoginPacket packet) {
 		Pair<String, Integer> address = decodeAddress();
+		loginButton.setDisable(true);
+		registerButton.setDisable(true);
 		Thread connectThread = new Thread(() -> {
 			try {
 				Connection connection = client.connect(address.getKey(), address.getValue());
@@ -75,6 +78,12 @@ public class LoginController {
 			} catch (final IOException e) {
 				logger.trace("unable to connect to the server", e);
 				ErrorDialog.show(client.getStage(), "Verbindung fehlgeschlagen!");
+			} finally {
+				Platform.runLater(() -> {
+					boolean buttonState = getButtonDisabledState();
+					loginButton.setDisable(buttonState);
+					registerButton.setDisable(buttonState);
+				});
 			}
 		});
 		connectThread.start();
@@ -99,15 +108,14 @@ public class LoginController {
 			source.getStyleClass().remove("error");
 		}
 
-		if(!ADDRESS_PATTTERN.matcher(addressField.getText().trim()).matches()
-			|| nameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
+		boolean buttonState = getButtonDisabledState();
+		registerButton.setDisable(buttonState);
+		loginButton.setDisable(buttonState);
+	}
 
-			registerButton.setDisable(true);
-			loginButton.setDisable(true);
-		} else {
-			registerButton.setDisable(false);
-			loginButton.setDisable(false);
-		}
+	private boolean getButtonDisabledState() {
+		return !ADDRESS_PATTTERN.matcher(addressField.getText().trim()).matches()
+			|| nameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty();
 	}
 
 	private Pair<String, Integer> decodeAddress() {
