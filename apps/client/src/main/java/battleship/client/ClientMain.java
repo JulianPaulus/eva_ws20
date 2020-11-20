@@ -1,10 +1,10 @@
 package battleship.client;
 
+import battleship.client.GameWindow.GameWindow;
 import battleship.client.packet.receive.LobbyListPacket;
 import battleship.client.packet.receive.LoginResponsePacket;
 import battleship.client.packet.receive.factory.LobbyListPacketFactory;
 import battleship.client.packet.receive.factory.LoginResponseFactory;
-import battleship.client.packet.send.LoginPacket;
 import battleship.net.connection.Connection;
 import battleship.net.connection.Constants;
 import battleship.net.connection.PacketReader;
@@ -41,11 +41,14 @@ public class ClientMain extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		instance = this;
 		this.stage = primaryStage;
+
+		GameWindow window=new GameWindow(primaryStage);
+
 		Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
 		connection = new Connection(socket);
 
 		//connection.writePacket(new TestPacket());
-		connection.writePacket(new LoginPacket("test123", "123456"));
+		//connection.writePacket(new LoginPacket("test123", "123456"));
 	}
 
 	public static ClientMain getInstance() {

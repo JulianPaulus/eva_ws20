@@ -1,23 +1,25 @@
-package battleship.client;
+package battleship.client.GameWindow;
 
 import battleship.client.Model.CoorrdinateStateEnum;
 import battleship.client.Model.GameModel;
 import battleship.client.Model.GameStateEnum;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-import static java.awt.event.MouseEvent.MOUSE_CLICKED;
-
-public class GameWindow{
+public class GameWindow implements Initializable {
 
 	private Stage stage;
 
@@ -30,6 +32,9 @@ public class GameWindow{
 	@FXML
 	private GridPane targetGrid;
 
+	@FXML
+	private Label statusLabel; //Wird dem Nutzer sagen, inn welcher Phase sich das Spiel befindet: Schiffe setzen, Zielen, warten auf Gegner,Gewonnen/verloren
+
 
 	private Scene scene;
 	private GameModel model;
@@ -39,18 +44,38 @@ public class GameWindow{
 	{
 		horizontal=true;
 		this.stage=stage;
+		FXMLLoader fxmLLoader = new FXMLLoader(getClass().getResource("/fxml/GameWindow.fxml"));
+		fxmLLoader.setController(this);
 		try {
-			root=(HBox)FXMLLoader.load(getClass().getResource("./GameWindow.fxml"));
-		}
-		catch(Exception e)
-		{
+			scene=fxmLLoader.load();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		scene=new Scene(root);
+
 		stage.setScene(scene);
 
 		model= new GameModel();
 
+
+	}
+
+	private Node getNodeFromGridPane(GridPane gridPane, int xPos, int yPos) {
+		for (Node node : gridPane.getChildren()) {
+			if (GridPane.getColumnIndex(node) == xPos && GridPane.getRowIndex(node) == yPos) {
+				return node;
+			}
+		}
+		return null;
+	}
+
+	@FXML
+	public void sendMessage()
+	{
+		//send message to Model or directly to server?
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
 		for (int i=0; i<10;i++)
 		{
 			for (int j=0; j<10;j++)
@@ -175,20 +200,5 @@ public class GameWindow{
 				targetGrid.add(targetPane,i,j);
 			}
 		}
-	}
-
-	private Node getNodeFromGridPane(GridPane gridPane, int xPos, int yPos) {
-		for (Node node : gridPane.getChildren()) {
-			if (GridPane.getColumnIndex(node) == xPos && GridPane.getRowIndex(node) == yPos) {
-				return node;
-			}
-		}
-		return null;
-	}
-
-	@FXML
-	public void sendMessage()
-	{
-
 	}
 }
