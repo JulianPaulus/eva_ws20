@@ -1,7 +1,8 @@
 package battleships.server.packet.send;
 
-import battleship.net.packet.SendPacket;
-import battleship.packet.PacketLobby;
+import battleships.net.packet.SendPacket;
+import battleships.packet.PacketLobby;
+import battleships.util.Constants;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,10 +10,10 @@ import java.util.Set;
 
 public class LobbyListPacket extends SendPacket {
 
-	public static final byte IDENTIFIER = 0x1;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOBBY_LIST_RESPONSE;
 	private final Set<PacketLobby> lobbySet;
 
-	public LobbyListPacket(Set<PacketLobby> lobbySet) {
+	public LobbyListPacket(final Set<PacketLobby> lobbySet) {
 		this.lobbySet = lobbySet;
 	}
 
@@ -24,7 +25,7 @@ public class LobbyListPacket extends SendPacket {
 	@Override
 	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		dos.writeShort(lobbySet.size());
-		for (PacketLobby lobby : lobbySet) {
+		for (final PacketLobby lobby : lobbySet) {
 			dos.writeInt(lobby.getId());
 			dos.writeUTF(lobby.getName());
 		}

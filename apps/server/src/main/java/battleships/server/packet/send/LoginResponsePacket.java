@@ -1,18 +1,19 @@
 package battleships.server.packet.send;
 
-import battleship.net.packet.SendPacket;
+import battleships.net.packet.SendPacket;
+import battleships.util.Constants;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class LoginResponsePacket extends SendPacket {
 
-	public static final byte IDENTIFIER = 0x4;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_RESPONSE;
 
 	private final int playerId;
 	private final boolean successful;
 
-	public LoginResponsePacket(int playerId, boolean successful) {
+	public LoginResponsePacket(final int playerId, final boolean successful) {
 		this.playerId = playerId;
 		this.successful = successful;
 	}
@@ -23,7 +24,7 @@ public class LoginResponsePacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
+	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeInt(playerId);
 		dos.writeBoolean(successful);
 

@@ -1,16 +1,16 @@
 package battleships.server.packet.receive;
 
-import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.packet.ILobbyReceivePacket;
-import battleship.packet.PacketLobby;
+import battleships.net.connection.AuthenticatedConnection;
+import battleships.net.packet.ILobbyReceivePacket;
+import battleships.packet.PacketLobby;
 import battleships.server.packet.send.LobbyListPacket;
+import battleships.util.Constants;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
 public class LobbyListRequestPacket implements ILobbyReceivePacket {
-	public static final byte IDENTIFIER = 0x2;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOBBY_LIST_REQUEST;
 
 	@Override
 	public byte getIdentifier() {
@@ -18,11 +18,7 @@ public class LobbyListRequestPacket implements ILobbyReceivePacket {
 	}
 
 	@Override
-	public void act(AuthenticatedConnection connection) {
-		try {
-			connection.writePacket(new LobbyListPacket(new HashSet<>(Arrays.asList(new PacketLobby(1, "Test1"), new PacketLobby(2, "Test2")))));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void act(final AuthenticatedConnection connection) {
+		connection.writePacket(new LobbyListPacket(new HashSet<>(Arrays.asList(new PacketLobby(1, "Test1"), new PacketLobby(2, "Test2")))));
 	}
 }
