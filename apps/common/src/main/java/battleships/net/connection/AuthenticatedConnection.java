@@ -17,6 +17,10 @@ public class AuthenticatedConnection extends Connection {
 		this(connection, connection.player);
 	}
 
+	public Player getPlayer() {
+		return player;
+	}
+
 	@Override
 	public String toString() {
 		return "AuthenticatedConnection{" +

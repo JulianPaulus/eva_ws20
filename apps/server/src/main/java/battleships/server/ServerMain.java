@@ -2,9 +2,11 @@ package battleships.server;
 
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
+import battleships.server.packet.receive.CreateGamePacket;
 import battleships.server.packet.receive.LobbyListRequestPacket;
 import battleships.server.packet.receive.LoginPacket;
 import battleships.server.packet.receive.RegisterPacket;
+import battleships.server.packet.receive.factory.CreateGamePacketFactory;
 import battleships.server.packet.receive.factory.LobbyListRequestPacketFactory;
 import battleships.server.packet.receive.factory.LoginPacketFactory;
 import battleships.server.packet.receive.factory.RegisterPacketFactory;
@@ -21,6 +23,7 @@ public class ServerMain {
 		packetFactoryMap.put(LobbyListRequestPacket.IDENTIFIER, new LobbyListRequestPacketFactory());
 		packetFactoryMap.put(LoginPacket.IDENTIFIER, new LoginPacketFactory());
 		packetFactoryMap.put(RegisterPacket.IDENTIFIER, new RegisterPacketFactory());
+		packetFactoryMap.put(CreateGamePacket.IDENTIFIER, new CreateGamePacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 
