@@ -8,8 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Observable;
 
-public class Connection {
+public class Connection extends Observable {
 
 	private static final Logger logger = LoggerFactory.getLogger(Connection.class);
 
@@ -59,6 +60,11 @@ public class Connection {
 
 			logger.info("closing connection with {}", socket.getInetAddress().getHostAddress());
 			closed = true;
+
+			//this works in theory, but only on clientside
+			//the default java implementation of observables doesnt allow us to copy the list of observers when we upgrade a connection
+			setChanged();
+			notifyObservers(ConnectionEvent.DISCONNECTED);
 		}
 	}
 
