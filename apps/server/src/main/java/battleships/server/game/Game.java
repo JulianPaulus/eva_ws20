@@ -1,6 +1,5 @@
 package battleships.server.game;
 
-import battleships.packet.Player;
 import battleships.server.exception.ServerException;
 
 import java.util.Optional;

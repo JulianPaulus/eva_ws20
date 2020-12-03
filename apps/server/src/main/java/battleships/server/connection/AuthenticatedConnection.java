@@ -1,8 +1,8 @@
 package battleships.server.connection;
 
 import battleships.net.connection.Connection;
-import battleships.packet.Player;
 import battleships.server.connection.packethandler.LobbyPacketHandler;
+import battleships.server.game.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

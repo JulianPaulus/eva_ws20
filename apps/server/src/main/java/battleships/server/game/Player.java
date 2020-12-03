@@ -1,4 +1,4 @@
-package battleships.packet;
+package battleships.server.game;
 
 public class Player {
 	private final int id;

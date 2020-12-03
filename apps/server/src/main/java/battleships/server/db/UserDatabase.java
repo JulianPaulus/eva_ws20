@@ -1,8 +1,8 @@
 package battleships.server.db;
 
-import battleships.packet.Player;
 import battleships.server.exception.DbException;
 import battleships.server.exception.RegistrationException;
+import battleships.server.game.Player;
 import battleships.util.RegistrationError;
 
 import java.sql.Connection;

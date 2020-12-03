@@ -1,8 +1,8 @@
 package battleships.server.service;
 
-import battleships.packet.Player;
 import battleships.server.db.UserDatabase;
 import battleships.server.exception.RegistrationException;
+import battleships.server.game.Player;
 import battleships.server.util.PasswordHasher;
 
 import javax.security.auth.login.LoginException;
