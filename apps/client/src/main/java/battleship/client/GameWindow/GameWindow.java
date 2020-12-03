@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -35,6 +36,8 @@ public class GameWindow implements Initializable {
 	@FXML
 	private Label statusLabel; //Wird dem Nutzer sagen, inn welcher Phase sich das Spiel befindet: Schiffe setzen, Zielen, warten auf Gegner,Gewonnen/verloren
 
+	@FXML
+	private TextField chatTextBox;
 
 	private Scene scene;
 	private GameModel model;
@@ -47,7 +50,8 @@ public class GameWindow implements Initializable {
 		FXMLLoader fxmLLoader = new FXMLLoader(getClass().getResource("/fxml/GameWindow.fxml"));
 		fxmLLoader.setController(this);
 		try {
-			scene=fxmLLoader.load();
+			HBox Layout=fxmLLoader.load();
+			scene=new Scene(Layout);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -71,7 +75,7 @@ public class GameWindow implements Initializable {
 	@FXML
 	public void sendMessage()
 	{
-		//send message to Model or directly to server?
+		model.sendChatMessage(chatTextBox.getText());
 	}
 
 	@Override
@@ -186,16 +190,20 @@ public class GameWindow implements Initializable {
 					if(model.getCurrentState()==GameStateEnum.shooting)
 						targetPane.setStyle("-fx-background-color: #e6f54f");
 				});
-				targetPane.setOnMouseExited(event->{
-					int xPos = targetGrid.getColumnIndex((Node)event.getSource());
-					int yPos = targetGrid.getRowIndex((Node)event.getSource());
-					if(model.currentStateOfTargetCoordinate(xPos,yPos)== CoorrdinateStateEnum.Empty)
-						targetPane.setStyle("-fx-background-color: #ffffff");
-					if(model.currentStateOfTargetCoordinate(xPos,yPos)== CoorrdinateStateEnum.hit)
-						targetPane.setStyle("-fx-background-color: #ea1313");
-					if(model.currentStateOfTargetCoordinate(xPos,yPos)== CoorrdinateStateEnum.miss)
-						targetPane.setStyle("-fx-background-color: #bdbdbd");
 
+				targetPane.setOnMouseExited(event->{
+
+					if(model.getCurrentState()==GameStateEnum.shooting)
+					{
+						int xPos = targetGrid.getColumnIndex((Node) event.getSource());
+						int yPos = targetGrid.getRowIndex((Node) event.getSource());
+						if (model.currentStateOfTargetCoordinate(xPos, yPos) == CoorrdinateStateEnum.Empty)
+							targetPane.setStyle("-fx-background-color: #ffffff");
+						if (model.currentStateOfTargetCoordinate(xPos, yPos) == CoorrdinateStateEnum.hit)
+							targetPane.setStyle("-fx-background-color: #ea1313");
+						if (model.currentStateOfTargetCoordinate(xPos, yPos) == CoorrdinateStateEnum.miss)
+							targetPane.setStyle("-fx-background-color: #bdbdbd");
+					}
 				});
 				targetGrid.add(targetPane,i,j);
 			}

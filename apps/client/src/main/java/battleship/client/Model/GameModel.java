@@ -16,6 +16,7 @@ public class GameModel {
 	public GameModel() {
 		currentState = GameStateEnum.setUp;
 		playerField = new CoorrdinateStateEnum[10][10];
+		targetField = new CoorrdinateStateEnum[10][10];
 
 		for (int i = 0; i < 10; i++) {
 			Arrays.fill(playerField[i], CoorrdinateStateEnum.Empty);
@@ -96,4 +97,8 @@ public class GameModel {
 		return playerField[xPos][yPos];
 	}
 
+	public void sendChatMessage(String message)
+	{
+
+	}
 }

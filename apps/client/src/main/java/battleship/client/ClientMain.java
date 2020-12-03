@@ -44,8 +44,10 @@ public class ClientMain extends Application {
 
 		GameWindow window=new GameWindow(primaryStage);
 
-		Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
-		connection = new Connection(socket);
+		primaryStage.show();
+
+		//Socket socket = new Socket("localhost", Constants.DEFAULT_PORT);
+		//connection = new Connection(socket);
 
 		//connection.writePacket(new TestPacket());
 		//connection.writePacket(new LoginPacket("test123", "123456"));

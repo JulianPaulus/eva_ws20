@@ -38,12 +38,12 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
+            <Label fx:id="rules" prefHeight="171.0" prefWidth="472.0" text="Regeln" />
          </children>
          <padding>
             <Insets right="20.0" />
          </padding>
       </VBox>
-      <Separator prefWidth="200.0" />
       <VBox spacing="10.0">
          <children>
             <Label text="Zielen" />
@@ -74,6 +74,25 @@
                </rowConstraints>
             </GridPane>
             <Label fx:id="statusLabel" prefHeight="34.0" prefWidth="178.0" text="Bitte Zielen" />
+            <VBox minWidth="200.0" prefHeight="223.0" prefWidth="472.0">
+               <children>
+                  <Label text="Chat" />
+                  <ListView fx:id="ChatWindow" prefHeight="310.0" prefWidth="170.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </ListView>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="chatTextBox" prefHeight="25.0" prefWidth="387.0" />
+                        <Button fx:id="sendMessageBtn" mnemonicParsing="false" onAction="#sendMessage" onMouseClicked="#sendMessage" text="Senden" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="20.0" right="10.0" />
+               </padding>
+            </VBox>
          </children>
          <padding>
             <Insets left="20.0" />
@@ -81,25 +100,6 @@
          <HBox.margin>
             <Insets />
          </HBox.margin>
-      </VBox>
-      <VBox minWidth="200.0" prefHeight="380.0" prefWidth="212.0">
-         <children>
-            <Label text="Chat" />
-            <ListView prefHeight="310.0" prefWidth="170.0">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </ListView>
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <TextField prefHeight="25.0" prefWidth="114.0" />
-                  <Button mnemonicParsing="false" onMouseClicked="#sendMessage" text="Senden" />
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets left="20.0" right="10.0" />
-         </padding>
       </VBox>
    </children>
    <opaqueInsets>
