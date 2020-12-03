@@ -51,4 +51,13 @@ public class Ship {
 	public boolean isDestroyed(){
 		return Live==0;
 	}
+
+	public boolean isHorizontal() {
+		return isHorizontal;
+	}
+
+	public void setHorizontal(boolean horizontal) {
+		isHorizontal = horizontal;
+	}
+
 }
