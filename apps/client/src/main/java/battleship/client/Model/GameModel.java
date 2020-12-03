@@ -44,7 +44,8 @@ public class GameModel {
 				currentShip=ShipType.fiveTiles;
 				break;
 			case fiveTiles:
-				currentState=GameStateEnum.shooting;
+				//currentState=GameStateEnum.shooting;
+				break;
 		}
 		return current;
 	}

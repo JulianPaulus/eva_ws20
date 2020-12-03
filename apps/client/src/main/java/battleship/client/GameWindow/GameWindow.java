@@ -64,6 +64,8 @@ public class GameWindow implements Initializable {
 	}
 
 	private Node getNodeFromGridPane(GridPane gridPane, int xPos, int yPos) {
+
+		System.out.println("xPos"+xPos+" yPos"+yPos+"gridPaneValid"+(gridPane!=null));
 		for (Node node : gridPane.getChildren()) {
 			if (GridPane.getColumnIndex(node) == xPos && GridPane.getRowIndex(node) == yPos) {
 				return node;
@@ -107,6 +109,7 @@ public class GameWindow implements Initializable {
 								for(int x=0;x<model.getTileNumberOfCurrentShip();x++)
 								{
 									getNodeFromGridPane(playerGrid,xPos+x,yPos).setStyle("-fx-background-color: #0004ff");
+
 								}
 							}
 						}
