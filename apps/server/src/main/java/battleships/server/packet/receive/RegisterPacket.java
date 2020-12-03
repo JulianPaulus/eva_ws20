@@ -1,9 +1,9 @@
 package battleships.server.packet.receive;
 
-import battleships.net.connection.AuthenticatedConnection;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.packet.Player;
+import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.exception.RegistrationException;
 import battleships.server.packet.send.LoginResponsePacket;
 import battleships.server.packet.send.RegistrationErrorResponsePacket;

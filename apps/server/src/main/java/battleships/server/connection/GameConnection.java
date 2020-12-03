@@ -1,9 +1,14 @@
-package battleships.net.connection;
+package battleships.server.connection;
 
-import battleships.net.connection.packethandler.GamePacketHandler;
-import battleships.packet.Game;
+import battleships.server.connection.packethandler.GamePacketHandler;
+import battleships.server.game.Game;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameConnection extends AuthenticatedConnection {
+
+	private static final Logger logger = LoggerFactory.getLogger(GameConnection.class);
+
 	private final Game game;
 
 	public GameConnection(final AuthenticatedConnection connection, final Game game) {
@@ -11,6 +16,10 @@ public class GameConnection extends AuthenticatedConnection {
 		super.packetHandler = new GamePacketHandler();
 		super.reader.setConnection(this);
 		this.game = game;
+
+		setObservers(connection.getObservers());
+
+		logger.debug("creating GameConnection for {} in game {}", getPlayer().getUsername(), game.getId().toString());
 	}
 
 	public Game getGame() {

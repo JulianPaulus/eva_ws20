@@ -1,10 +1,10 @@
 package battleships.server.packet.receive;
 
-import battleships.net.connection.AuthenticatedConnection;
-import battleships.net.packet.ILobbyReceivePacket;
-import battleships.packet.Game;
+import battleships.server.connection.AuthenticatedConnection;
+import battleships.server.game.Game;
+import battleships.server.packet.ILobbyReceivePacket;
 import battleships.server.packet.send.LobbyListPacket;
-import battleships.server.service.LobbyService;
+import battleships.server.service.GameService;
 import battleships.util.Constants;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class LobbyListRequestPacket implements ILobbyReceivePacket {
 
 	@Override
 	public void act(final AuthenticatedConnection connection) {
-		List<Game> games = LobbyService.getInstance().getGames();
+		List<Game> games = GameService.getInstance().getGamesWithOnePlayer();
 		connection.writePacket(new LobbyListPacket(games));
 	}
 }

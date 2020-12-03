@@ -42,20 +42,20 @@ public class PacketReader extends Thread {
 						logger.warn("The received packet produced an error!: " + e.getMessage());
 					}
 				}
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				try {
 					if (connection != null) {
 						connection.close();
 					}
 					interrupt();
-				} catch (IOException ioException) {
+				} catch (final IOException ioException) {
 					logger.error("error while closing connection", ioException);
 				}
 			}
 		}
 	}
 
-	protected void setConnection(final Connection connection) {
+	public void setConnection(final Connection connection) {
 		this.connection = connection;
 	}
 

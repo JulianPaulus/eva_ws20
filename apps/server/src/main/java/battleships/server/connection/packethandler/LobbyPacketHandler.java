@@ -1,7 +1,8 @@
-package battleships.net.connection.packethandler;
+package battleships.server.connection.packethandler;
 
-import battleships.net.connection.AuthenticatedConnection;
-import battleships.net.packet.ILobbyReceivePacket;
+import battleships.net.connection.packethandler.AbstractPacketHandler;
+import battleships.server.connection.AuthenticatedConnection;
+import battleships.server.packet.ILobbyReceivePacket;
 
 public class LobbyPacketHandler extends AbstractPacketHandler<AuthenticatedConnection, ILobbyReceivePacket> {
 

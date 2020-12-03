@@ -19,6 +19,11 @@ public class Constants {
 
 		public static final byte CREATE_GAME_REQUEST = 0x7;
 
+		public static final byte GAME_JOIN_REQUEST = 0x8;
+		public static final byte GAME_JOIN_RESPONSE = 0x9;
+
+		public static final byte SERVER_ERROR = 0xa;
+
 	}
 
 }

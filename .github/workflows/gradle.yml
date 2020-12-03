@@ -29,11 +29,11 @@ jobs:
                 uses: actions/upload-artifact@v2
                 with:
                     name: client
-                    path: |
-                        apps/client/build/distributions/EvaClient.zip
+                    path: apps/client/build/distributions/EvaClient.zip
+                    retention-days: 5
             -   name: Archive server
                 uses: actions/upload-artifact@v2
                 with:
                     name: server
-                    path: |
-                        apps/server/build/distributions/server.zip
+                    path: apps/server/build/distributions/server.zip
+                    retention-days: 5

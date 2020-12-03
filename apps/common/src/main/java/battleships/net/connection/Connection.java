@@ -3,14 +3,14 @@ package battleships.net.connection;
 import battleships.net.connection.packethandler.AbstractPacketHandler;
 import battleships.net.connection.packethandler.PreAuthPacketHandler;
 import battleships.net.packet.SendPacket;
+import battleships.observable.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Observable;
 
-public class Connection extends Observable {
+public class Connection extends Observable<ConnectionEvent> {
 
 	private static final Logger logger = LoggerFactory.getLogger(Connection.class);
 
@@ -61,10 +61,7 @@ public class Connection extends Observable {
 			logger.info("closing connection with {}", socket.getInetAddress().getHostAddress());
 			closed = true;
 
-			//this works in theory, but only on clientside
-			//the default java implementation of observables doesnt allow us to copy the list of observers when we upgrade a connection
-			setChanged();
-			notifyObservers(ConnectionEvent.DISCONNECTED);
+			updateObservers(ConnectionEvent.DISCONNECTED);
 		}
 	}
 

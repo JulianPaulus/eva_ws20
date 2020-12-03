@@ -1,8 +1,12 @@
-package battleships.packet;
+package battleships.server.game;
+
+import battleships.packet.Player;
+import battleships.server.exception.ServerException;
 
 import java.util.Optional;
 import java.util.UUID;
 
+// TODO threadsafety
 public class Game {
 
 	private final UUID id;
@@ -13,6 +17,16 @@ public class Game {
 	public Game(final Player host) {
 		this.id = UUID.randomUUID();
 		this.host = host;
+	}
+
+	public void addGuest(final Player guest) throws ServerException {
+		if (this.guest == null) {
+			this.guest = guest;
+
+			// TODO send join message to host
+		} else {
+			throw new ServerException("Game is full!");
+		}
 	}
 
 	public UUID getId() {

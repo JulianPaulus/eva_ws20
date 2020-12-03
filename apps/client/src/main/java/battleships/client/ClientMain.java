@@ -1,20 +1,27 @@
 package battleships.client;
 
+import battleships.client.packet.receive.GameJoinedPacket;
 import battleships.client.packet.receive.LobbyListPacket;
 import battleships.client.packet.receive.LoginResponsePacket;
 import battleships.client.packet.receive.RegistrationErrorResponsePacket;
+import battleships.client.packet.receive.ServerErrorPacket;
+import battleships.client.packet.receive.factory.GameJoinedPacketFactory;
 import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
 import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
-import battleships.client.util.ErrorDialog;
+import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
+import battleships.observable.Observable;
+import battleships.observable.Observer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +30,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
-public class ClientMain extends Application implements Observer {
+public class ClientMain extends Application implements Observer<ConnectionEvent> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientMain.class);
 
@@ -40,6 +45,8 @@ public class ClientMain extends Application implements Observer {
 		packetFactoryMap.put(LobbyListPacket.IDENTIFIER, new LobbyListPacketFactory());
 		packetFactoryMap.put(LoginResponsePacket.IDENTIFIER, new LoginResponseFactory());
 		packetFactoryMap.put(RegistrationErrorResponsePacket.IDENTIFIER, new RegistrationErrorResponseFactory());
+		packetFactoryMap.put(GameJoinedPacket.IDENTIFIER, new GameJoinedPacketFactory());
+		packetFactoryMap.put(ServerErrorPacket.IDENTIFIER, new ServerErrorPacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 
@@ -98,15 +105,17 @@ public class ClientMain extends Application implements Observer {
 	}
 
 	@Override
-	public void update(final Observable o, final Object arg) {
-		if (arg instanceof ConnectionEvent) {
-			ConnectionEvent event = (ConnectionEvent) arg;
-
-			if (event == ConnectionEvent.DISCONNECTED) {
-				Platform.runLater(() -> {
-					ErrorDialog.show(this.getStage(), "Disconnected!");
-				});
-			}
+	public void update(final Observable<ConnectionEvent> o, final ConnectionEvent event) {
+		if (event == ConnectionEvent.DISCONNECTED) {
+			Platform.runLater(() -> {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.initModality(Modality.APPLICATION_MODAL);
+				alert.initOwner(getStage());
+				alert.setHeaderText("Verbindung zum Server verloren!");
+				alert.setContentText("Das Programm wird geschlossen.");
+				alert.showAndWait();
+				System.exit(1);
+			});
 		}
 	}
 }

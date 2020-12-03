@@ -1,9 +1,15 @@
-package battleships.net.connection;
+package battleships.server.connection;
 
-import battleships.net.connection.packethandler.LobbyPacketHandler;
+import battleships.net.connection.Connection;
 import battleships.packet.Player;
+import battleships.server.connection.packethandler.LobbyPacketHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthenticatedConnection extends Connection {
+
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticatedConnection.class);
+
 	private final Player player;
 
 	public AuthenticatedConnection(final Connection connection, final Player player) {
@@ -11,6 +17,10 @@ public class AuthenticatedConnection extends Connection {
 		super.packetHandler = new LobbyPacketHandler();
 		super.reader.setConnection(this);
 		this.player = player;
+
+		setObservers(connection.getObservers());
+
+		logger.debug("creating AuthenticatedConnection for {}", player.getUsername());
 	}
 
 	protected AuthenticatedConnection(final AuthenticatedConnection connection) {
