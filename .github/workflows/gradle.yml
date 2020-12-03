@@ -25,10 +25,15 @@ jobs:
                 run: chmod +x gradlew
             -   name: Build with Gradle
                 run: ./gradlew clean build
-            -   name: Archive production artifacts
+            -   name: Archive client
                 uses: actions/upload-artifact@v2
                 with:
-                    name: Client & Server ZIPs
+                    name: client
                     path: |
                         apps/client/build/distributions/EvaClient.zip
+            -   name: Archive server
+                uses: actions/upload-artifact@v2
+                with:
+                    name: server
+                    path: |
                         apps/server/build/distributions/server.zip
