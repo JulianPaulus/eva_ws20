@@ -107,6 +107,8 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 	@Override
 	public void update(final Observable<ConnectionEvent> o, final ConnectionEvent event) {
 		if (event == ConnectionEvent.DISCONNECTED) {
+			this.connection = null;
+			// TODO: track login state (or something like that) and only show the following alert if the player was already logged in
 			Platform.runLater(() -> {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.initModality(Modality.APPLICATION_MODAL);

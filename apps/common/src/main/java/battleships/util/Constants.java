@@ -1,10 +1,17 @@
 package battleships.util;
 
+import java.util.concurrent.TimeUnit;
+
 public class Constants {
 
-	public static final int DEFAULT_PORT = 5555;
 
 	public static final int UUID_BYTE_COUNT = 16;
+
+	public static class Server {
+		public static final int DEFAULT_PORT = 5555;
+		public static final int MAX_PLAYER_COUNT = 100;
+		public static final long CONNECTION_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(10);
+	}
 
 	public static class Identifiers {
 

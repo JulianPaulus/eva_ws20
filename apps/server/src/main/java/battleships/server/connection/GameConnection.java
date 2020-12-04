@@ -5,6 +5,8 @@ import battleships.server.game.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public class GameConnection extends AuthenticatedConnection {
 
 	private static final Logger logger = LoggerFactory.getLogger(GameConnection.class);
@@ -36,5 +38,19 @@ public class GameConnection extends AuthenticatedConnection {
 			", packetHandler=" + packetHandler +
 			", closed=" + closed +
 			'}';
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		GameConnection that = (GameConnection) o;
+		return game.equals(that.game);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), game);
 	}
 }

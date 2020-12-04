@@ -1,6 +1,7 @@
 package battleships.server.socket;
 
 import battleships.net.connection.Connection;
+import battleships.server.service.ConnectionService;
 import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,35 +12,39 @@ import java.net.Socket;
 
 public class Server extends Thread {
 
-	private static final Logger logger = LoggerFactory.getLogger(Server.class);
+	private static final Server INSTANCE = new Server();
+	private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
-	private static Server instance;
+	private final ConnectionService connectionService = ConnectionService.getInstance();
+	private ServerSocket serverSocket;
 
-	private final ServerSocket serverSocket;
-
-	private Server() throws IOException {
+	private Server()  {
 		super("server");
-		this.serverSocket = new ServerSocket(Constants.DEFAULT_PORT);
+		try {
+			this.serverSocket = new ServerSocket(Constants.Server.DEFAULT_PORT);
+		} catch (final IOException e) {
+			LOGGER.error("critical error during startup", e);
+			System.exit(1);
+		}
 	}
 
 	@Override
 	public void run() {
-		logger.info("Server starting...");
+		LOGGER.info("Server starting...");
 		while (!serverSocket.isClosed() && !isInterrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
-				logger.info("new connection from {}", socket.getInetAddress().getHostAddress());
+				LOGGER.info("new connection from {}", socket.getInetAddress().getHostAddress());
 				Connection newConnection = new Connection(socket);
-			} catch (IOException e) {
-				logger.trace("error in serversocket loop", e);
+				newConnection.addObserver(connectionService);
+				connectionService.registerConnection(newConnection);
+			} catch (final IOException e) {
+				LOGGER.trace("error in serversocket loop", e);
 			}
 		}
 	}
 
-	public synchronized static Server getInstance() throws IOException {
-		if (instance == null) {
-			instance = new Server();
-		}
-		return instance;
+	public static Server getInstance() throws IOException {
+		return INSTANCE;
 	}
 }

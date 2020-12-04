@@ -125,7 +125,7 @@ public class LoginController {
 		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText().trim());
 		if (matcher.matches()) {
 			String host = matcher.group(1);
-			Integer port = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Constants.DEFAULT_PORT;
+			Integer port = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Constants.Server.DEFAULT_PORT;
 
 			return new Pair<>(host, port);
 		}

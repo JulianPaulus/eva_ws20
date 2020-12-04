@@ -2,6 +2,7 @@ package battleships.server.game;
 
 import battleships.server.exception.ServerException;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,5 +39,18 @@ public class Game {
 
 	public Optional<Player> getGuest() {
 		return Optional.ofNullable(guest);
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Game game = (Game) o;
+		return id.equals(game.id) && host.equals(game.host) && Objects.equals(guest, game.guest);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, host, guest);
 	}
 }

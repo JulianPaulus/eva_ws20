@@ -11,6 +11,7 @@ public abstract class Observable<DataType> {
 		this.observers = new LinkedList<>();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void updateObservers(final DataType parameter) {
 
 		Object[] localObservers;

@@ -1,5 +1,7 @@
 package battleships.server.game;
 
+import java.util.Objects;
+
 public class Player {
 	private final int id;
 	private final String username;
@@ -21,5 +23,18 @@ public class Player {
 
 	public String getPassword() {
 		return password;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Player player = (Player) o;
+		return id == player.id && username.equals(player.username) && password.equals(player.password);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, username, password);
 	}
 }

@@ -3,12 +3,16 @@ package battleships.server.connection;
 import battleships.net.connection.Connection;
 import battleships.server.connection.packethandler.LobbyPacketHandler;
 import battleships.server.game.Player;
+import battleships.server.service.ConnectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public class AuthenticatedConnection extends Connection {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticatedConnection.class);
+	protected static final ConnectionService CONNECTION_SERVICE = ConnectionService.getInstance();
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticatedConnection.class);
 
 	private final Player player;
 
@@ -19,8 +23,9 @@ public class AuthenticatedConnection extends Connection {
 		this.player = player;
 
 		setObservers(connection.getObservers());
+		CONNECTION_SERVICE.registerConnection(this);
 
-		logger.debug("creating AuthenticatedConnection for {}", player.getUsername());
+		LOGGER.debug("creating AuthenticatedConnection for {}", player.getUsername());
 	}
 
 	protected AuthenticatedConnection(final AuthenticatedConnection connection) {
@@ -41,5 +46,19 @@ public class AuthenticatedConnection extends Connection {
 			", packetHandler=" + packetHandler +
 			", closed=" + closed +
 			'}';
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		AuthenticatedConnection that = (AuthenticatedConnection) o;
+		return player.equals(that.player);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), player);
 	}
 }
