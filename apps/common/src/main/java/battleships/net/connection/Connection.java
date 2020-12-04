@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Connection extends Observable<ConnectionEvent> {
 
-	private static final Logger logger = LoggerFactory.getLogger(Connection.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
 
 	protected final Socket socket;
 	protected final PacketReader reader;
@@ -25,7 +25,7 @@ public class Connection extends Observable<ConnectionEvent> {
 	protected boolean closed = false;
 	protected AbstractPacketHandler<?, ?> packetHandler;
 
-	private AtomicLong lastInteraction;
+	private AtomicLong lastInteractionMS;
 
 	public Connection(final Socket socket) throws IOException {
 		this.socket = socket;
@@ -33,10 +33,10 @@ public class Connection extends Observable<ConnectionEvent> {
 		this.writer = new PacketWriter(socket.getOutputStream());
 		this.packetHandler = new PreAuthPacketHandler();
 		this.uuid = UUID.randomUUID();
-		this.lastInteraction = new AtomicLong(System.currentTimeMillis());
+		this.lastInteractionMS = new AtomicLong(System.currentTimeMillis());
 		reader.start();
 
-		logger.info("established connection with {}", socket.getInetAddress().getHostAddress());
+		LOGGER.info("established connection with {}", socket.getInetAddress().getHostAddress());
 	}
 
 	protected Connection(final Connection connection) {
@@ -46,7 +46,7 @@ public class Connection extends Observable<ConnectionEvent> {
 		this.packetHandler = connection.packetHandler;
 		this.closed = connection.closed;
 		this.uuid = connection.uuid;
-		this.lastInteraction = connection.lastInteraction;
+		this.lastInteractionMS = connection.lastInteractionMS;
 	}
 
 	public void writePacket(final SendPacket packet) {
@@ -54,25 +54,25 @@ public class Connection extends Observable<ConnectionEvent> {
 			writer.write(packet);
 			updateInteractionTime();
 		} catch (final IOException e) {
-			logger.error("error while writing a packet to {}", this, e);
-			try {
-				close();
-			} catch (final IOException ioException) {
-				logger.error("error while closing connection {}", this, e);
-			}
+			LOGGER.error("error while writing a packet to {}", this, e);
+			close();
 		}
 	}
 
-	public synchronized void close() throws IOException {
+	public synchronized void close() {
 		if (!closed) {
-			writer.close();
-			reader.close();
-			socket.close();
+			try {
+				writer.close();
+				reader.close();
+				socket.close();
 
-			logger.info("closing connection with {}", socket.getInetAddress().getHostAddress());
-			closed = true;
+				LOGGER.info("closing connection with {}", socket.getInetAddress().getHostAddress());
+				closed = true;
 
-			updateObservers(ConnectionEvent.DISCONNECTED);
+				updateObservers(ConnectionEvent.DISCONNECTED);
+			} catch (final IOException e) {
+				LOGGER.warn("error while closing connection", e);
+			}
 		}
 	}
 
@@ -89,7 +89,11 @@ public class Connection extends Observable<ConnectionEvent> {
 	}
 
 	public void updateInteractionTime() {
-		lastInteraction.set(System.currentTimeMillis());
+		lastInteractionMS.set(System.currentTimeMillis());
+	}
+
+	public long getLastInteractionMS() {
+		return lastInteractionMS.get();
 	}
 
 	@Override
@@ -111,12 +115,12 @@ public class Connection extends Observable<ConnectionEvent> {
 		Connection that = (Connection) o;
 		return closed == that.closed && socket.equals(that.socket) && reader.equals(that.reader) && writer
 			.equals(that.writer) && uuid.equals(that.uuid) && packetHandler
-			.equals(that.packetHandler) && lastInteraction
-			.equals(that.lastInteraction);
+			.equals(that.packetHandler) && lastInteractionMS
+			.equals(that.lastInteractionMS);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(socket, reader, writer, uuid, closed, packetHandler, lastInteraction);
+		return Objects.hash(socket, reader, writer, uuid, closed, packetHandler, lastInteractionMS);
 	}
 }

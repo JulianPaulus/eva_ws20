@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class ConnectionService implements Observer<ConnectionEvent> {
 
@@ -116,6 +117,32 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 			return authorizedConnections.size() <= Constants.Server.MAX_PLAYER_COUNT;
 		} finally {
 			authorizedLock.readLock().unlock();
+		}
+	}
+
+	public void closeStaleConnections() {
+		try {
+			unauthorizedLock.writeLock().lock();
+			long currentMS = System.currentTimeMillis();
+			List<Connection> removes = unauthorizedConnections.stream()
+				.filter(con -> (currentMS - con.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS)
+				.collect(Collectors.toList());
+			removes.forEach(Connection::close);
+		} finally {
+			unauthorizedLock.writeLock().unlock();
+		}
+
+		try {
+			authorizedLock.writeLock().lock();
+			long currentMS = System.currentTimeMillis();
+			List<AuthenticatedConnection> removes = authorizedConnections.values().stream().filter(
+				authenticatedConnection -> (currentMS - authenticatedConnection
+					.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS)
+				.collect(Collectors.toList());
+
+			removes.forEach(AuthenticatedConnection::close);
+		} finally {
+			authorizedLock.writeLock().unlock();
 		}
 	}
 }

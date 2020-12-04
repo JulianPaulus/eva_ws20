@@ -9,7 +9,6 @@ import battleships.server.service.PlayerService;
 import battleships.util.Constants;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 
 public class LoginPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_REQUEST;
@@ -34,11 +33,7 @@ public class LoginPacket implements IPreAuthReceivePacket {
 			player = PlayerService.getInstance().authenticate(username, password);
 		} catch (final LoginException e) {
 			connection.writePacket(new LoginResponsePacket(-1, false));
-			try {
-				connection.close();
-			} catch (final IOException ioException) {
-				ioException.printStackTrace();
-			}
+			connection.close();
 			return;
 		}
 

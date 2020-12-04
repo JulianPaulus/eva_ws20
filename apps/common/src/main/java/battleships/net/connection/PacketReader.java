@@ -44,14 +44,10 @@ public class PacketReader extends Thread {
 					}
 				}
 			} catch (final IOException e) {
-				try {
-					if (connection != null) {
-						connection.close();
-					}
-					interrupt();
-				} catch (final IOException ioException) {
-					logger.error("error while closing connection", ioException);
+				if (connection != null) {
+					connection.close();
 				}
+				interrupt();
 			}
 		}
 	}
