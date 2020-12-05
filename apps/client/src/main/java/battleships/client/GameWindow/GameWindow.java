@@ -4,6 +4,7 @@ import battleships.client.Model.CoorrdinateStateEnum;
 import battleships.client.Model.GameModel;
 import battleships.client.Model.GameStateEnum;
 import battleships.client.Model.ModelObserver;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,6 +25,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Observable;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
@@ -45,6 +49,9 @@ public class GameWindow implements Initializable {
 
 	@FXML
 	private TextField chatTextBox;
+
+	@FXML
+	private ListView chatWindow;
 
 	private Scene scene;
 	private GameModel model;
@@ -282,5 +289,60 @@ public class GameWindow implements Initializable {
 	{
 		if(model.getCurrentState()==GameStateEnum.shooting)
 			model.shootAt(xPos,yPos);
+	}
+
+	public void updateChatWindow()
+	{
+		chatWindow.getItems().clear();
+		for(String message:model.getChatMessages())
+			chatWindow.getItems().add(message);
+	}
+	public void updatePlayerField()
+	{
+		for(int x=0;x<BOARD_SQUARE_SIZE;x++)
+			for(int y=0;y<BOARD_SQUARE_SIZE;y++)
+			{
+				switch (model.currentStateOfPlayerCoordinate(x,y))
+				{
+					case Ship:
+						playerLabels[x][y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+						break;
+					case hit:
+						playerLabels[x][y].setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
+						break;
+
+					case miss:
+						playerLabels[x][y].setStyle("-fx-background-color: #bdbdbd;"+"-fx-border-color: black");
+						break;
+
+					default:
+						playerLabels[x][y].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+				}
+			}
+	}
+
+	public void updateTargetField()
+	{
+		for(int x=0;x<BOARD_SQUARE_SIZE;x++)
+			for(int y=0;y<BOARD_SQUARE_SIZE;y++)
+			{
+				switch (model.currentStateOfTargetCoordinate(x,y))
+				{
+					case hit:
+						targetLabels[x][y].setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
+						break;
+
+					case miss:
+						targetLabels[x][y].setStyle("-fx-background-color: #bdbdbd;"+"-fx-border-color: black");
+						break;
+
+					default:
+						targetLabels[x][y].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+				}
+			}
+	}
+	public void updateRulesForPhaseChange()
+	{
+
 	}
 }

@@ -1,5 +1,7 @@
 package battleships.client.Model;
 
+import javafx.collections.ObservableList;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,6 +133,11 @@ public class GameModel {
 	{
 		chat.add(message);
 		observer.notifyAboutChatMessage();
+	}
+
+	public List<String> getChatMessages()
+	{
+		return chat;
 	}
 
 	public void switchToNextBiggerShipType()

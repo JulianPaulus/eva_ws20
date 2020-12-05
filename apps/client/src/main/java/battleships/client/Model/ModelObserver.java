@@ -11,16 +11,17 @@ public class ModelObserver {
 
 	public void notifyAboutChatMessage(){
 
+		view.updateChatWindow();
 	}
 
 	public void notifyAboutTargetModelChange()
 	{
-
+		view.updateTargetField();
 	}
 
 	public void notifyAboutPlayerModelChange()
 	{
-
+		view.updatePlayerField();
 	}
 
 	public void notifyAboutGameStatusChange()
@@ -28,7 +29,7 @@ public class ModelObserver {
 
 	}
 
-	public void notifyAboutShipTypeChange()
+	public void notifyAboutShipTypeChange()	//eventuell nicht notwendig,da der Schiffstüp immer aktuell aus dem Model geholt wird
 	{
 
 	}
@@ -40,6 +41,8 @@ public class ModelObserver {
 
 	public void notifyAllChanged()
 	{
-
+		view.updateChatWindow();
+		view.updateTargetField();
+		view.updatePlayerField();
 	}
 }

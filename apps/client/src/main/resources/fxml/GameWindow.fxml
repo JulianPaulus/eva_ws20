@@ -77,7 +77,7 @@
             <VBox minWidth="200.0" prefHeight="223.0" prefWidth="472.0">
                <children>
                   <Label text="Chat" />
-                  <ListView fx:id="ChatWindow" prefHeight="310.0" prefWidth="170.0">
+                  <ListView fx:id="chatWindow" prefHeight="310.0" prefWidth="170.0">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
