@@ -1,4 +1,4 @@
-package battleship.client.Model;
+package battleships.client.Model;
 
 public class Ship {
 	private ShipType type;

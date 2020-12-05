@@ -1,9 +1,9 @@
-package battleship.client.GameWindow;
+package battleships.client.GameWindow;
 
-import battleship.client.Model.CoorrdinateStateEnum;
-import battleship.client.Model.GameModel;
-import battleship.client.Model.GameStateEnum;
-import battleship.client.Model.ModelObserver;
+import battleships.client.Model.CoorrdinateStateEnum;
+import battleships.client.Model.GameModel;
+import battleships.client.Model.GameStateEnum;
+import battleships.client.Model.ModelObserver;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

@@ -1,4 +1,4 @@
-package battleship.client.Model;
+package battleships.client.Model;
 
 public enum CoorrdinateStateEnum {
 	Empty,

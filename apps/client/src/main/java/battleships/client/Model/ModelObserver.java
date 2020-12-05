@@ -1,6 +1,6 @@
-package battleship.client.Model;
+package battleships.client.Model;
 
-import battleship.client.GameWindow.GameWindow;
+import battleships.client.GameWindow.GameWindow;
 
 public class ModelObserver {
 	GameWindow view;

@@ -1,6 +1,4 @@
-package battleship.client.Model;
-
-import javafx.fxml.FXML;
+package battleships.client.Model;
 
 import java.util.Arrays;
 import java.util.LinkedList;
