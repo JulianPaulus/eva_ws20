@@ -3,9 +3,12 @@ package battleship.client.GameWindow;
 import battleship.client.Model.CoorrdinateStateEnum;
 import battleship.client.Model.GameModel;
 import battleship.client.Model.GameStateEnum;
+import battleship.client.Model.ModelObserver;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,6 +26,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
+
+	private final int BOARD_SQUARE_SIZE = 10;
 
 	private Stage stage;
 
@@ -43,6 +50,9 @@ public class GameWindow implements Initializable {
 	private GameModel model;
 	private boolean horizontal;
 
+	private Label[][] playerLabels = new Label[BOARD_SQUARE_SIZE][BOARD_SQUARE_SIZE];
+	private Label[][] targetLabels = new Label[BOARD_SQUARE_SIZE][BOARD_SQUARE_SIZE];
+
 	public GameWindow(Stage stage)
 	{
 		horizontal=true;
@@ -58,7 +68,7 @@ public class GameWindow implements Initializable {
 
 		stage.setScene(scene);
 
-		model= new GameModel();
+		model= new GameModel(new ModelObserver(this));
 
 
 	}
@@ -82,134 +92,195 @@ public class GameWindow implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		for (int i=0; i<10;i++)
-		{
-			for (int j=0; j<10;j++)
-			{
-				Pane playerPane=new Pane();
-				//mouseClick
-				playerPane.setOnMouseClicked(event -> {
-					event.getSource();
-					int xPos = playerGrid.getColumnIndex((Node)event.getSource());
-					int yPos = playerGrid.getRowIndex((Node)event.getSource());
+		setupBoard(playerGrid, playerLabels, BOARD_SQUARE_SIZE, BOARD_SQUARE_SIZE);
+		setupBoard(targetGrid, targetLabels, BOARD_SQUARE_SIZE, BOARD_SQUARE_SIZE);
+	}
 
-					if( model.getCurrentState()==GameStateEnum.setUp)
-						model.setShip(xPos,yPos, horizontal);
-				});
-				//MouseHover
-				playerPane.setOnMouseEntered(event->{
-					if(model.getCurrentState()==GameStateEnum.setUp) {
-						int xPos = playerGrid.getColumnIndex((Node) event.getSource());
-						int yPos = playerGrid.getRowIndex((Node) event.getSource());
-
-						if (horizontal)
-						{
-							if(xPos+model.getTileNumberOfCurrentShip()<10)
-							{
-								for(int x=0;x<model.getTileNumberOfCurrentShip();x++)
-								{
-									getNodeFromGridPane(playerGrid,xPos+x,yPos).setStyle("-fx-background-color: #0004ff");
-
-								}
-							}
-						}
-						else
-						{
-							if(yPos+model.getTileNumberOfCurrentShip()<10)
-							{
-								for(int y=0;y<model.getTileNumberOfCurrentShip();y++)
-								{
-									getNodeFromGridPane(playerGrid,xPos,yPos+y).setStyle("-fx-background-color: #0004ff");
-								}
-							}
-						}
-					}
-				});
-				playerPane.setOnMouseExited(event->{
-					//selectedShip demarkieren
-				});
-
-				playerPane.setOnContextMenuRequested(event->{
-					if(model.getCurrentState()==GameStateEnum.setUp)
-					{
-						int xPos = playerGrid.getColumnIndex((Node) event.getSource());
-						int yPos = playerGrid.getRowIndex((Node) event.getSource());
-
-						if (horizontal)
-						{
-
-							if(xPos+model.getTileNumberOfCurrentShip()<10)
-							{
-								for(int x=0;x<model.getTileNumberOfCurrentShip();x++)
-								{
-									switch(model.currentStateOfPlayerCoordinate(xPos+x,yPos)){
-										case Ship:
-											getNodeFromGridPane(playerGrid,xPos+x,yPos).setStyle("-fx-background-color: #0004ff");
-											break;
-										case Empty:
-											getNodeFromGridPane(playerGrid,xPos+x,yPos).setStyle("-fx-background-color: #ffffff");
-											break;
-									}
-								}
-							}
-						}
-						else
-						{
-							if(yPos+model.getTileNumberOfCurrentShip()<10)
-							{
-								for(int y=0;y<model.getTileNumberOfCurrentShip();y++)
-								{
-									switch(model.currentStateOfPlayerCoordinate(xPos,yPos+y)){
-										case Ship:
-											getNodeFromGridPane(playerGrid,xPos,yPos+y).setStyle("-fx-background-color: #0004ff");
-											break;
-										case Empty:
-											getNodeFromGridPane(playerGrid,xPos,yPos+y).setStyle("-fx-background-color: #ffffff");
-											break;
-									}
-								}
-							}
-						}
-						horizontal=(!horizontal);
-					}
-
-				});
-				playerGrid.add(playerPane,i,j);
-
-				Pane targetPane=new Pane();
-
-				//mouseClick
-				targetPane.setOnMouseClicked(event -> {
-					event.getSource();
-					int xPos = targetGrid.getColumnIndex((Node)event.getSource());
-					int yPos = targetGrid.getRowIndex((Node)event.getSource());
-
-					if(model.getCurrentState()== GameStateEnum.shooting)
-						model.shootAt(xPos,yPos);
-				});
-
-				//MouseHover
-				targetPane.setOnMouseEntered(event->{
-					if(model.getCurrentState()==GameStateEnum.shooting)
-						targetPane.setStyle("-fx-background-color: #e6f54f");
-				});
-
-				targetPane.setOnMouseExited(event->{
-
-					if(model.getCurrentState()==GameStateEnum.shooting)
-					{
-						int xPos = targetGrid.getColumnIndex((Node) event.getSource());
-						int yPos = targetGrid.getRowIndex((Node) event.getSource());
-						if (model.currentStateOfTargetCoordinate(xPos, yPos) == CoorrdinateStateEnum.Empty)
-							targetPane.setStyle("-fx-background-color: #ffffff");
-						if (model.currentStateOfTargetCoordinate(xPos, yPos) == CoorrdinateStateEnum.hit)
-							targetPane.setStyle("-fx-background-color: #ea1313");
-						if (model.currentStateOfTargetCoordinate(xPos, yPos) == CoorrdinateStateEnum.miss)
-							targetPane.setStyle("-fx-background-color: #bdbdbd");
-					}
-				});
-				targetGrid.add(targetPane,i,j);
+	private void setupBoard(GridPane gridPane, Label[][] labelArray, int sizeX, int sizeY) {
+		for (int i = 0; i < sizeX; i++) {
+			final int finalI = i;
+			for(int j = 0; j < sizeY; j++) {
+				final int finalJ = j;
+				final Label label = new Label();
+				label.setTextAlignment(TextAlignment.CENTER);
+				GridPane.setHalignment(label, HPos.CENTER);
+				GridPane.setValignment(label, VPos.CENTER);
+				label.setMaxHeight(Double.MAX_VALUE);
+				label.setMaxWidth(Double.MAX_VALUE);
+				label.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+				GridPane.setHgrow(label, Priority.ALWAYS);
+				GridPane.setVgrow(label, Priority.ALWAYS);
+				gridPane.add(label, i, j);
+				labelArray[i][j] = label;
+				if(gridPane==targetGrid) {
+					label.setOnMouseEntered(event -> {
+						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
+						onMouseHoverTargetField(label, finalI, finalJ,  true);
+					});
+					label.setOnMouseExited(event -> {
+						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
+						onMouseHoverTargetField(label, finalI, finalJ,  false);
+					});
+					label.setOnMouseClicked(event->{
+						onTargetFieldClicked(finalI,finalJ);
+					});
+				}
+				else
+				{
+					label.setOnMouseEntered(event -> {
+						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
+						onMouseHoverPlayerField(label, finalI, finalJ,  true);
+					});
+					label.setOnMouseExited(event -> {
+						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
+						onMouseHoverPlayerField(label, finalI, finalJ,  false);
+					});
+					label.setOnContextMenuRequested(event->{
+						System.out.println("Mouse rightClickedOn Field: " + finalI + ", " + finalJ);
+						onPlayerFieldRightClicked(label, finalI, finalJ);
+					});
+					label.setOnMouseClicked(event->{onPlayerFieldClicked( finalI, finalJ);});
+				}
 			}
 		}
+	}
+	private void onMouseHoverTargetField(Label label, int posX, int poxY, boolean isEnter) {
+		if(isEnter) {
+			if(model.getCurrentState()==GameStateEnum.shooting) {
+				label.setStyle("-fx-background-color: #e6f54f;"+"-fx-border-color: black");
+				targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #e6f54f;"+"-fx-border-color: black");
+			}
+		} else {
+			if(model.getCurrentState()==GameStateEnum.shooting) {
+
+				if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.Empty) {
+					label.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+					targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+				}
+				else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.hit) {
+					label.setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
+					targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
+				}
+				else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.miss) {
+					label.setStyle("-fx-background-color: #bdbdbd;"+"-fx-border-color: black");
+					targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #bdbdbd;"+"-fx-border-color: black");
+				}
+			}
+		}
+	}
+
+	private void onMouseHoverPlayerField(Label label, int posX, int poxY, boolean isEnter) {
+		if (model.getCurrentState() == GameStateEnum.setUp) {
+			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + poxY);
+			if (isEnter) {
+
+				System.out.println("onMouseHoverPlayerField" + posX + " " + poxY);
+
+
+				if (horizontal) {
+					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
+						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
+							System.out.println("" + posX + poxY);
+							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+						}
+					}
+				} else {
+					if (poxY + model.getTileNumberOfCurrentShip() <= 10) {
+						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
+							System.out.println("" + posX + poxY);
+							playerLabels[posX][poxY + y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color:black");
+						}
+					}
+				}
+			}
+		 else {
+			if (horizontal) {
+				if (posX + model.getTileNumberOfCurrentShip() <= 10) {
+					for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
+						System.out.println("" + posX + poxY);
+						if(model.currentStateOfTargetCoordinate(posX+x,poxY)==CoorrdinateStateEnum.Empty)
+							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+						else
+							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+					}
+				}
+			} else {
+				if (poxY + model.getTileNumberOfCurrentShip() < 10) {
+					for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
+						System.out.println("" + posX + poxY);
+						if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.Empty){
+							playerLabels[posX][poxY + y].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+						}
+						else {
+							playerLabels[posX][poxY + y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+						}
+					}
+				}
+			}
+		}
+		}
+	}
+
+	void onPlayerFieldRightClicked(Label label, int xPos, int yPos)
+	{
+		if(model.getCurrentState()==GameStateEnum.setUp)
+		{
+			if (horizontal)
+			{
+
+				if(xPos+model.getTileNumberOfCurrentShip()<=10)
+				{
+					for(int x=0;x<model.getTileNumberOfCurrentShip();x++)
+					{
+						switch(model.currentStateOfPlayerCoordinate(xPos+x,yPos)){
+							case Ship:
+								playerLabels[xPos+x][yPos].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+								if(xPos+model.getTileNumberOfCurrentShip()<10)
+									playerLabels[xPos][yPos+x].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+								break;
+							case Empty:
+								playerLabels[xPos+x][yPos].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+								if(xPos+model.getTileNumberOfCurrentShip()<10)
+									playerLabels[xPos][yPos+x].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+								break;
+						}
+					}
+				}
+			}
+			else
+			{
+				if(yPos+model.getTileNumberOfCurrentShip()<10)
+				{
+					for(int y=0;y<model.getTileNumberOfCurrentShip();y++)
+					{
+						switch(model.currentStateOfPlayerCoordinate(xPos,yPos+y)){
+							case Ship:
+								playerLabels[xPos][yPos+y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+								if(xPos+model.getTileNumberOfCurrentShip()<10)
+									playerLabels[xPos+y][yPos].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+								break;
+							case Empty:
+								playerLabels[xPos][yPos+y].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+								if(xPos+model.getTileNumberOfCurrentShip()<10)
+									playerLabels[xPos+y][yPos].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+								break;
+						}
+					}
+				}
+			}
+			horizontal=(!horizontal);
+		}
+	}
+
+	void onPlayerFieldClicked(int xPos, int yPos)
+	{
+		if(model.getCurrentState()==GameStateEnum.setUp)
+			model.setShip(xPos,yPos,horizontal);
+	}
+
+	void onTargetFieldClicked(int xPos, int yPos)
+	{
+		if(model.getCurrentState()==GameStateEnum.shooting)
+			model.shootAt(xPos,yPos);
 	}
 }

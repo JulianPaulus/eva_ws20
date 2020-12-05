@@ -5,6 +5,10 @@ import battleship.client.GameWindow.GameWindow;
 public class ModelObserver {
 	GameWindow view;
 
+	public ModelObserver(GameWindow view) {
+		this.view = view;
+	}
+
 	public void notifyAboutChatMessage(){
 
 	}
