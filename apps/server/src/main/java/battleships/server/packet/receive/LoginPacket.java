@@ -1,21 +1,22 @@
 package battleships.server.packet.receive;
 
-import battleship.net.connection.AuthenticatedConnection;
-import battleship.net.connection.Connection;
-import battleship.net.packet.IPreAuthReceivePacket;
-import battleship.packet.Player;
-import battleship.server.service.PlayerService;
+import battleships.net.connection.AuthenticatedConnection;
+import battleships.net.connection.Connection;
+import battleships.net.packet.IPreAuthReceivePacket;
+import battleships.packet.Player;
 import battleships.server.packet.send.LoginResponsePacket;
+import battleships.server.service.PlayerService;
+import battleships.util.Constants;
 
-import java.io.IOException;
+import javax.security.auth.login.LoginException;
 
 public class LoginPacket implements IPreAuthReceivePacket {
-	public static final byte IDENTIFIER = 0x3;
+	public static final byte IDENTIFIER = Constants.Identifiers.LOGIN_REQUEST;
 
 	private final String username;
 	private final String password;
 
-	public LoginPacket(String username, String password) {
+	public LoginPacket(final String username, final String password) {
 		this.username = username;
 		this.password = password;
 	}
@@ -26,21 +27,16 @@ public class LoginPacket implements IPreAuthReceivePacket {
 	}
 
 	@Override
-	public void act(Connection connection) {
-		Player player = PlayerService.getInstance().authenticate(username, password);
-		if (player != null) {
-			AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
-			try {
-				authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				connection.writePacket(new LoginResponsePacket(-1, false));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public void act(final Connection connection) {
+		Player player = null;
+		try {
+			player = PlayerService.getInstance().authenticate(username, password);
+		} catch (LoginException e) {
+			connection.writePacket(new LoginResponsePacket(-1, false));
+			return;
 		}
+
+		AuthenticatedConnection authedConnection = new AuthenticatedConnection(connection, player);
+		authedConnection.writePacket(new LoginResponsePacket(player.getId(), true));
 	}
 }

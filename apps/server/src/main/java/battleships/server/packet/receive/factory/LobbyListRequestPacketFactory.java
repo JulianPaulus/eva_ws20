@@ -1,6 +1,6 @@
 package battleships.server.packet.receive.factory;
 
-import battleship.net.factory.AbstractPacketFactory;
+import battleships.net.factory.AbstractPacketFactory;
 import battleships.server.packet.receive.LobbyListRequestPacket;
 
 import java.io.DataInputStream;
@@ -9,7 +9,7 @@ import java.io.IOException;
 public class LobbyListRequestPacketFactory extends AbstractPacketFactory<LobbyListRequestPacket> {
 
 	@Override
-	public LobbyListRequestPacket unmarshal(DataInputStream stream) throws IOException {
+	public LobbyListRequestPacket unmarshal(final DataInputStream stream) throws IOException {
 		return new LobbyListRequestPacket();
 	}
 }
