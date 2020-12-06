@@ -27,7 +27,8 @@ public class CreateGamePacket implements ILobbyReceivePacket {
 
 		Game game = new Game(connection.getPlayer());
 		GameConnection gameConnection = new GameConnection(connection, game);
-		LOGGER.info("creating game '{}'", connection.getPlayer().getUsername());
+
+		LOGGER.info("created game '{}'", connection.getPlayer().getUsername());
 		LOBBY_SERVICE.registerGame(game);
 
 		connection.writePacket(new GameJoinedPacket(game.getId()));

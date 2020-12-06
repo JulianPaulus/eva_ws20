@@ -1,6 +1,7 @@
 package battleships.server.packet.receive;
 
 import battleships.server.connection.AuthenticatedConnection;
+import battleships.server.connection.GameConnection;
 import battleships.server.exception.ServerException;
 import battleships.server.game.Game;
 import battleships.server.packet.ILobbyReceivePacket;
@@ -42,7 +43,8 @@ public class JoinGamePacket implements ILobbyReceivePacket {
 
 		try {
 			Game game = LOBBY_SERVICE.getGameById(gameId).orElseThrow(() -> new ServerException("Game not found!"));
-			game.addGuest(connection.getPlayer());
+			GameConnection gameConnection = new GameConnection(connection, game);
+			game.addGuest(gameConnection.getPlayer());
 
 			connection.writePacket(new GameJoinedPacket(game.getId()));
 

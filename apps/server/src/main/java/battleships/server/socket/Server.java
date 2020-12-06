@@ -49,6 +49,7 @@ public class Server extends Thread {
 				LOGGER.trace("error in serversocket loop", e);
 			}
 		}
+		connectionManager.interrupt();
 	}
 
 	public static Server getInstance() throws IOException {

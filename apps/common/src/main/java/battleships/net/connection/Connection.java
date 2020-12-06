@@ -25,7 +25,7 @@ public class Connection extends Observable<ConnectionEvent> {
 	protected boolean closed = false;
 	protected AbstractPacketHandler<?, ?> packetHandler;
 
-	private AtomicLong lastInteractionMS;
+	private final AtomicLong lastInteractionMS;
 
 	public Connection(final Socket socket) throws IOException {
 		this.socket = socket;
@@ -47,6 +47,7 @@ public class Connection extends Observable<ConnectionEvent> {
 		this.closed = connection.closed;
 		this.uuid = connection.uuid;
 		this.lastInteractionMS = connection.lastInteractionMS;
+		this.observers = connection.observers;
 	}
 
 	public void writePacket(final SendPacket packet) {

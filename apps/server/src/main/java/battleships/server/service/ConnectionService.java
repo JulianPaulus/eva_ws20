@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class ConnectionService implements Observer<ConnectionEvent> {
 
@@ -121,28 +120,34 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 	}
 
 	public void closeStaleConnections() {
+		List<Connection> removes = new LinkedList<>();
 		try {
-			unauthorizedLock.writeLock().lock();
+			unauthorizedLock.readLock().lock();
 			long currentMS = System.currentTimeMillis();
-			List<Connection> removes = unauthorizedConnections.stream()
+			unauthorizedConnections.stream()
 				.filter(con -> (currentMS - con.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS)
-				.collect(Collectors.toList());
-			removes.forEach(Connection::close);
+				.forEach(removes::add);
 		} finally {
-			unauthorizedLock.writeLock().unlock();
+			unauthorizedLock.readLock().unlock();
 		}
 
 		try {
-			authorizedLock.writeLock().lock();
+			authorizedLock.readLock().lock();
 			long currentMS = System.currentTimeMillis();
-			List<AuthenticatedConnection> removes = authorizedConnections.values().stream().filter(
+			authorizedConnections.values().stream().filter(
 				authenticatedConnection -> (currentMS - authenticatedConnection
-					.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS)
-				.collect(Collectors.toList());
+					.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS).forEach(removes::add);
+		} finally {
+			authorizedLock.readLock().unlock();
+		}
 
-			removes.forEach(AuthenticatedConnection::close);
+		try {
+			unauthorizedLock.writeLock().lock();
+			authorizedLock.writeLock().lock();
+			removes.forEach(Connection::close);
 		} finally {
 			authorizedLock.writeLock().unlock();
+			unauthorizedLock.writeLock().unlock();
 		}
 	}
 }

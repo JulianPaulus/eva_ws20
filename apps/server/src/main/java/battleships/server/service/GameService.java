@@ -36,6 +36,16 @@ public class GameService {
 		}
 	}
 
+	public void removeGame(final Game toRemove) {
+		try {
+			gamesLock.writeLock().lock();
+			List<Game> removes = games.stream().filter(game -> game.getId().equals(toRemove.getId())).collect(Collectors.toList());
+			games.removeAll(removes);
+		} finally {
+			gamesLock.writeLock().unlock();
+		}
+	}
+
 	public List<Game> getGames() {
 		try {
 			gamesLock.readLock().lock();

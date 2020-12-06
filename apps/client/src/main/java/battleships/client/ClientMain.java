@@ -109,6 +109,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		if (event == ConnectionEvent.DISCONNECTED) {
 			this.connection = null;
 			// TODO: track login state (or something like that) and only show the following alert if the player was already logged in
+			// also: this sometimes throws an IllegalStateException when you close the client, oops.
 			Platform.runLater(() -> {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.initModality(Modality.APPLICATION_MODAL);

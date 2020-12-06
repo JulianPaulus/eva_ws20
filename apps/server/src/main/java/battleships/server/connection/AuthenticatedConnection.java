@@ -22,10 +22,9 @@ public class AuthenticatedConnection extends Connection {
 		super.reader.setConnection(this);
 		this.player = player;
 
-		setObservers(connection.getObservers());
 		CONNECTION_SERVICE.registerConnection(this);
 
-		LOGGER.debug("creating AuthenticatedConnection for {}", player.getUsername());
+		LOGGER.debug("created AuthenticatedConnection for {}", player.getUsername());
 	}
 
 	protected AuthenticatedConnection(final AuthenticatedConnection connection) {

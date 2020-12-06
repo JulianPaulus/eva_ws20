@@ -30,7 +30,10 @@ public class Constants {
 		public static final byte GAME_JOIN_REQUEST = 0x8;
 		public static final byte GAME_JOIN_RESPONSE = 0x9;
 
-		public static final byte SERVER_ERROR = 0xa;
+		public static final byte SERVER_ERROR = 0xA;
+
+		public static final byte SEND_CHAT_MESSAGE = 0xB;
+		public static final byte BROADCAST_CHAT_MESSAGE = 0xC;
 
 	}
 

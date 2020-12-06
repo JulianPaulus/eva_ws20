@@ -24,7 +24,6 @@ public class ConnectionManager extends Thread {
 			try {
 				TimeUnit.MILLISECONDS.sleep(Constants.Server.CONNECTION_MANAGER_INTERVAL_MS);
 
-				LOGGER.debug("ConnectionManager starting...");
 				long startMS = System.currentTimeMillis();
 				connectionService.closeStaleConnections();
 				LOGGER.debug("ConnectionManager ran for {}ms", System.currentTimeMillis() - startMS);

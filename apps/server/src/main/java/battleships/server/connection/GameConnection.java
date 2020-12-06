@@ -19,9 +19,9 @@ public class GameConnection extends AuthenticatedConnection {
 		super.reader.setConnection(this);
 		this.game = game;
 
-		setObservers(connection.getObservers());
+		addObserver(game);
 
-		logger.debug("creating GameConnection for {} in game {}", getPlayer().getUsername(), game.getId().toString());
+		logger.debug("created GameConnection for {} in game {}", getPlayer().getUsername(), game.getId().toString());
 	}
 
 	public Game getGame() {
