@@ -4,29 +4,25 @@ import battleships.client.Model.CoorrdinateStateEnum;
 import battleships.client.Model.GameModel;
 import battleships.client.Model.GameStateEnum;
 import battleships.client.Model.ModelObserver;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
@@ -53,6 +49,9 @@ public class GameWindow implements Initializable {
 	@FXML
 	private ListView chatWindow;
 
+	@FXML
+	private TextArea rulesTextArea;
+
 	private Scene scene;
 	private GameModel model;
 	private boolean horizontal;
@@ -62,6 +61,8 @@ public class GameWindow implements Initializable {
 
 	public GameWindow(Stage stage)
 	{
+		model= new GameModel(new ModelObserver(this));
+
 		horizontal=true;
 		this.stage=stage;
 		FXMLLoader fxmLLoader = new FXMLLoader(getClass().getResource("/fxml/GameWindow.fxml"));
@@ -75,20 +76,7 @@ public class GameWindow implements Initializable {
 
 		stage.setScene(scene);
 
-		model= new GameModel(new ModelObserver(this));
-
-
-	}
-
-	private Node getNodeFromGridPane(GridPane gridPane, int xPos, int yPos) {
-
-		System.out.println("xPos"+xPos+" yPos"+yPos+"gridPaneValid"+(gridPane!=null));
-		for (Node node : gridPane.getChildren()) {
-			if (GridPane.getColumnIndex(node) == xPos && GridPane.getRowIndex(node) == yPos) {
-				return node;
-			}
-		}
-		return null;
+		updateRulesForPhaseChange();
 	}
 
 	@FXML
@@ -99,14 +87,14 @@ public class GameWindow implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		setupBoard(playerGrid, playerLabels, BOARD_SQUARE_SIZE, BOARD_SQUARE_SIZE);
-		setupBoard(targetGrid, targetLabels, BOARD_SQUARE_SIZE, BOARD_SQUARE_SIZE);
+		setupBoard(playerGrid, playerLabels);
+		setupBoard(targetGrid, targetLabels);
 	}
 
-	private void setupBoard(GridPane gridPane, Label[][] labelArray, int sizeX, int sizeY) {
-		for (int i = 0; i < sizeX; i++) {
+	private void setupBoard(GridPane gridPane, Label[][] labelArray) {
+		for (int i = 0; i < BOARD_SQUARE_SIZE; i++) {
 			final int finalI = i;
-			for(int j = 0; j < sizeY; j++) {
+			for(int j = 0; j < BOARD_SQUARE_SIZE; j++) {
 				final int finalJ = j;
 				final Label label = new Label();
 				label.setTextAlignment(TextAlignment.CENTER);
@@ -128,25 +116,23 @@ public class GameWindow implements Initializable {
 						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
 						onMouseHoverTargetField(label, finalI, finalJ,  false);
 					});
-					label.setOnMouseClicked(event->{
-						onTargetFieldClicked(finalI,finalJ);
-					});
+					label.setOnMouseClicked(event-> onTargetFieldClicked(finalI,finalJ));
 				}
 				else
 				{
 					label.setOnMouseEntered(event -> {
 						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
-						onMouseHoverPlayerField(label, finalI, finalJ,  true);
+						onMouseHoverPlayerField(finalI, finalJ,  true);
 					});
 					label.setOnMouseExited(event -> {
 						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
-						onMouseHoverPlayerField(label, finalI, finalJ,  false);
+						onMouseHoverPlayerField(finalI, finalJ,  false);
 					});
 					label.setOnContextMenuRequested(event->{
 						System.out.println("Mouse rightClickedOn Field: " + finalI + ", " + finalJ);
 						onPlayerFieldRightClicked(label, finalI, finalJ);
 					});
-					label.setOnMouseClicked(event->{onPlayerFieldClicked( finalI, finalJ);});
+					label.setOnMouseClicked(event-> onPlayerFieldClicked( finalI, finalJ));
 				}
 			}
 		}
@@ -175,7 +161,7 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void onMouseHoverPlayerField(Label label, int posX, int poxY, boolean isEnter) {
+	private void onMouseHoverPlayerField(int posX, int poxY, boolean isEnter) {
 		if (model.getCurrentState() == GameStateEnum.setUp) {
 			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + poxY);
 			if (isEnter) {
@@ -342,6 +328,27 @@ public class GameWindow implements Initializable {
 	}
 	public void updateRulesForPhaseChange()
 	{
+		if(model.getCurrentState()==GameStateEnum.setUp)
+		{
+			rulesTextArea.clear();
 
+			rulesTextArea.setText("setzen sie ihre Schiffe:\n"+
+				"Beim Hovern über dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n"+
+				"Mit Rechtsklick ändern sie die Ausrichtung (Horizontal/Vertikal)\n"+
+				"Mit linksklick setzen sie das Schiff\n"+
+				"Schiffe werden Blau dargestellt");
+		}
+		else if(model.getCurrentState()==GameStateEnum.shooting)
+		{
+			rulesTextArea.clear();
+			rulesTextArea.setText("Klicken sie auf das Zielen spielfeld, um auf die gewünschte Position zu schießen.\n"+
+				"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
+		}
+		else if(model.getCurrentState()==GameStateEnum.waitingforEnemy)
+		{
+			rulesTextArea.clear();
+			rulesTextArea.setText("Der Gegner schießt, bitte warten.\n"+
+				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
+		}
 	}
 }
