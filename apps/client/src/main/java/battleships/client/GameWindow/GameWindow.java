@@ -145,15 +145,12 @@ public class GameWindow implements Initializable {
 
 				if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.Empty) {
 					label.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
-					targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
 				}
 				else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.hit) {
 					label.setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
-					targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
 				}
 				else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.miss) {
 					label.setStyle("-fx-background-color: #bdbdbd;"+"-fx-border-color: black");
-					targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #bdbdbd;"+"-fx-border-color: black");
 				}
 			}
 		}
@@ -362,5 +359,11 @@ public class GameWindow implements Initializable {
 			rulesTextArea.setText("Der Gegner schießt, bitte warten.\n"+
 				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
 		}
+	}
+
+	@FXML
+	public void removeLastAddedShip()
+	{
+
 	}
 }

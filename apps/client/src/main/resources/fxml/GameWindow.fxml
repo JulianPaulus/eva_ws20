@@ -38,6 +38,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
+            <Button fx:id="removeShip" mnemonicParsing="false" onAction="#removeLastAddedShip" text="letztes Schiff entfernen" />
             <TextArea fx:id="rulesTextArea" disable="true" prefHeight="200.0" prefWidth="200.0" />
          </children>
          <padding>

@@ -16,6 +16,7 @@ public class GameModel {
 	private CoorrdinateStateEnum[][] targetField;
 	private List<String> chat;
 	private Ship[] ships;
+	private Ship lastAdded;
 
 	private ModelObserver observer;
 
@@ -70,6 +71,7 @@ public class GameModel {
 					playerField[xPos][yPos+i]=CoorrdinateStateEnum.Ship;
 		}
 
+		lastAdded=ship;
 		switchToNextBiggerShipType();
 
 		observer.notifyAboutPlayerModelChange();
@@ -183,6 +185,38 @@ public class GameModel {
 				break;
 		}
 		observer.notifyAboutShipTypeChange();
+	}
+
+	public void removeLastAdded()
+	{
+		int xPos= lastAdded.getxCoordinate();
+		int yPos= lastAdded.getyCoordinate();
+
+		int shipLength=lastAdded.getType().getValue();
+
+		for(int i=0; i< shipLength;i++)
+		{
+			if (lastAdded.isHorizontal()) {
+				playerField[xPos + i][yPos] = CoorrdinateStateEnum.Empty;
+			} else {
+				playerField[xPos][yPos + i] = CoorrdinateStateEnum.Empty;
+			}
+
+		}
+
+		for(int i=0;i<ships.length;i++)
+		{
+			if(ships[i].equals(lastAdded)) {
+				ships[i] = null;
+
+				if(i>0)
+				{
+					lastAdded=ships[i-1];
+				}
+				switchToPreviousShipType();
+				break;
+			}
+		}
 	}
 
 }

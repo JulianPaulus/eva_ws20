@@ -60,4 +60,17 @@ public class Ship {
 		isHorizontal = horizontal;
 	}
 
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other==this)
+			return true;
+
+		if(!(other instanceof Ship))
+			return false;
+
+		Ship o=(Ship) other;
+
+		return (o.xCoordinate==xCoordinate)&&(o.yCoordinate==yCoordinate)&&(o.isHorizontal==isHorizontal)&&(o.type==type);
+	}
 }

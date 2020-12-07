@@ -26,7 +26,7 @@ public class ModelObserver {
 
 	public void notifyAboutGameStatusChange()
 	{
-
+		view.updateRulesForPhaseChange();
 	}
 
 	public void notifyAboutShipTypeChange()	//eventuell nicht notwendig,da der Schiffstüp immer aktuell aus dem Model geholt wird
