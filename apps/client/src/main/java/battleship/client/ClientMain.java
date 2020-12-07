@@ -1,16 +1,16 @@
 package battleship.client;
 
-import battleship.client.GameWindow.GameWindow;
-import battleship.client.packet.receive.LobbyListPacket;
-import battleship.client.packet.receive.LoginResponsePacket;
-import battleship.client.packet.receive.factory.LobbyListPacketFactory;
-import battleship.client.packet.receive.factory.LoginResponseFactory;
-import battleship.net.connection.Connection;
-import battleship.net.connection.Constants;
-import battleship.net.connection.PacketReader;
-import battleship.net.factory.AbstractPacketFactory;
-import battleship.net.factory.TestPacketFactory;
-import battleship.net.packet.TestPacket;
+import battleships.client.GameWindow.GameWindow;
+import battleships.client.packet.receive.LobbyListPacket;
+import battleships.client.packet.receive.LoginResponsePacket;
+import battleships.client.packet.receive.factory.LobbyListPacketFactory;
+import battleships.client.packet.receive.factory.LoginResponseFactory;
+import battleships.net.connection.Connection;
+//import battleships.net.connection.Constants;
+import battleships.net.connection.PacketReader;
+import battleships.net.factory.AbstractPacketFactory;
+//import battleships.net.factory.TestPacketFactory;
+//import battleships.net.packet.TestPacket;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -27,7 +27,7 @@ public class ClientMain extends Application {
 
 	static {
 		Map<Byte, AbstractPacketFactory<?>> packetFactoryMap = new HashMap<>();
-		packetFactoryMap.put(TestPacket.IDENTIFIER, new TestPacketFactory());
+		//packetFactoryMap.put(TestPacket.IDENTIFIER, new TestPacketFactory());
 		packetFactoryMap.put(LobbyListPacket.IDENTIFIER, new LobbyListPacketFactory());
 		packetFactoryMap.put(LoginResponsePacket.IDENTIFIER, new LoginResponseFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);

@@ -155,7 +155,6 @@ public class GameWindow implements Initializable {
 		if(isEnter) {
 			if(model.getCurrentState()==GameStateEnum.shooting) {
 				label.setStyle("-fx-background-color: #e6f54f;"+"-fx-border-color: black");
-				targetLabels[posX][poxY - 1].setStyle("-fx-background-color: #e6f54f;"+"-fx-border-color: black");
 			}
 		} else {
 			if(model.getCurrentState()==GameStateEnum.shooting) {
