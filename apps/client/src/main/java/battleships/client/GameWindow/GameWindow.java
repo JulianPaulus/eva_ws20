@@ -204,7 +204,7 @@ public class GameWindow implements Initializable {
 				if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 					for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
 						System.out.println("" + posX + poxY);
-						if(model.currentStateOfTargetCoordinate(posX+x,poxY)==CoorrdinateStateEnum.Empty)
+						if(model.currentStateOfPlayerCoordinate(posX+x,poxY)==CoorrdinateStateEnum.Empty)
 							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
 						else
 							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
@@ -304,7 +304,7 @@ public class GameWindow implements Initializable {
 				switch (model.currentStateOfPlayerCoordinate(x,y))
 				{
 					case Ship:
-						playerLabels[x][y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+						playerLabels[x][y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: #000000");
 						break;
 					case hit:
 						playerLabels[x][y].setStyle("-fx-background-color: #ea1313;"+"-fx-border-color: black");
