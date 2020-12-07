@@ -49,6 +49,9 @@ public class GameWindow implements Initializable {
 	@FXML
 	private TextArea rulesTextArea;
 
+	@FXML
+	private Button removeShip;
+
 	private Scene scene;
 	private GameModel model;
 	private boolean horizontal;
@@ -338,18 +341,22 @@ public class GameWindow implements Initializable {
 			rulesTextArea.clear();
 
 			rulesTextArea.setText("setzen sie ihre Schiffe:\n"+
-				"Beim Hovern über dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n"+
-				"Mit Rechtsklick ändern sie die Ausrichtung (Horizontal/Vertikal)\n"+
+				"Beim Hovern \u00FCber dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n"+
+				"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n"+
 				"Mit linksklick setzen sie das Schiff\n"+
 				"Schiffe werden Blau dargestellt");
+
+			removeShip.setVisible(true);
 		}
 		else if(model.getCurrentState()==GameStateEnum.shooting)
 		{
 			statusLabel.setText("Bitte Zielen");
 
 			rulesTextArea.clear();
-			rulesTextArea.setText("Klicken sie auf das Zielen spielfeld, um auf die gewünschte Position zu schießen.\n"+
+			rulesTextArea.setText("Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schießen.\n"+
 				"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
+
+			removeShip.setVisible(false);
 		}
 		else if(model.getCurrentState()==GameStateEnum.waitingforEnemy)
 		{
@@ -358,12 +365,14 @@ public class GameWindow implements Initializable {
 			rulesTextArea.clear();
 			rulesTextArea.setText("Der Gegner schießt, bitte warten.\n"+
 				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
+
+			removeShip.setVisible(false);
 		}
 	}
 
 	@FXML
 	public void removeLastAddedShip()
 	{
-
+		model.removeLastAdded();
 	}
 }
