@@ -217,6 +217,8 @@ public class GameModel {
 				break;
 			}
 		}
+
+		observer.notifyAboutPlayerModelChange();
 	}
 
 }

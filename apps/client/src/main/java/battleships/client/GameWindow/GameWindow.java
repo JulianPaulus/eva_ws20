@@ -159,50 +159,51 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void onMouseHoverPlayerField(int posX, int poxY, boolean isEnter) {
+	private void onMouseHoverPlayerField(int posX, int posY, boolean isEnter) {
 		if (model.getCurrentState() == GameStateEnum.setUp) {
-			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + poxY);
+			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + posY);
 			if (isEnter) {
 
-				System.out.println("onMouseHoverPlayerField" + posX + " " + poxY);
+				System.out.println("onMouseHoverPlayerField" + posX + " " + posY);
 
 
 				if (horizontal) {
 					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-							System.out.println("" + posX + poxY);
-							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+							System.out.println("" + posX + posY);
+							playerLabels[posX + x][posY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
 						}
 					}
 				} else {
-					if (poxY + model.getTileNumberOfCurrentShip() <= 10) {
+					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-							System.out.println("" + posX + poxY);
-							playerLabels[posX][poxY + y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color:black");
+							System.out.println("" + posX + posY);
+							playerLabels[posX][posY + y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color:black");
 						}
 					}
 				}
 			}
-		 else {
+		 	else {
 			if (horizontal) {
 				if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 					for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-						System.out.println("" + posX + poxY);
-						if(model.currentStateOfPlayerCoordinate(posX+x,poxY)==CoorrdinateStateEnum.Empty)
-							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+						System.out.println("" + posX + posY);
+						if(model.currentStateOfPlayerCoordinate(posX+x,posY)==CoorrdinateStateEnum.Empty)
+							playerLabels[posX + x][posY].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
 						else
-							playerLabels[posX + x][poxY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+							playerLabels[posX + x][posY].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
 					}
 				}
 			} else {
-				if (poxY + model.getTileNumberOfCurrentShip() <= 10) {
+				if (posY + model.getTileNumberOfCurrentShip() <= 10) {
 					for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-						System.out.println("" + posX + poxY);
-						if (model.currentStateOfPlayerCoordinate(posX, poxY) == CoorrdinateStateEnum.Empty){
-							playerLabels[posX][poxY + y].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
+						System.out.println("" + posX +" "+ (posY+y));
+						if (model.currentStateOfPlayerCoordinate(posX, posY+y) == CoorrdinateStateEnum.Empty){
+							playerLabels[posX][posY + y].setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: black");
 						}
 						else {
-							playerLabels[posX][poxY + y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
+							System.out.println("Ship");
+							playerLabels[posX][posY + y].setStyle("-fx-background-color: #0004ff;"+"-fx-border-color: black");
 						}
 					}
 				}
@@ -353,7 +354,7 @@ public class GameWindow implements Initializable {
 			statusLabel.setText("Bitte Zielen");
 
 			rulesTextArea.clear();
-			rulesTextArea.setText("Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schießen.\n"+
+			rulesTextArea.setText("Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schie\u00DFen.\n"+
 				"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
 
 			removeShip.setVisible(false);
@@ -363,7 +364,7 @@ public class GameWindow implements Initializable {
 			statusLabel.setText("Warten auf gegner");
 
 			rulesTextArea.clear();
-			rulesTextArea.setText("Der Gegner schießt, bitte warten.\n"+
+			rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n"+
 				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
 
 			removeShip.setVisible(false);

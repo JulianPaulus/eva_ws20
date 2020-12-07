@@ -39,7 +39,7 @@
                </rowConstraints>
             </GridPane>
             <Button fx:id="removeShip" mnemonicParsing="false" onAction="#removeLastAddedShip" text="letztes Schiff entfernen" />
-            <TextArea fx:id="rulesTextArea" disable="true" prefHeight="200.0" prefWidth="200.0" />
+            <TextArea fx:id="rulesTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" />
          </children>
          <padding>
             <Insets right="20.0" />
