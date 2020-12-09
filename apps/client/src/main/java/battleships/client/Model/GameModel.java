@@ -105,7 +105,7 @@ public class GameModel {
 			else {
 				if (playerField[xPos][yPos+i]==CoorrdinateStateEnum.Ship ||
 					playerField[xPos+1][yPos+i]==CoorrdinateStateEnum.Ship||
-					playerField[xPos-i][yPos+i]==CoorrdinateStateEnum.Ship)
+					playerField[xPos-1][yPos+i]==CoorrdinateStateEnum.Ship)
 					return false;
 			}
 		}
