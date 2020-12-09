@@ -369,6 +369,18 @@ public class GameWindow implements Initializable {
 
 			removeShip.setVisible(false);
 		}
+		else if(model.getCurrentState()==GameStateEnum.won)
+		{
+			statusLabel.setText("Gewonnen");
+			statusLabel.setStyle("-fx-text-fill: green");
+			rulesTextArea.clear();
+		}
+		else if(model.getCurrentState()==GameStateEnum.lost)
+		{
+			statusLabel.setText("Verloren");
+			statusLabel.setStyle("-fx-text-fill: red");
+			rulesTextArea.clear();
+		}
 	}
 
 	@FXML

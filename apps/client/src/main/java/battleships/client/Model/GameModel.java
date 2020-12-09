@@ -44,8 +44,11 @@ public class GameModel {
 
 	public void setShip(int xPos, int yPos, boolean horizontal)
 	{
+
 		Ship ship=new Ship(currentShip,xPos,yPos,horizontal);
 
+		if(!checkForShipAvailability(ship))
+			return;
 		//send to Server, if success do the following
 
 		for (int i=0;i<5;i++)
@@ -76,6 +79,40 @@ public class GameModel {
 
 		observer.notifyAboutPlayerModelChange();
 	}
+
+	private boolean checkForShipAvailability(Ship ship)
+	{
+		int xPos=ship.getxCoordinate();
+		int yPos=ship.getyCoordinate();
+
+		if(ship.isHorizontal()) {
+			if (playerField[xPos-1][yPos]==CoorrdinateStateEnum.Ship ||playerField[xPos+ship.getType().getValue()][yPos]==CoorrdinateStateEnum.Ship)
+				return false;
+		}
+		else {
+			if (playerField[xPos][yPos-1]==CoorrdinateStateEnum.Ship ||playerField[xPos][yPos+ship.getType().getValue()]==CoorrdinateStateEnum.Ship)
+				return false;
+		}
+
+		for(int i=0;i<ship.getType().getValue();i++)
+		{
+			if(ship.isHorizontal()) {
+				if (playerField[xPos+i][yPos]==CoorrdinateStateEnum.Ship ||
+					playerField[xPos+i][yPos+1]==CoorrdinateStateEnum.Ship||
+					playerField[xPos+i][yPos-1]==CoorrdinateStateEnum.Ship)
+					return false;
+			}
+			else {
+				if (playerField[xPos][yPos+i]==CoorrdinateStateEnum.Ship ||
+					playerField[xPos+1][yPos+i]==CoorrdinateStateEnum.Ship||
+					playerField[xPos-i][yPos+i]==CoorrdinateStateEnum.Ship)
+					return false;
+			}
+		}
+
+		return true;
+	}
+
 	public GameStateEnum getCurrentState() {
 		return currentState;
 	}
@@ -91,9 +128,15 @@ public class GameModel {
 		{
 			//Anbindung an Web, wenn antwort Feld entsprechend auf hit/miss setzen
 
-			observer.notifyAboutTargetModelChange();
-			currentState=GameStateEnum.waitingforEnemy;
 		}
+	}
+
+	public void setHitOrMissAt(int xPos,int yPos, CoorrdinateStateEnum status)
+	{
+		targetField[xPos][yPos]=status;
+
+		observer.notifyAboutTargetModelChange();
+		currentState=GameStateEnum.waitingforEnemy;
 	}
 
 	public void shootIncomingAt(int xPos,int yPos){
@@ -113,6 +156,7 @@ public class GameModel {
 		}
 		observer.notifyAboutPlayerModelChange();
 		currentState=GameStateEnum.shooting;
+		observer.notifyAboutGameStatusChange();
 	}
 	public CoorrdinateStateEnum currentStateOfTargetCoordinate(int xPos, int yPos)
 	{
@@ -127,8 +171,7 @@ public class GameModel {
 	{
 		//sende Nachricht an Server
 
-		chat.add(message);
-		observer.notifyAboutChatMessage();
+		receiveChatMessage(message);		//testweise bitte Löschen wenn anbindung an Server
 	}
 
 	public void receiveChatMessage(String message)
@@ -221,4 +264,15 @@ public class GameModel {
 		observer.notifyAboutPlayerModelChange();
 	}
 
+	public void setPlayerLost()
+	{
+		currentState=GameStateEnum.lost;
+		observer.notifyAboutGameStatusChange();
+	}
+
+	public void setPlayerWon()
+	{
+		currentState=GameStateEnum.won;
+		observer.notifyAboutGameStatusChange();
+	}
 }
