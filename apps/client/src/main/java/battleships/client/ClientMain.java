@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class ClientMain extends Application implements Observer<ConnectionEvent> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ClientMain.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClientMain.class);
 
 	private static ClientMain instance;
 	private Stage stage;
@@ -60,14 +60,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		this.stage = primaryStage;
 
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
-
-
-		FXMLLoader loader = new FXMLLoader();
-		loader.load(getClass().getResourceAsStream("/login.fxml"));
-		Scene scene = new Scene(loader.getRoot());
-		scene.getStylesheets().add(getClass().getResource("/style.css").toString());
-		stage.setScene(scene);
-		stage.show();
+		loadFXML("/login.fxml");
 	}
 
 	public Connection connect(final String address, final int port) throws IOException {
@@ -79,7 +72,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 			return connection;
 		}
 
-		logger.warn("client tried establishing a connection while a connection was present");
+		LOGGER.warn("client tried establishing a connection while a connection was present");
 		return connection;
 	}
 
@@ -101,6 +94,20 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 
 		if (connection != null) {
 			connection.close();
+		}
+	}
+
+	public void loadFXML(final String path) {
+		LOGGER.debug("loading FXML from {}", path);
+		FXMLLoader loader = new FXMLLoader();
+		try {
+			loader.load(getClass().getResourceAsStream(path));
+			Scene scene = new Scene(loader.getRoot());
+			scene.getStylesheets().add(getClass().getResource("/style.css").toString());
+			stage.setScene(scene);
+			stage.show();
+		} catch (final IOException e) {
+			LOGGER.trace("error while loading fxml", e);
 		}
 	}
 
