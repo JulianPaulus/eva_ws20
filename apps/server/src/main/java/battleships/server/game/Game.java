@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-// TODO threadsafety
 public class Game implements Observer<ConnectionEvent> {
 
 	private static final ConnectionService CONNECTION_SERVICE = ConnectionService.getInstance();
@@ -37,7 +36,7 @@ public class Game implements Observer<ConnectionEvent> {
 		this.host = host;
 	}
 
-	public void addGuest(final Player guest) throws ServerException {
+	public synchronized void addGuest(final Player guest) throws ServerException {
 		if (this.guest == null) {
 			this.guest = guest;
 
@@ -59,7 +58,7 @@ public class Game implements Observer<ConnectionEvent> {
 		return host;
 	}
 
-	public Optional<Player> getGuest() {
+	public synchronized Optional<Player> getGuest() {
 		return Optional.ofNullable(guest);
 	}
 
@@ -83,7 +82,7 @@ public class Game implements Observer<ConnectionEvent> {
 		}
 	}
 
-	private void onPlayerDisconnected(final AuthenticatedConnection cause) {
+	private synchronized void onPlayerDisconnected(final AuthenticatedConnection cause) {
 		if (initialized) {
 			if (cause.getPlayer().equals(host)) {
 				guestConnection.writePacket(new ServerErrorPacket(host.getUsername() + " disconnected!"));
@@ -98,9 +97,11 @@ public class Game implements Observer<ConnectionEvent> {
 		broadcastPacket(new ChatMessagePacket(fromUser, message));
 	}
 
-	private void broadcastPacket(final SendPacket packet) {
-		hostConnection.writePacket(packet);
-		guestConnection.writePacket(packet);
+	private synchronized void broadcastPacket(final SendPacket packet) {
+		if (initialized) {
+			hostConnection.writePacket(packet);
+			guestConnection.writePacket(packet);
+		}
 	}
 
 	private static AuthenticatedConnection loadConnection(final Player player) {
