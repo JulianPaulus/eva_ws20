@@ -1,9 +1,9 @@
 package battleships.client.GameWindow;
 
-import battleships.client.Model.CoorrdinateStateEnum;
 import battleships.client.Model.GameModel;
-import battleships.client.Model.GameStateEnum;
 import battleships.client.Model.ModelObserver;
+import battleships.model.CoordinateState;
+import battleships.model.GameState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
@@ -126,17 +126,17 @@ public class GameWindow implements Initializable {
 
 	private void onMouseHoverTargetField(Label label, int posX, int poxY, boolean isEnter) {
 		if (isEnter) {
-			if (model.getCurrentState() == GameStateEnum.shooting) {
+			if (model.getCurrentState() == GameState.SHOOTING) {
 				label.setStyle("-fx-background-color: #e6f54f;" + "-fx-border-color: black");
 			}
 		} else {
-			if (model.getCurrentState() == GameStateEnum.shooting) {
+			if (model.getCurrentState() == GameState.SHOOTING) {
 
-				if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.Empty) {
+				if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.EMPTY) {
 					label.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.hit) {
+				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.HIT) {
 					label.setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
-				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoorrdinateStateEnum.miss) {
+				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.MISS) {
 					label.setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
 				}
 			}
@@ -144,7 +144,7 @@ public class GameWindow implements Initializable {
 	}
 
 	private void onMouseHoverPlayerField(int posX, int posY, boolean isEnter) {
-		if (model.getCurrentState() == GameStateEnum.setUp) {
+		if (model.getCurrentState() == GameState.SET_UP) {
 			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + posY);
 			if (isEnter) {
 
@@ -173,7 +173,7 @@ public class GameWindow implements Initializable {
 					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
 							System.out.println("" + posX + posY);
-							if (model.currentStateOfPlayerCoordinate(posX + x, posY) == CoorrdinateStateEnum.Empty)
+							if (model.currentStateOfPlayerCoordinate(posX + x, posY) == CoordinateState.EMPTY)
 								playerLabels[posX + x][posY]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 							else
@@ -185,7 +185,7 @@ public class GameWindow implements Initializable {
 					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
 							System.out.println("" + posX + " " + (posY + y));
-							if (model.currentStateOfPlayerCoordinate(posX, posY + y) == CoorrdinateStateEnum.Empty) {
+							if (model.currentStateOfPlayerCoordinate(posX, posY + y) == CoordinateState.EMPTY) {
 								playerLabels[posX][posY + y]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 							} else {
@@ -201,20 +201,20 @@ public class GameWindow implements Initializable {
 	}
 
 	void onPlayerFieldRightClicked(Label label, int xPos, int yPos) {
-		if (model.getCurrentState() == GameStateEnum.setUp) {
+		if (model.getCurrentState() == GameState.SET_UP) {
 			if (horizontal) {
 
 				if (xPos + model.getTileNumberOfCurrentShip() <= 10) {
 					for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
 						switch (model.currentStateOfPlayerCoordinate(xPos + x, yPos)) {
-							case Ship:
+							case SHIP:
 								playerLabels[xPos + x][yPos]
 									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
 									playerLabels[xPos][yPos + x]
 										.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 								break;
-							case Empty:
+							case EMPTY:
 								playerLabels[xPos + x][yPos]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
@@ -228,14 +228,14 @@ public class GameWindow implements Initializable {
 				if (yPos + model.getTileNumberOfCurrentShip() < 10) {
 					for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
 						switch (model.currentStateOfPlayerCoordinate(xPos, yPos + y)) {
-							case Ship:
+							case SHIP:
 								playerLabels[xPos][yPos + y]
 									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
 									playerLabels[xPos + y][yPos]
 										.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 								break;
-							case Empty:
+							case EMPTY:
 								playerLabels[xPos][yPos + y]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
@@ -251,12 +251,12 @@ public class GameWindow implements Initializable {
 	}
 
 	void onPlayerFieldClicked(int xPos, int yPos) {
-		if (model.getCurrentState() == GameStateEnum.setUp)
+		if (model.getCurrentState() == GameState.SET_UP)
 			model.setShip(xPos, yPos, horizontal);
 	}
 
 	void onTargetFieldClicked(int xPos, int yPos) {
-		if (model.getCurrentState() == GameStateEnum.shooting)
+		if (model.getCurrentState() == GameState.SHOOTING)
 			model.shootAt(xPos, yPos);
 	}
 
@@ -277,14 +277,14 @@ public class GameWindow implements Initializable {
 		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
 			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
 				switch (model.currentStateOfPlayerCoordinate(x, y)) {
-					case Ship:
+					case SHIP:
 						playerLabels[x][y].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: #000000");
 						break;
-					case hit:
+					case HIT:
 						playerLabels[x][y].setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
 						break;
 
-					case miss:
+					case MISS:
 						playerLabels[x][y].setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
 						break;
 
@@ -298,11 +298,11 @@ public class GameWindow implements Initializable {
 		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
 			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
 				switch (model.currentStateOfTargetCoordinate(x, y)) {
-					case hit:
+					case HIT:
 						targetLabels[x][y].setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
 						break;
 
-					case miss:
+					case MISS:
 						targetLabels[x][y].setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
 						break;
 
@@ -313,7 +313,7 @@ public class GameWindow implements Initializable {
 	}
 
 	public void updateRulesForPhaseChange() {
-		if (model.getCurrentState() == GameStateEnum.setUp) {
+		if (model.getCurrentState() == GameState.SET_UP) {
 			statusLabel.setText("Bitte Schiffe setzen");
 
 			rulesTextArea.clear();
@@ -325,7 +325,7 @@ public class GameWindow implements Initializable {
 				"Schiffe werden Blau dargestellt");
 
 			removeShip.setVisible(true);
-		} else if (model.getCurrentState() == GameStateEnum.shooting) {
+		} else if (model.getCurrentState() == GameState.SHOOTING) {
 			statusLabel.setText("Bitte Zielen");
 
 			rulesTextArea.clear();
@@ -334,7 +334,7 @@ public class GameWindow implements Initializable {
 					"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
 
 			removeShip.setVisible(false);
-		} else if (model.getCurrentState() == GameStateEnum.waitingforEnemy) {
+		} else if (model.getCurrentState() == GameState.WAIT_FOR_ENEMY) {
 			statusLabel.setText("Warten auf gegner");
 
 			rulesTextArea.clear();
@@ -342,11 +342,11 @@ public class GameWindow implements Initializable {
 				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
 
 			removeShip.setVisible(false);
-		} else if (model.getCurrentState() == GameStateEnum.won) {
+		} else if (model.getCurrentState() == GameState.WON) {
 			statusLabel.setText("Gewonnen");
 			statusLabel.setStyle("-fx-text-fill: green");
 			rulesTextArea.clear();
-		} else if (model.getCurrentState() == GameStateEnum.lost) {
+		} else if (model.getCurrentState() == GameState.LOST) {
 			statusLabel.setText("Verloren");
 			statusLabel.setStyle("-fx-text-fill: red");
 			rulesTextArea.clear();

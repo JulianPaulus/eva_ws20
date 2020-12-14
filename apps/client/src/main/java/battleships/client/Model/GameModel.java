@@ -1,6 +1,9 @@
 package battleships.client.Model;
 
-import javafx.collections.ObservableList;
+import battleships.model.CoordinateState;
+import battleships.model.GameState;
+import battleships.model.Ship;
+import battleships.model.ShipType;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -11,9 +14,9 @@ public class GameModel {
 	ShipType currentShip;
 	boolean placedTwice;
 
-	private GameStateEnum currentState;
-	private CoorrdinateStateEnum[][] playerField;
-	private CoorrdinateStateEnum[][] targetField;
+	private GameState currentState;
+	private CoordinateState[][] playerField;
+	private CoordinateState[][] targetField;
 	private List<String> chat;
 	private Ship[] ships;
 	private Ship lastAdded;
@@ -21,18 +24,18 @@ public class GameModel {
 	private ModelObserver observer;
 
 	public GameModel(ModelObserver observer) {
-		currentState = GameStateEnum.setUp;
-		playerField = new CoorrdinateStateEnum[10][10];
-		targetField = new CoorrdinateStateEnum[10][10];
+		currentState = GameState.SET_UP;
+		playerField = new CoordinateState[10][10];
+		targetField = new CoordinateState[10][10];
 		chat=new LinkedList<>();
 		ships=new Ship[5];
 
 		for (int i = 0; i < 10; i++) {
-			Arrays.fill(playerField[i], CoorrdinateStateEnum.Empty);
-			Arrays.fill(targetField[i], CoorrdinateStateEnum.Empty);
+			Arrays.fill(playerField[i], CoordinateState.EMPTY);
+			Arrays.fill(targetField[i], CoordinateState.EMPTY);
 		}
 
-		currentShip=ShipType.twoTiles;
+		currentShip=ShipType.TWO_TILES;
 
 		this.observer=observer;
 	}
@@ -63,7 +66,7 @@ public class GameModel {
 		{
 			if( xPos+currentShip.getValue()<=10) {
 				for (int i = 0; i < currentShip.getValue(); i++)
-					playerField[xPos + i][yPos] = CoorrdinateStateEnum.Ship;
+					playerField[xPos + i][yPos] = CoordinateState.SHIP;
 			}
 
 		}
@@ -71,7 +74,7 @@ public class GameModel {
 		{
 			if( yPos+currentShip.getValue()<=10)
 				for (int i=0; i<currentShip.getValue();i++)
-					playerField[xPos][yPos+i]=CoorrdinateStateEnum.Ship;
+					playerField[xPos][yPos+i]= CoordinateState.SHIP;
 		}
 
 		lastAdded=ship;
@@ -86,26 +89,26 @@ public class GameModel {
 		int yPos=ship.getyCoordinate();
 
 		if(ship.isHorizontal()) {
-			if (playerField[xPos-1][yPos]==CoorrdinateStateEnum.Ship ||playerField[xPos+ship.getType().getValue()][yPos]==CoorrdinateStateEnum.Ship)
+			if (playerField[xPos-1][yPos]== CoordinateState.SHIP ||playerField[xPos+ship.getType().getValue()][yPos]== CoordinateState.SHIP)
 				return false;
 		}
 		else {
-			if (playerField[xPos][yPos-1]==CoorrdinateStateEnum.Ship ||playerField[xPos][yPos+ship.getType().getValue()]==CoorrdinateStateEnum.Ship)
+			if (playerField[xPos][yPos-1]== CoordinateState.SHIP ||playerField[xPos][yPos+ship.getType().getValue()]== CoordinateState.SHIP)
 				return false;
 		}
 
 		for(int i=0;i<ship.getType().getValue();i++)
 		{
 			if(ship.isHorizontal()) {
-				if (playerField[xPos+i][yPos]==CoorrdinateStateEnum.Ship ||
-					playerField[xPos+i][yPos+1]==CoorrdinateStateEnum.Ship||
-					playerField[xPos+i][yPos-1]==CoorrdinateStateEnum.Ship)
+				if (playerField[xPos+i][yPos]== CoordinateState.SHIP ||
+					playerField[xPos+i][yPos+1]== CoordinateState.SHIP ||
+					playerField[xPos+i][yPos-1]== CoordinateState.SHIP)
 					return false;
 			}
 			else {
-				if (playerField[xPos][yPos+i]==CoorrdinateStateEnum.Ship ||
-					playerField[xPos+1][yPos+i]==CoorrdinateStateEnum.Ship||
-					playerField[xPos-1][yPos+i]==CoorrdinateStateEnum.Ship)
+				if (playerField[xPos][yPos+i]== CoordinateState.SHIP ||
+					playerField[xPos+1][yPos+i]== CoordinateState.SHIP ||
+					playerField[xPos-1][yPos+i]== CoordinateState.SHIP)
 					return false;
 			}
 		}
@@ -113,36 +116,36 @@ public class GameModel {
 		return true;
 	}
 
-	public GameStateEnum getCurrentState() {
+	public GameState getCurrentState() {
 		return currentState;
 	}
 
-	public void setCurrentState(GameStateEnum currentState) {
+	public void setCurrentState(GameState currentState) {
 		this.currentState = currentState;
 		observer.notifyAboutGameStatusChange();
 	}
 
 	public void shootAt(int xPos,int yPos)
 	{
-		if(targetField[xPos][yPos]!=CoorrdinateStateEnum.hit || targetField[xPos][yPos]!=CoorrdinateStateEnum.miss)
+		if(targetField[xPos][yPos]!= CoordinateState.HIT || targetField[xPos][yPos]!= CoordinateState.MISS)
 		{
 			//Anbindung an Web, wenn antwort Feld entsprechend auf hit/miss setzen
 
 		}
 	}
 
-	public void setHitOrMissAt(int xPos,int yPos, CoorrdinateStateEnum status)
+	public void setHitOrMissAt(int xPos,int yPos, CoordinateState status)
 	{
 		targetField[xPos][yPos]=status;
 
 		observer.notifyAboutTargetModelChange();
-		currentState=GameStateEnum.waitingforEnemy;
+		currentState= GameState.WAIT_FOR_ENEMY;
 	}
 
 	public void shootIncomingAt(int xPos,int yPos){
 
-		if (playerField[xPos][yPos]==CoorrdinateStateEnum.Ship) {
-			playerField[xPos][yPos] = CoorrdinateStateEnum.hit;
+		if (playerField[xPos][yPos]== CoordinateState.SHIP) {
+			playerField[xPos][yPos] = CoordinateState.HIT;
 
 			for (Ship ship:ships) {
 				if(ship.isHorizontal()&&yPos==ship.getyCoordinate()&&xPos>=ship.getxCoordinate()&&xPos<=ship.getxCoordinate()+ship.getType().getValue())
@@ -155,14 +158,14 @@ public class GameModel {
 			}
 		}
 		observer.notifyAboutPlayerModelChange();
-		currentState=GameStateEnum.shooting;
+		currentState= GameState.SHOOTING;
 		observer.notifyAboutGameStatusChange();
 	}
-	public CoorrdinateStateEnum currentStateOfTargetCoordinate(int xPos, int yPos)
+	public CoordinateState currentStateOfTargetCoordinate(int xPos, int yPos)
 	{
 		return targetField[xPos][yPos];
 	}
-	public CoorrdinateStateEnum currentStateOfPlayerCoordinate(int xPos, int yPos)
+	public CoordinateState currentStateOfPlayerCoordinate(int xPos, int yPos)
 	{
 		return playerField[xPos][yPos];
 	}
@@ -188,20 +191,20 @@ public class GameModel {
 	public void switchToNextBiggerShipType()
 	{
 		switch (currentShip){
-			case twoTiles:
-				currentShip=ShipType.threeTiles;
+			case TWO_TILES:
+				currentShip=ShipType.THREE_TILES;
 				break;
-			case threeTiles:
+			case THREE_TILES:
 				if(placedTwice)
-					currentShip=ShipType.forTiles;
+					currentShip=ShipType.FOUR_TILES;
 				else
 					placedTwice=true;
 				break;
-			case forTiles:
-				currentShip=ShipType.fiveTiles;
+			case FOUR_TILES:
+				currentShip=ShipType.FIVE_TILES;
 				break;
-			case fiveTiles:
-				currentState=GameStateEnum.shooting;
+			case FIVE_TILES:
+				currentState= GameState.SHOOTING;
 				observer.notifyAboutGameStatusChange();
 				break;
 		}
@@ -211,20 +214,20 @@ public class GameModel {
 	public void switchToPreviousShipType()
 	{
 		switch (currentShip){
-			case twoTiles:
-				currentShip=ShipType.twoTiles;
+			case TWO_TILES:
+				currentShip=ShipType.TWO_TILES;
 				break;
-			case threeTiles:
+			case THREE_TILES:
 				if(placedTwice)
-					currentShip=ShipType.twoTiles;
+					currentShip=ShipType.TWO_TILES;
 				else
 					placedTwice=false;
 				break;
-			case forTiles:
-				currentShip=ShipType.threeTiles;
+			case FOUR_TILES:
+				currentShip=ShipType.THREE_TILES;
 				break;
-			case fiveTiles:
-				currentShip=ShipType.forTiles;
+			case FIVE_TILES:
+				currentShip=ShipType.FOUR_TILES;
 				break;
 		}
 		observer.notifyAboutShipTypeChange();
@@ -240,9 +243,9 @@ public class GameModel {
 		for(int i=0; i< shipLength;i++)
 		{
 			if (lastAdded.isHorizontal()) {
-				playerField[xPos + i][yPos] = CoorrdinateStateEnum.Empty;
+				playerField[xPos + i][yPos] = CoordinateState.EMPTY;
 			} else {
-				playerField[xPos][yPos + i] = CoorrdinateStateEnum.Empty;
+				playerField[xPos][yPos + i] = CoordinateState.EMPTY;
 			}
 
 		}
@@ -266,13 +269,13 @@ public class GameModel {
 
 	public void setPlayerLost()
 	{
-		currentState=GameStateEnum.lost;
+		currentState= GameState.LOST;
 		observer.notifyAboutGameStatusChange();
 	}
 
 	public void setPlayerWon()
 	{
-		currentState=GameStateEnum.won;
+		currentState= GameState.WON;
 		observer.notifyAboutGameStatusChange();
 	}
 }
