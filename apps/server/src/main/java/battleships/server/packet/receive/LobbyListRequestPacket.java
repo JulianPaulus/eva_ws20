@@ -19,7 +19,7 @@ public class LobbyListRequestPacket implements ILobbyReceivePacket {
 
 	@Override
 	public void act(final AuthenticatedConnection connection) {
-		List<Game> games = GameService.getInstance().getGamesWithOnePlayer();
+		List<Game> games = GameService.getInstance().getOpenGames();
 		connection.writePacket(new LobbyListPacket(games));
 	}
 }

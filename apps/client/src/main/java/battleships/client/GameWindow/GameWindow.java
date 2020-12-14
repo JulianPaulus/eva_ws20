@@ -96,21 +96,21 @@ public class GameWindow implements Initializable {
 				labelArray[i][j] = label;
 				if (gridPane == targetGrid) {
 					label.setOnMouseEntered(event -> {
-						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
+//						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
 						onMouseHoverTargetField(label, finalI, finalJ, true);
 					});
 					label.setOnMouseExited(event -> {
-						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
+//						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
 						onMouseHoverTargetField(label, finalI, finalJ, false);
 					});
 					label.setOnMouseClicked(event -> onTargetFieldClicked(finalI, finalJ));
 				} else {
 					label.setOnMouseEntered(event -> {
-						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
+//						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
 						onMouseHoverPlayerField(finalI, finalJ, true);
 					});
 					label.setOnMouseExited(event -> {
-						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
+//						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
 						onMouseHoverPlayerField(finalI, finalJ, false);
 					});
 					label.setOnMouseClicked(event -> {
@@ -145,16 +145,16 @@ public class GameWindow implements Initializable {
 
 	private void onMouseHoverPlayerField(int posX, int posY, boolean isEnter) {
 		if (model.getCurrentState() == GameState.SET_UP) {
-			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + posY);
+//			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + posY);
 			if (isEnter) {
 
-				System.out.println("onMouseHoverPlayerField" + posX + " " + posY);
+//				System.out.println("onMouseHoverPlayerField" + posX + " " + posY);
 
 
 				if (horizontal) {
 					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-							System.out.println("" + posX + posY);
+//							System.out.println("" + posX + posY);
 							playerLabels[posX + x][posY]
 								.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 						}
@@ -162,7 +162,7 @@ public class GameWindow implements Initializable {
 				} else {
 					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-							System.out.println("" + posX + posY);
+//							System.out.println("" + posX + posY);
 							playerLabels[posX][posY + y]
 								.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color:black");
 						}
@@ -172,7 +172,7 @@ public class GameWindow implements Initializable {
 				if (horizontal) {
 					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-							System.out.println("" + posX + posY);
+//							System.out.println("" + posX + posY);
 							if (model.currentStateOfPlayerCoordinate(posX + x, posY) == CoordinateState.EMPTY)
 								playerLabels[posX + x][posY]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
@@ -184,12 +184,12 @@ public class GameWindow implements Initializable {
 				} else {
 					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-							System.out.println("" + posX + " " + (posY + y));
+//							System.out.println("" + posX + " " + (posY + y));
 							if (model.currentStateOfPlayerCoordinate(posX, posY + y) == CoordinateState.EMPTY) {
 								playerLabels[posX][posY + y]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 							} else {
-								System.out.println("Ship");
+//								System.out.println("Ship");
 								playerLabels[posX][posY + y]
 									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 							}

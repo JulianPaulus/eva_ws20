@@ -1,4 +1,4 @@
-package battleships.packet;
+package battleships.model;
 
 import java.util.UUID;
 

@@ -35,6 +35,8 @@ public class Constants {
 		public static final byte SEND_CHAT_MESSAGE = 0xB;
 		public static final byte BROADCAST_CHAT_MESSAGE = 0xC;
 
+		public static final byte START_GAME_MESSAGE = 0xD;
+
 	}
 
 }

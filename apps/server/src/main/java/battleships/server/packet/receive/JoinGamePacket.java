@@ -9,6 +9,7 @@ import battleships.server.packet.send.GameJoinedPacket;
 import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.GameService;
 import battleships.util.Constants;
+import battleships.util.ServerErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class JoinGamePacket implements ILobbyReceivePacket {
 
 			LOGGER.debug("{} joined game({}) hosted by {}", connection.getPlayer().getUsername(), game.getId(), game.getHost().getUsername());
 		} catch (final ServerException e) {
-			connection.writePacket(new ServerErrorPacket(e.getMessage()));
+			connection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, e.getMessage()));
 		}
 
 	}

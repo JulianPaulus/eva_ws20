@@ -11,9 +11,11 @@ import battleships.server.game.gameState.SettingUpState;
 import battleships.server.game.gameState.UninitializedState;
 import battleships.server.game.gameState.WaitingForGuestState;
 import battleships.server.packet.send.ChatMessagePacket;
+import battleships.server.packet.send.GameStartPacket;
 import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
+import battleships.util.ServerErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +45,14 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	public synchronized void addGuest(final Player guest) throws ServerException {
-		if (this.guest == null) {
+		if (this.guest == null && state.isWaitingForGuest()) {
 			this.guest = guest;
 
 			hostConnection = loadConnection(host);
 			guestConnection = loadConnection(guest);
+			hostConnection.writePacket(new GameStartPacket(guest.getUsername()));
+			guestConnection.writePacket(new GameStartPacket(host.getUsername()));
 			setState(new SettingUpState());
-			// TODO send join message to host
 		} else {
 			throw new ServerException("Game is full!");
 		}
@@ -68,19 +71,6 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Game game = (Game) o;
-		return id.equals(game.id) && host.equals(game.host) && Objects.equals(guest, game.guest);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, host, guest);
-	}
-
-	@Override
 	public void update(final Observable<ConnectionEvent> connection, final ConnectionEvent event) {
 		if (event == ConnectionEvent.DISCONNECTED) {
 			onPlayerDisconnected((AuthenticatedConnection) connection);
@@ -90,9 +80,9 @@ public class Game implements Observer<ConnectionEvent> {
 	private synchronized void onPlayerDisconnected(final AuthenticatedConnection cause) {
 		if (state.isInitialized()) {
 			if (cause.getPlayer().equals(host)) {
-				guestConnection.writePacket(new ServerErrorPacket(host.getUsername() + " disconnected!"));
+				guestConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, host.getUsername() + " disconnected!"));
 			} else {
-				hostConnection.writePacket(new ServerErrorPacket(guest.getUsername() + " disconnected!"));
+				hostConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL,guest.getUsername() + " disconnected!"));
 			}
 			setState(new UninitializedState());
 		}
@@ -121,5 +111,24 @@ public class Game implements Observer<ConnectionEvent> {
 
 	private static AuthenticatedConnection loadConnection(final Player player) {
 		return CONNECTION_SERVICE.getConnectionForPlayer(player).orElseThrow(() -> new ServerException("unable to load connection for " + player.getUsername()));
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Game game = (Game) o;
+		return id.equals(game.id) && host.equals(game.host) && Objects.equals(guest, game.guest) && state
+			.equals(game.state) && hostConnection.equals(game.hostConnection) && Objects
+			.equals(guestConnection, game.guestConnection);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, host, guest, state, hostConnection, guestConnection);
+	}
+
+	public ServerGameState getState() {
+		return state;
 	}
 }

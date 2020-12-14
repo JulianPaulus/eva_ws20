@@ -1,9 +1,9 @@
 package battleships.client.packet.receive;
 
 import battleships.client.lobby.LobbyListController;
+import battleships.model.PacketLobby;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
-import battleships.packet.PacketLobby;
 import battleships.util.Constants;
 
 import java.util.Set;

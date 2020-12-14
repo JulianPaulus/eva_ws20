@@ -1,11 +1,13 @@
 package battleships.client;
 
 import battleships.client.packet.receive.GameJoinedPacket;
+import battleships.client.packet.receive.GameStartPacket;
 import battleships.client.packet.receive.LobbyListPacket;
 import battleships.client.packet.receive.LoginResponsePacket;
 import battleships.client.packet.receive.RegistrationErrorResponsePacket;
 import battleships.client.packet.receive.ServerErrorPacket;
 import battleships.client.packet.receive.factory.GameJoinedPacketFactory;
+import battleships.client.packet.receive.factory.GameStartPacketFactory;
 import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
 import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
@@ -47,6 +49,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		packetFactoryMap.put(RegistrationErrorResponsePacket.IDENTIFIER, new RegistrationErrorResponseFactory());
 		packetFactoryMap.put(GameJoinedPacket.IDENTIFIER, new GameJoinedPacketFactory());
 		packetFactoryMap.put(ServerErrorPacket.IDENTIFIER, new ServerErrorPacketFactory());
+		packetFactoryMap.put(GameStartPacket.IDENTIFIER, new GameStartPacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 

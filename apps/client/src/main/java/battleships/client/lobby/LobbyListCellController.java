@@ -2,7 +2,7 @@ package battleships.client.lobby;
 
 import battleships.client.ClientMain;
 import battleships.client.packet.send.JoinGamePacket;
-import battleships.packet.PacketLobby;
+import battleships.model.PacketLobby;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;

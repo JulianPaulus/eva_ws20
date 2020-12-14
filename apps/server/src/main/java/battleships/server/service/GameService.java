@@ -55,10 +55,10 @@ public class GameService {
 		}
 	}
 
-	public List<Game> getGamesWithOnePlayer() {
+	public List<Game> getOpenGames() {
 		try {
 			gamesLock.readLock().lock();
-			return games.stream().filter(game -> !game.getGuest().isPresent()).collect(Collectors.toList());
+			return games.stream().filter(game -> game.getState().isWaitingForGuest()).collect(Collectors.toList());
 		} finally {
 			gamesLock.readLock().unlock();
 		}
