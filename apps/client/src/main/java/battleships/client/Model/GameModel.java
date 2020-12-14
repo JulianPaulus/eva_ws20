@@ -1,7 +1,6 @@
 package battleships.client.Model;
 
 import battleships.model.CoordinateState;
-import battleships.model.GameState;
 import battleships.model.Ship;
 import battleships.model.ShipType;
 

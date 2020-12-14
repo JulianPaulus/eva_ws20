@@ -1,4 +1,4 @@
-package battleships.model;
+package battleships.client.Model;
 
 public enum GameState {
 	SET_UP,

@@ -1,9 +1,9 @@
 package battleships.client.GameWindow;
 
 import battleships.client.Model.GameModel;
+import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.model.CoordinateState;
-import battleships.model.GameState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;

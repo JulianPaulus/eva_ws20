@@ -6,10 +6,16 @@ import battleships.observable.Observable;
 import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.exception.ServerException;
+import battleships.server.game.gameState.ServerGameState;
+import battleships.server.game.gameState.SettingUpState;
+import battleships.server.game.gameState.UninitializedState;
+import battleships.server.game.gameState.WaitingForGuestState;
 import battleships.server.packet.send.ChatMessagePacket;
 import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -19,14 +25,13 @@ public class Game implements Observer<ConnectionEvent> {
 
 	private static final ConnectionService CONNECTION_SERVICE = ConnectionService.getInstance();
 	private static final GameService GAME_SERVICE = GameService.getInstance();
+	private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
 
 	private final UUID id;
 
 	private final Player host;
 	private Player guest;
-
-	// replace with something like GameState
-	private boolean initialized = false;
+	private ServerGameState state;
 
 	private AuthenticatedConnection hostConnection;
 	private AuthenticatedConnection guestConnection;
@@ -34,6 +39,7 @@ public class Game implements Observer<ConnectionEvent> {
 	public Game(final Player host) {
 		this.id = UUID.randomUUID();
 		this.host = host;
+		this.state = new WaitingForGuestState();
 	}
 
 	public synchronized void addGuest(final Player guest) throws ServerException {
@@ -42,8 +48,7 @@ public class Game implements Observer<ConnectionEvent> {
 
 			hostConnection = loadConnection(host);
 			guestConnection = loadConnection(guest);
-			initialized = true;
-
+			setState(new SettingUpState());
 			// TODO send join message to host
 		} else {
 			throw new ServerException("Game is full!");
@@ -83,12 +88,13 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	private synchronized void onPlayerDisconnected(final AuthenticatedConnection cause) {
-		if (initialized) {
+		if (state.isInitialized()) {
 			if (cause.getPlayer().equals(host)) {
 				guestConnection.writePacket(new ServerErrorPacket(host.getUsername() + " disconnected!"));
 			} else {
 				hostConnection.writePacket(new ServerErrorPacket(guest.getUsername() + " disconnected!"));
 			}
+			setState(new UninitializedState());
 		}
 		GAME_SERVICE.removeGame(this);
 	}
@@ -98,9 +104,18 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	private synchronized void broadcastPacket(final SendPacket packet) {
-		if (initialized) {
+		if (state.isInitialized()) {
 			hostConnection.writePacket(packet);
 			guestConnection.writePacket(packet);
+		}
+	}
+
+	private synchronized void setState(final ServerGameState newState) {
+		if (state.canTransition(newState)) {
+			LOGGER.debug("[{}] updating state from {} to {}", id.toString(), state.getClass().getSimpleName(), newState.getClass().getSimpleName());
+			state = newState;
+		} else {
+			LOGGER.warn("[{}] tried to transition state from {} to {}, which is forbidden", id.toString(), state.getClass().getSimpleName(), newState.getClass().getSimpleName());
 		}
 	}
 
