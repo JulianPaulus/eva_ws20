@@ -36,8 +36,10 @@ public class Constants {
 		public static final byte BROADCAST_CHAT_MESSAGE = 0xC;
 
 		public static final byte GAME_PLAYER_DO_SETUP_MESSAGE = 0xD;
+		public static final byte GAME_PLAYER_OTHER_PLAYER_SETUP_MESSAGE = 0xE;
+		public static final byte GAME_PLAYER_ILLEGAL_SHIP_POSITION = 0xF;
 
-		public static final byte PLAYER_READY_REQUEST = 0xE;
+		public static final byte PLAYER_READY_REQUEST = 0x10;
 
 	}
 

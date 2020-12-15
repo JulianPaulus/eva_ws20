@@ -346,7 +346,15 @@ public class GameWindow implements Initializable {
 	}
 
 	public void updateRulesForPhaseChange() {
-		if (model.getCurrentState() == GameState.SET_UP) {
+		if (model.getCurrentState() == GameState.PENDING) {
+			Platform.runLater(() -> {
+				statusLabel.setText("Warte auf anderen Spieler...");
+				rulesTextArea.clear();
+				rulesTextArea.setText("Bitte warten Sie, bis ein anderer Spieler dem Spiel beitritt!");
+				removeShip.setVisible(true);
+			});
+
+		} else if (model.getCurrentState() == GameState.SET_UP) {
 			Platform.runLater(() -> {
 				statusLabel.setText("Bitte Schiffe setzen");
 				rulesTextArea.clear();
@@ -355,6 +363,15 @@ public class GameWindow implements Initializable {
 					"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n" +
 					"Mit linksklick setzen sie das Schiff\n" +
 					"Schiffe werden Blau dargestellt");
+				removeShip.setVisible(true);
+			});
+
+		} else if (model.getCurrentState() == GameState.SET_UP_WAIT_FOR_OTHER_PLAYER) {
+			Platform.runLater(() -> {
+				statusLabel.setText("Warte auf andern Spieler...");
+				rulesTextArea.clear();
+				rulesTextArea.setText("Ihre Gegner hat noch nicht alle Schiffe platziert.\n" +
+					"Das Spiel startet automatisch, sobald Ihre Gegner seine Schiffe platziert hat!");
 				removeShip.setVisible(true);
 			});
 
@@ -408,5 +425,15 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
+	public void onWaitForOtherPlayerSetup() {
+		model.setCurrentState(GameState.SET_UP_WAIT_FOR_OTHER_PLAYER);
+		updateRulesForPhaseChange();
+	}
 
+
+	public void removeAllShips() {
+		model.removeAllShips();
+		model.setCurrentState(GameState.SET_UP);
+		updateRulesForPhaseChange();
+	}
 }

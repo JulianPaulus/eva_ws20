@@ -8,12 +8,10 @@ import battleships.net.packet.SendPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
+import battleships.server.exception.IllegalShipPositionException;
 import battleships.server.exception.ServerException;
 import battleships.server.game.gameState.*;
-import battleships.server.packet.send.ChatMessagePacket;
-import battleships.server.packet.send.GameJoinedPacket;
-import battleships.server.packet.send.GamePlayerDoSetupPacket;
-import battleships.server.packet.send.ServerErrorPacket;
+import battleships.server.packet.send.*;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
 import battleships.util.ServerErrorType;
@@ -50,7 +48,7 @@ public class Game implements Observer<ConnectionEvent> {
 
 	public synchronized void setShips(final int playerId, Ship[] ships) {
 		if(ships.length != 5) {
-			throw new ServerException("Illegal number of ships");
+			throw new IllegalShipPositionException("Illegal number of ships");
 		}
 		Map<ShipType, Integer> requiredShips = Arrays
 			.stream(ShipType.values()).collect(Collectors.toMap(x -> x, ShipType::getNrPerField));
@@ -58,12 +56,12 @@ public class Game implements Observer<ConnectionEvent> {
 		for(Ship ship : ships) {
 			int reqNumber = requiredShips.get(ship.getType()) - 1;
 			if(reqNumber < 0) {
-				throw new ServerException("Too many ships of the same type!");
+				throw new IllegalShipPositionException("Too many ships of the same type!");
 			}
 			requiredShips.put(ship.getType(), reqNumber);
 		}
 		if(requiredShips.values().stream().anyMatch(x -> x != 0)) {
-			throw new ServerException("Not enough ships!");
+			throw new IllegalShipPositionException("Not enough ships!");
 		}
 		CoordinateState[][] gameField = new CoordinateState[GAMEFIELD_SIZE][GAMEFIELD_SIZE];
 		for (int i = 0; i < GAMEFIELD_SIZE; i++) {
@@ -84,7 +82,7 @@ public class Game implements Observer<ConnectionEvent> {
 				|| endX < 0 || endX >= GAMEFIELD_SIZE
 				|| startY < 0 || startY >= GAMEFIELD_SIZE
 				|| endY < 0 || endY >= GAMEFIELD_SIZE) {
-				throw new ServerException("Ship out of gamefield bounds!");
+				throw new IllegalShipPositionException("Ship out of gamefield bounds!");
 			}
 			//Set ship to field and make sure that a distance of one cell is kept between the
 			// ships (horizontal, vertical, diagonal)
@@ -104,7 +102,7 @@ public class Game implements Observer<ConnectionEvent> {
 					isPositionLegal &= (i - 1) < 0 || (j + 1) >= GAMEFIELD_SIZE || gameField[i - 1][j + 1] == CoordinateState.EMPTY;
 					isPositionLegal &= (i + 1) >= GAMEFIELD_SIZE || (j - 1) < 0 || gameField[i + 1][j - 1] == CoordinateState.EMPTY;
 					if(!isPositionLegal) {
-						throw new ServerException("Position Illegal! Some ships are too close together or overlap!");
+						throw new IllegalShipPositionException("Position Illegal! Some ships are too close together or overlap!");
 					}
 				}
 			}
@@ -120,9 +118,8 @@ public class Game implements Observer<ConnectionEvent> {
 		} else if(guest != null && guest.getId() == playerId && this.state.canGuestSetShip()) {
 			this.guestField = gameField;
 		} else {
-			throw new ServerException("Player is part of the game or is not allowed to set his ships in this state of the game!");
+			throw new IllegalShipPositionException("Player is part of the game or is not allowed to set his ships in this state of the game!");
 		}
-		System.out.println("Set ships for player " + playerId);
 
 		if(this.hostField != null && this.guestField != null) {
 			setState(new HostsTurnState());
@@ -130,11 +127,11 @@ public class Game implements Observer<ConnectionEvent> {
 
 		} else if(this.hostField != null) {
 			setState(new SettingUpGuestState());
-			//Todo send wait for Guest packet
+			hostConnection.writePacket(new GameOtherPlayerSetupPacket());
 
 		} else if(this.guestField != null) {
 			setState(new SettingUpHostState());
-			//Todo send wait for Host packet
+			guestConnection.writePacket(new GameOtherPlayerSetupPacket());
 
 		}
 	}

@@ -1,24 +1,13 @@
 package battleships.client;
 
 import battleships.client.login.LoginController;
-import battleships.client.packet.receive.ChatMessagePacket;
-import battleships.client.packet.receive.GameJoinedPacket;
-import battleships.client.packet.receive.GamePlayerDoSetupPacket;
-import battleships.client.packet.receive.LobbyListPacket;
-import battleships.client.packet.receive.LoginResponsePacket;
-import battleships.client.packet.receive.RegistrationErrorResponsePacket;
-import battleships.client.packet.receive.ServerErrorPacket;
-import battleships.client.packet.receive.factory.ChatMessagePacketFactory;
-import battleships.client.packet.receive.factory.GameJoinedPacketFactory;
-import battleships.client.packet.receive.factory.GameStartPacketFactory;
-import battleships.client.packet.receive.factory.LobbyListPacketFactory;
-import battleships.client.packet.receive.factory.LoginResponseFactory;
-import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
-import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
+import battleships.client.packet.receive.*;
+import battleships.client.packet.receive.factory.*;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
+import battleships.net.factory.StateLessPacketFactory;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import javafx.application.Application;
@@ -54,6 +43,8 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		packetFactoryMap.put(ServerErrorPacket.IDENTIFIER, new ServerErrorPacketFactory());
 		packetFactoryMap.put(GamePlayerDoSetupPacket.IDENTIFIER, new GameStartPacketFactory());
 		packetFactoryMap.put(ChatMessagePacket.IDENTIFIER, new ChatMessagePacketFactory());
+		packetFactoryMap.put(GameOtherPlayerSetupPacket.IDENTIFIER, new StateLessPacketFactory<>(GameOtherPlayerSetupPacket.class));
+		packetFactoryMap.put(IllegalShipPositionPacket.IDENTIFIER, new StateLessPacketFactory<>(IllegalShipPositionPacket.class));
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 

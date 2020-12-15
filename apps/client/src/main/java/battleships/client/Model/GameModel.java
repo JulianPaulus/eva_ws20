@@ -216,6 +216,14 @@ public class GameModel {
 		observer.notifyAboutShipTypeChange();
 	}
 
+	public void removeAllShips() {
+		for (int i = 0; i < 10; i++) {
+			Arrays.fill(playerField[i], CoordinateState.EMPTY);
+		}
+		this.ships = new Ship[5];
+		this.lastAdded = null;
+		observer.notifyAboutPlayerModelChange();
+	}
 	public void removeLastAdded()
 	{
 		int xPos= lastAdded.getxCoordinate();
