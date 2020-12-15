@@ -170,16 +170,9 @@ public class GameModel {
 		return playerField[xPos][yPos];
 	}
 
-	public void sendChatMessage(String message)
+	public void receiveChatMessage(final String fromUser, final String message)
 	{
-		//sende Nachricht an Server
-
-		receiveChatMessage(message);		//testweise bitte Löschen wenn anbindung an Server
-	}
-
-	public void receiveChatMessage(String message)
-	{
-		chat.add(message);
+		chat.add(fromUser + ": "+ message);
 		observer.notifyAboutChatMessage();
 	}
 

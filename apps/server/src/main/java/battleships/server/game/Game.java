@@ -90,6 +90,7 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	public void sendChatMessage(final String fromUser, final String message) {
+		LOGGER.info("[{}] CHAT: {}: {}", id.toString(), fromUser, message);
 		broadcastPacket(new ChatMessagePacket(fromUser, message));
 	}
 
