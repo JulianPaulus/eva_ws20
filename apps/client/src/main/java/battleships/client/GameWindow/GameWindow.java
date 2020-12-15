@@ -346,7 +346,7 @@ public class GameWindow implements Initializable {
 
 			removeShip.setVisible(false);
 		} else if (model.getCurrentState() == GameState.WAIT_FOR_ENEMY) {
-			statusLabel.setText("Warten auf gegner");
+			statusLabel.setText("Warten auf Gegner");
 
 			rulesTextArea.clear();
 			rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +

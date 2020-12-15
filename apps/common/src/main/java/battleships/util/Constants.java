@@ -37,6 +37,8 @@ public class Constants {
 
 		public static final byte START_GAME_MESSAGE = 0xD;
 
+		public static final byte PLAYER_READY_REQUEST = 0xE;
+
 	}
 
 }
