@@ -1,8 +1,10 @@
 package battleships.client.GameWindow;
 
+import battleships.client.ClientMain;
 import battleships.client.Model.GameModel;
 import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
+import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.model.CoordinateState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,6 +27,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
+
+	private static GameWindow INSTANCE;
 
 	private final int BOARD_SQUARE_SIZE = 10;
 
@@ -63,11 +67,18 @@ public class GameWindow implements Initializable {
 	public GameWindow() {
 		model = new GameModel(new ModelObserver(this));
 		horizontal = true;
+
+		INSTANCE = this;
 	}
 
 	@FXML
 	public void sendMessage() {
-		model.sendChatMessage(chatTextBox.getText());
+		ClientMain.getInstance().getConnection().writePacket(new SendChatMessagePacket(chatTextBox.getText().trim()));
+		chatTextBox.clear();
+	}
+
+	public void receiveMessage(final String fromUser, final String message) {
+		model.receiveChatMessage(fromUser, message);
 	}
 
 	@Override
@@ -356,5 +367,9 @@ public class GameWindow implements Initializable {
 	@FXML
 	public void removeLastAddedShip() {
 		model.removeLastAdded();
+	}
+
+	public static GameWindow getInstance() {
+		return INSTANCE;
 	}
 }
