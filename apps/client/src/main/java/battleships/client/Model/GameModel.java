@@ -23,7 +23,7 @@ public class GameModel {
 	private ModelObserver observer;
 
 	public GameModel(ModelObserver observer) {
-		currentState = GameState.SET_UP;
+		currentState = GameState.PENDING;
 		playerField = new CoordinateState[10][10];
 		targetField = new CoordinateState[10][10];
 		chat=new LinkedList<>();
@@ -119,7 +119,8 @@ public class GameModel {
 		return currentState;
 	}
 
-	public void setCurrentState(GameState currentState) {
+
+	public void setCurrentState(GameState currentState) {//setzt Status von Server
 		this.currentState = currentState;
 		observer.notifyAboutGameStatusChange();
 	}
@@ -203,7 +204,7 @@ public class GameModel {
 				currentShip=ShipType.FIVE_TILES;
 				break;
 			case FIVE_TILES:
-				currentState= GameState.SHOOTING;
+				currentState= GameState.PENDING;
 				observer.notifyAboutGameStatusChange();
 				break;
 		}
@@ -277,4 +278,6 @@ public class GameModel {
 		currentState= GameState.WON;
 		observer.notifyAboutGameStatusChange();
 	}
+
+
 }
