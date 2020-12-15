@@ -1,6 +1,7 @@
 package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
+import battleships.client.GameWindow.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
@@ -30,8 +31,6 @@ public class GameJoinedPacket implements IPreAuthReceivePacket {
 	public void act(final Connection connection) {
 		LOGGER.debug("joining game {}", gameId.toString());
 		ClientMain client = ClientMain.getInstance();
-		Platform.runLater(() -> {
-			client.loadFXML("/fxml/GameWindow.fxml");
-		});
+		GameWindow.openWindow(ClientMain.getInstance().getStage());
 	}
 }

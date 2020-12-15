@@ -8,9 +8,11 @@ import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.model.CoordinateState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,12 +25,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(GameWindow.class);
 	private static GameWindow INSTANCE;
 
 	private final int BOARD_SQUARE_SIZE = 10;
@@ -70,6 +75,22 @@ public class GameWindow implements Initializable {
 		horizontal = true;
 
 		INSTANCE = this;
+	}
+
+	public static void openWindow(Stage stage) {
+		FXMLLoader loader = new FXMLLoader();
+		try {
+			loader.load(GameWindow.class.getResourceAsStream("/fxml/GameWindow.fxml"));
+			Scene scene = new Scene(loader.getRoot());
+			scene.getStylesheets().add(GameWindow.class.getResource("/fxml/style.css").toString());
+			Platform.runLater(() -> {
+				stage.setScene(scene);
+				stage.show();
+			});
+			INSTANCE = loader.getController();
+		} catch (final IOException e) {
+			LOGGER.trace("error while loading fxml", e);
+		}
 	}
 
 	@FXML

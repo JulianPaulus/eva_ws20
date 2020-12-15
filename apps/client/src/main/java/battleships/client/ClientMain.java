@@ -1,5 +1,6 @@
 package battleships.client;
 
+import battleships.client.login.LoginController;
 import battleships.client.packet.receive.ChatMessagePacket;
 import battleships.client.packet.receive.GameJoinedPacket;
 import battleships.client.packet.receive.GamePlayerDoSetupPacket;
@@ -66,7 +67,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		this.stage = primaryStage;
 
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
-		loadFXML("/login.fxml");
+		LoginController.openWindow(stage);
 	}
 
 	public Connection connect(final String address, final int port) throws IOException {
@@ -100,20 +101,6 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 
 		if (connection != null) {
 			connection.close();
-		}
-	}
-
-	public void loadFXML(final String path) {
-		LOGGER.debug("loading FXML from {}", path);
-		FXMLLoader loader = new FXMLLoader();
-		try {
-			loader.load(getClass().getResourceAsStream(path));
-			Scene scene = new Scene(loader.getRoot());
-			scene.getStylesheets().add(getClass().getResource("/style.css").toString());
-			stage.setScene(scene);
-			stage.show();
-		} catch (final IOException e) {
-			LOGGER.trace("error while loading fxml", e);
 		}
 	}
 
