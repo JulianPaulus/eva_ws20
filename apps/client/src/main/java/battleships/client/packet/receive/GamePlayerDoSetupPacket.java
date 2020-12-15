@@ -5,6 +5,7 @@ import battleships.client.GameWindow.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class GamePlayerDoSetupPacket implements IPreAuthReceivePacket {
 
@@ -25,6 +26,6 @@ public class GamePlayerDoSetupPacket implements IPreAuthReceivePacket {
 	public void act(final Connection connection) {
 		System.out.println("start game");
 		System.out.println("other player: " + otherPlayerName);
-		GameWindow.getInstance().onDoSetup();
+		Platform.runLater(() -> GameWindow.getInstance().onDoSetup());
 	}
 }

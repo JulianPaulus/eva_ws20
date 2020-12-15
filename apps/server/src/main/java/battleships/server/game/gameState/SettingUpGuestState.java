@@ -2,6 +2,7 @@ package battleships.server.game.gameState;
 
 public class SettingUpGuestState implements ServerGameState {
 
+	@Override
 	public boolean canGuestSetShip() {
 		return true;
 	}

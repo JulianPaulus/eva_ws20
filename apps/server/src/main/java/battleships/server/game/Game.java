@@ -76,9 +76,9 @@ public class Game implements Observer<ConnectionEvent> {
 			int endX = startX;
 			int endY = startY;
 			if(ship.isHorizontal()) {
-				endX += ship.getType().getSize();
+				endX += ship.getType().getSize() - 1;
 			} else {
-				endY += ship.getType().getSize();
+				endY += ship.getType().getSize() - 1;
 			}
 			if(startX < 0 || startX >= GAMEFIELD_SIZE
 				|| endX < 0 || endX >= GAMEFIELD_SIZE

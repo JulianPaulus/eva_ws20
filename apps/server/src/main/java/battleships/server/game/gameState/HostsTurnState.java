@@ -2,6 +2,7 @@ package battleships.server.game.gameState;
 
 public class HostsTurnState implements ServerGameState {
 
+	@Override
 	public boolean canHostFire() {
 		return true;
 	}

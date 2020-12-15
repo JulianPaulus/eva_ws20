@@ -14,7 +14,6 @@ public class PlayerReadyPacketFactory extends AbstractPacketFactory<PlayerReadyP
 
 	@Override
 	public PlayerReadyPacket unmarshal(DataInputStream stream) throws IOException {
-		int size = stream.readInt();
 		Ship[] ships = new Ship[5];
 		for(int i = 0; i < ships.length; i++) {
 			int shipSize = stream.readInt();
