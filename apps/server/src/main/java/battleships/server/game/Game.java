@@ -11,7 +11,8 @@ import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.exception.ServerException;
 import battleships.server.game.gameState.*;
 import battleships.server.packet.send.ChatMessagePacket;
-import battleships.server.packet.send.GameStartPacket;
+import battleships.server.packet.send.GameJoinedPacket;
+import battleships.server.packet.send.GamePlayerDoSetupPacket;
 import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
@@ -144,8 +145,9 @@ public class Game implements Observer<ConnectionEvent> {
 
 			hostConnection = loadConnection(host);
 			guestConnection = loadConnection(guest);
-			hostConnection.writePacket(new GameStartPacket(guest.getUsername()));
-			guestConnection.writePacket(new GameStartPacket(host.getUsername()));
+			hostConnection.writePacket(new GamePlayerDoSetupPacket(guest.getUsername()));
+			guestConnection.writePacket(new GameJoinedPacket(getId()));
+			guestConnection.writePacket(new GamePlayerDoSetupPacket(host.getUsername()));
 			setState(new SettingUpState());
 		} else {
 			throw new ServerException("Game is full!");

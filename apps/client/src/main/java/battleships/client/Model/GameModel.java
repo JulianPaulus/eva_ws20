@@ -189,8 +189,8 @@ public class GameModel {
 
 	public void switchToNextBiggerShipType()
 	{
-		long currentPlacedShipsOfType = Arrays.stream(ships).filter(x -> x.getType() == currentShip).count();
-		if(currentShip.getNrPerField() >= currentPlacedShipsOfType) {
+		long currentPlacedShipsOfType = Arrays.stream(ships).filter(x -> x != null && x.getType() == currentShip).count();
+		if(currentShip.getNrPerField() <= currentPlacedShipsOfType) {
 			if(currentShip.getNext() == null) {
 				currentState= GameState.PENDING;
 				this.sendShipsToServer();
@@ -204,7 +204,7 @@ public class GameModel {
 
 	public void switchToPreviousShipType()
 	{
-		long currentPlacedShipsOfType = Arrays.stream(ships).filter(x -> x.getType() == currentShip).count();
+		long currentPlacedShipsOfType = Arrays.stream(ships).filter(x -> x != null && x.getType() == currentShip).count();
 		if(currentPlacedShipsOfType == 0) {
 			ShipType prevType = ShipType.getPrev(currentShip);
 			if(prevType == null) {

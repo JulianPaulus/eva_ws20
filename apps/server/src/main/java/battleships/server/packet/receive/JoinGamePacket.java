@@ -47,8 +47,6 @@ public class JoinGamePacket implements ILobbyReceivePacket {
 			GameConnection gameConnection = new GameConnection(connection, game);
 			game.addGuest(gameConnection.getPlayer());
 
-			connection.writePacket(new GameJoinedPacket(game.getId()));
-
 			LOGGER.debug("{} joined game({}) hosted by {}", connection.getPlayer().getUsername(), game.getId(), game.getHost().getUsername());
 		} catch (final ServerException e) {
 			connection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, e.getMessage()));

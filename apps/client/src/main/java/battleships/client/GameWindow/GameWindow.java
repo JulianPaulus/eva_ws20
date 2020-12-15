@@ -6,6 +6,7 @@ import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.model.CoordinateState;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
@@ -325,42 +326,50 @@ public class GameWindow implements Initializable {
 
 	public void updateRulesForPhaseChange() {
 		if (model.getCurrentState() == GameState.SET_UP) {
-			statusLabel.setText("Bitte Schiffe setzen");
+			Platform.runLater(() -> {
+				statusLabel.setText("Bitte Schiffe setzen");
+				rulesTextArea.clear();
+				rulesTextArea.setText("setzen sie ihre Schiffe:\n" +
+					"Beim Hovern \u00FCber dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n" +
+					"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n" +
+					"Mit linksklick setzen sie das Schiff\n" +
+					"Schiffe werden Blau dargestellt");
+				removeShip.setVisible(true);
+			});
 
-			rulesTextArea.clear();
-
-			rulesTextArea.setText("setzen sie ihre Schiffe:\n" +
-				"Beim Hovern \u00FCber dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n" +
-				"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n" +
-				"Mit linksklick setzen sie das Schiff\n" +
-				"Schiffe werden Blau dargestellt");
-
-			removeShip.setVisible(true);
 		} else if (model.getCurrentState() == GameState.SHOOTING) {
-			statusLabel.setText("Bitte Zielen");
+			Platform.runLater(() -> {
+				statusLabel.setText("Bitte Zielen");
+				rulesTextArea.clear();
+				rulesTextArea.setText(
+					"Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schie\u00DFen.\n" +
+						"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
+				removeShip.setVisible(false);
+			});
 
-			rulesTextArea.clear();
-			rulesTextArea.setText(
-				"Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schie\u00DFen.\n" +
-					"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
-
-			removeShip.setVisible(false);
 		} else if (model.getCurrentState() == GameState.WAIT_FOR_ENEMY) {
-			statusLabel.setText("Warten auf Gegner");
+			Platform.runLater(() -> {
+				statusLabel.setText("Warten auf Gegner");
+				rulesTextArea.clear();
+				rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +
+					"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
+				removeShip.setVisible(false);
+			});
 
-			rulesTextArea.clear();
-			rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +
-				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
-
-			removeShip.setVisible(false);
 		} else if (model.getCurrentState() == GameState.WON) {
-			statusLabel.setText("Gewonnen");
-			statusLabel.setStyle("-fx-text-fill: green");
-			rulesTextArea.clear();
+			Platform.runLater(() -> {
+				statusLabel.setText("Gewonnen");
+				statusLabel.setStyle("-fx-text-fill: green");
+				rulesTextArea.clear();
+			});
+
 		} else if (model.getCurrentState() == GameState.LOST) {
-			statusLabel.setText("Verloren");
-			statusLabel.setStyle("-fx-text-fill: red");
-			rulesTextArea.clear();
+			Platform.runLater(() -> {
+				statusLabel.setText("Verloren");
+				statusLabel.setStyle("-fx-text-fill: red");
+				rulesTextArea.clear();
+			});
+
 		}
 	}
 
@@ -372,4 +381,11 @@ public class GameWindow implements Initializable {
 	public static GameWindow getInstance() {
 		return INSTANCE;
 	}
+
+	public void onDoSetup() {
+		model.setCurrentState(GameState.SET_UP);
+		updateRulesForPhaseChange();
+	}
+
+
 }

@@ -6,13 +6,13 @@ import battleships.util.Constants;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class GameStartPacket extends SendPacket {
+public class GamePlayerDoSetupPacket extends SendPacket {
 
-	public static final byte IDENTIFIER = Constants.Identifiers.START_GAME_MESSAGE;
+	public static final byte IDENTIFIER = Constants.Identifiers.GAME_PLAYER_DO_SETUP_MESSAGE;
 
 	private final String otherPlayerName;
 
-	public GameStartPacket(final String otherPlayerName) {
+	public GamePlayerDoSetupPacket(final String otherPlayerName) {
 		this.otherPlayerName = otherPlayerName;
 	}
 
