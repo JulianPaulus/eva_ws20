@@ -33,7 +33,7 @@ public class LoginResponsePacket implements IPreAuthReceivePacket {
 					ClientMain.getInstance().getStage().setScene(new Scene(root));
 					ClientMain.getInstance().getStage().show();
 				});
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		} else {

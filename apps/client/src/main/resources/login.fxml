@@ -59,7 +59,7 @@
          <children>
             <TextField fx:id="addressField" onKeyReleased="#onFieldChange" GridPane.columnIndex="1" />
             <TextField fx:id="nameField" onKeyReleased="#onFieldChange" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <PasswordField fx:id="passwordField" onKeyReleased="#onFieldChange" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <PasswordField fx:id="passwordField" onAction="#onLogin" onKeyReleased="#onFieldChange" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="Serveradresse" />
             <Label text="Benutzername" GridPane.rowIndex="1" />
             <Label text="Passwort" GridPane.rowIndex="2" />

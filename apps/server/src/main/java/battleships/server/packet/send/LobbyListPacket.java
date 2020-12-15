@@ -1,20 +1,21 @@
 package battleships.server.packet.send;
 
 import battleships.net.packet.SendPacket;
-import battleships.packet.PacketLobby;
+import battleships.server.game.Game;
 import battleships.util.Constants;
+import battleships.util.Utils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
 
 public class LobbyListPacket extends SendPacket {
 
 	public static final byte IDENTIFIER = Constants.Identifiers.LOBBY_LIST_RESPONSE;
-	private final Set<PacketLobby> lobbySet;
+	private final Collection<Game> games;
 
-	public LobbyListPacket(final Set<PacketLobby> lobbySet) {
-		this.lobbySet = lobbySet;
+	public LobbyListPacket(final Collection<Game> lobbySet) {
+		this.games = lobbySet;
 	}
 
 	@Override
@@ -23,11 +24,11 @@ public class LobbyListPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
-		dos.writeShort(lobbySet.size());
-		for (final PacketLobby lobby : lobbySet) {
-			dos.writeInt(lobby.getId());
-			dos.writeUTF(lobby.getName());
+	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+		dos.writeShort(games.size());
+		for (final Game game : games) {
+			Utils.writeUUIDToStream(dos, game.getId());
+			dos.writeUTF(game.getHost().getUsername());
 		}
 		return dos;
 	}

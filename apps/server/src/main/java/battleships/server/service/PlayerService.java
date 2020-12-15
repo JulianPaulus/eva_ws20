@@ -1,16 +1,19 @@
 package battleships.server.service;
 
-import battleships.packet.Player;
+import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.db.UserDatabase;
 import battleships.server.exception.RegistrationException;
+import battleships.server.game.Player;
 import battleships.server.util.PasswordHasher;
 
 import javax.security.auth.login.LoginException;
+import java.util.Optional;
 
 public class PlayerService {
 
 	private static PlayerService instance;
-	private UserDatabase userDatabase = UserDatabase.getInstance();
+	private final UserDatabase userDatabase = UserDatabase.getInstance();
+	private final ConnectionService connectionService = ConnectionService.getInstance();
 
 	private PlayerService() {
 
@@ -20,6 +23,13 @@ public class PlayerService {
 		Player player = userDatabase.loadPlayerByName(username);
 		if(player == null || !PasswordHasher.checkPassword(password, player.getPassword())) {
 			throw new LoginException("Username or password wrong");
+		}
+		Optional<AuthenticatedConnection> connection = connectionService.getConnectionForPlayer(player);
+		if (connection.isPresent()) {
+			throw new LoginException("User already logged in");
+		}
+		if (!connectionService.canAcceptConnections()) {
+			throw new LoginException("Server is full");
 		}
 		return player;
 	}

@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Pair;
 import org.slf4j.Logger;
@@ -91,6 +92,8 @@ public class LoginController {
 
 	@FXML
 	private void onFieldChange(final KeyEvent keyEvent) {
+		if (keyEvent.getCode() == KeyCode.ENTER) return;
+
 		TextField source = (TextField) keyEvent.getSource();
 
 		boolean isFieldValid;
@@ -122,7 +125,7 @@ public class LoginController {
 		Matcher matcher = ADDRESS_PATTTERN.matcher(addressField.getText().trim());
 		if (matcher.matches()) {
 			String host = matcher.group(1);
-			Integer port = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Constants.DEFAULT_PORT;
+			Integer port = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : Constants.Server.DEFAULT_PORT;
 
 			return new Pair<>(host, port);
 		}

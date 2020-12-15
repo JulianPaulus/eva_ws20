@@ -11,15 +11,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PacketReader extends Thread {
-	private static final Logger logger = LoggerFactory.getLogger(PacketReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PacketReader.class);
+	private static final AtomicInteger OBJ_COUNT = new AtomicInteger(0);
 
 	private final DataInputStream stream;
 	private Connection connection;
 	private static Map<Byte, AbstractPacketFactory<?>> factoryMap = new HashMap<>();
 
 	public PacketReader(final InputStream stream, final Connection connection) {
+		super("connection-" + OBJ_COUNT.incrementAndGet());
 		this.stream = new DataInputStream(stream);
 		this.connection = connection;
 	}
@@ -35,27 +38,24 @@ public class PacketReader extends Thread {
 				byte identifier = stream.readByte();
 				AbstractPacketFactory<?> packetFactory = factoryMap.get(identifier);
 				if (packetFactory != null) {
+					connection.updateInteractionTime();
 					IReceivePacket<?> packet = packetFactory.unmarshal(stream);
 					try {
 						connection.getPacketHandler().handle(packet, connection);
-					} catch (IllegalPacketTypeException e) {
-						logger.warn("The received packet produced an error!: " + e.getMessage());
+					} catch (final IllegalPacketTypeException e) {
+						LOGGER.warn("The received packet produced an error!: " + e.getMessage());
 					}
 				}
-			} catch (IOException e) {
-				try {
-					if (connection != null) {
-						connection.close();
-					}
-					interrupt();
-				} catch (IOException ioException) {
-					logger.error("error while closing connection", ioException);
+			} catch (final IOException e) {
+				if (connection != null) {
+					connection.close();
 				}
+				interrupt();
 			}
 		}
 	}
 
-	protected void setConnection(final Connection connection) {
+	public void setConnection(final Connection connection) {
 		this.connection = connection;
 	}
 

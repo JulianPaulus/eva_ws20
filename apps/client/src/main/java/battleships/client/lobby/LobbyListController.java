@@ -1,8 +1,9 @@
 package battleships.client.lobby;
 
 import battleships.client.ClientMain;
+import battleships.client.packet.send.CreateGamePacket;
 import battleships.client.packet.send.LobbyListRequestPacket;
-import battleships.packet.PacketLobby;
+import battleships.model.PacketLobby;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,12 +40,13 @@ public class LobbyListController implements Initializable {
 	}
 
 
+	@FXML
 	public void onClickCreateLobbyButton(final ActionEvent actionEvent) {
 		if(actionEvent.getSource() != this.createLobbyButton) {
 			return;
 		}
 
-		//Implement
+		ClientMain.getInstance().getConnection().writePacket(new CreateGamePacket());
 	}
 
 	public void setLobbies(final Collection<PacketLobby> lobbies) {

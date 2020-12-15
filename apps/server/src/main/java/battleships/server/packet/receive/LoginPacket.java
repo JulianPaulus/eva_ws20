@@ -1,9 +1,9 @@
 package battleships.server.packet.receive;
 
-import battleships.net.connection.AuthenticatedConnection;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
-import battleships.packet.Player;
+import battleships.server.connection.AuthenticatedConnection;
+import battleships.server.game.Player;
 import battleships.server.packet.send.LoginResponsePacket;
 import battleships.server.service.PlayerService;
 import battleships.util.Constants;
@@ -31,8 +31,9 @@ public class LoginPacket implements IPreAuthReceivePacket {
 		Player player = null;
 		try {
 			player = PlayerService.getInstance().authenticate(username, password);
-		} catch (LoginException e) {
+		} catch (final LoginException e) {
 			connection.writePacket(new LoginResponsePacket(-1, false));
+			connection.close();
 			return;
 		}
 

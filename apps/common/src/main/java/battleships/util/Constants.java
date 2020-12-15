@@ -1,8 +1,18 @@
 package battleships.util;
 
+import java.util.concurrent.TimeUnit;
+
 public class Constants {
 
-	public static final int DEFAULT_PORT = 5555;
+
+	public static final int UUID_BYTE_COUNT = 16;
+
+	public static class Server {
+		public static final int DEFAULT_PORT = 5555;
+		public static final int MAX_PLAYER_COUNT = 100;
+		public static final long CONNECTION_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(10);
+		public static final long CONNECTION_MANAGER_INTERVAL_MS = TimeUnit.MINUTES.toMillis(2);
+	}
 
 	public static class Identifiers {
 
@@ -14,6 +24,18 @@ public class Constants {
 
 		public static final byte REGISTER_REQUEST = 0x5;
 		public static final byte REGISTER_ERROR_RESPONSE = 0x6;
+
+		public static final byte CREATE_GAME_REQUEST = 0x7;
+
+		public static final byte GAME_JOIN_REQUEST = 0x8;
+		public static final byte GAME_JOIN_RESPONSE = 0x9;
+
+		public static final byte SERVER_ERROR = 0xA;
+
+		public static final byte SEND_CHAT_MESSAGE = 0xB;
+		public static final byte BROADCAST_CHAT_MESSAGE = 0xC;
+
+		public static final byte START_GAME_MESSAGE = 0xD;
 
 	}
 

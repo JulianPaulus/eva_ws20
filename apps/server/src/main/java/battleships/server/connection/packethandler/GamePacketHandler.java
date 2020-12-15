@@ -1,7 +1,8 @@
-package battleships.net.connection.packethandler;
+package battleships.server.connection.packethandler;
 
-import battleships.net.connection.GameConnection;
-import battleships.net.packet.IGameReceivePacket;
+import battleships.net.connection.packethandler.AbstractPacketHandler;
+import battleships.server.connection.GameConnection;
+import battleships.server.packet.IGameReceivePacket;
 
 public class GamePacketHandler extends AbstractPacketHandler<GameConnection, IGameReceivePacket> {
 

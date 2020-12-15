@@ -1,6 +1,8 @@
 package battleships.client.lobby;
 
-import battleships.packet.PacketLobby;
+import battleships.client.ClientMain;
+import battleships.client.packet.send.JoinGamePacket;
+import battleships.model.PacketLobby;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -27,6 +29,8 @@ public class LobbyListCellController extends ListCell<PacketLobby> {
 
 	private FXMLLoader fxmLLoader;
 
+	private PacketLobby lobby;
+
 	@Override
 	protected void updateItem(final PacketLobby lobby, final boolean empty) {
 		super.updateItem(lobby, empty);
@@ -48,6 +52,15 @@ public class LobbyListCellController extends ListCell<PacketLobby> {
 			stateLabel.setText(1 + "/" + LOBBY_MAX_PLAYERS + " Warte auf Spieler...");
 			joinButton.setVisible(true);
 			setGraphic(borderPane);
+
+			this.lobby = lobby;
+		}
+	}
+
+	@FXML
+	private void onJoin() {
+		if (lobby != null) {
+			ClientMain.getInstance().getConnection().writePacket(new JoinGamePacket(lobby.getId()));
 		}
 	}
 }
