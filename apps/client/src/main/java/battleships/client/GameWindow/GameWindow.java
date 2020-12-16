@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -21,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -50,7 +50,7 @@ public class GameWindow implements Initializable {
 	private TextField chatTextBox;
 
 	@FXML
-	private ListView chatWindow;
+	private ListView<TextFlow> chatWindow;
 
 	@FXML
 	private TextArea rulesTextArea;
@@ -273,15 +273,8 @@ public class GameWindow implements Initializable {
 
 	public void updateChatWindow() {
 		chatWindow.getItems().clear();
-		for (String message : model.getChatMessages())
-			try {
-				chatWindow.getItems().add(message);
-			} catch (Exception e) {
-				Alert alert = new Alert(Alert.AlertType.ERROR,
-					"Could not add message:\n" + e.getMessage() + e.getCause());
-				e.printStackTrace();
-			}
-
+		chatWindow.getItems().addAll(model.getChatMessages());
+		chatWindow.scrollTo(model.getChatMessages().size());
 	}
 
 	public void updatePlayerField() {

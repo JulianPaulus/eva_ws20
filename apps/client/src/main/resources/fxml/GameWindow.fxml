@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -11,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<HBox fx:id="root" prefHeight="400.0" prefWidth="1004.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleships.client.GameWindow.GameWindow">
+<HBox fx:id="root" prefHeight="400.0" prefWidth="1004.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleships.client.GameWindow.GameWindow">
    <children>
       <VBox spacing="10.0">
          <children>
@@ -78,25 +79,24 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
-            <Label fx:id="statusLabel" prefHeight="34.0" prefWidth="178.0" text="Bitte Zielen" />
+            <Label fx:id="statusLabel" text="Bitte Zielen" VBox.vgrow="NEVER" />
             <VBox minWidth="200.0" prefHeight="223.0" prefWidth="472.0">
                <children>
                   <Label text="Chat" />
-                  <ListView fx:id="chatWindow" prefHeight="310.0" prefWidth="170.0">
+                  <ListView fx:id="chatWindow">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </ListView>
+                  <Separator prefWidth="200.0" visible="false" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="chatTextBox" onAction="#sendMessage" prefHeight="25.0" prefWidth="387.0" />
+                        <TextField fx:id="chatTextBox" onAction="#sendMessage" HBox.hgrow="ALWAYS" />
+                        <Separator orientation="VERTICAL" prefHeight="200.0" visible="false" />
                         <Button fx:id="sendMessageBtn" mnemonicParsing="false" onAction="#sendMessage" text="Senden" />
                      </children>
                   </HBox>
                </children>
-               <padding>
-                  <Insets left="20.0" right="10.0" />
-               </padding>
             </VBox>
          </children>
          <padding>
