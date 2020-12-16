@@ -1,5 +1,7 @@
 package battleships.client.Model;
 
+import battleships.client.ClientMain;
+import battleships.client.packet.send.PlayerReadyPacket;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;
 import battleships.model.ShipType;
@@ -13,7 +15,6 @@ import java.util.List;
 public class GameModel {
 
 	ShipType currentShip;
-	boolean placedTwice;
 
 	private GameState currentState;
 	private CoordinateState[][] playerField;
@@ -42,7 +43,7 @@ public class GameModel {
 	}
 
 	public int getTileNumberOfCurrentShip() {
-		return currentShip.getValue();
+		return currentShip.getSize();
 	}
 
 	public void setShip(int xPos, int yPos, boolean horizontal) {
@@ -61,14 +62,14 @@ public class GameModel {
 		}
 
 		if (horizontal) {
-			if (xPos + currentShip.getValue() <= 10) {
-				for (int i = 0; i < currentShip.getValue(); i++)
+			if (xPos + currentShip.getSize() <= 10) {
+				for (int i = 0; i < currentShip.getSize(); i++)
 					playerField[xPos + i][yPos] = CoordinateState.SHIP;
 			}
 
 		} else {
-			if (yPos + currentShip.getValue() <= 10)
-				for (int i = 0; i < currentShip.getValue(); i++)
+			if (yPos + currentShip.getSize() <= 10)
+				for (int i = 0; i < currentShip.getSize(); i++)
 					playerField[xPos][yPos + i] = CoordinateState.SHIP;
 		}
 
@@ -84,15 +85,15 @@ public class GameModel {
 
 		if (ship.isHorizontal()) {
 			if (playerField[xPos - 1][yPos] == CoordinateState.SHIP || playerField[xPos + ship.getType()
-				.getValue()][yPos] == CoordinateState.SHIP)
+				.getSize()][yPos] == CoordinateState.SHIP)
 				return false;
 		} else {
 			if (playerField[xPos][yPos - 1] == CoordinateState.SHIP || playerField[xPos][yPos + ship.getType()
-				.getValue()] == CoordinateState.SHIP)
+				.getSize()] == CoordinateState.SHIP)
 				return false;
 		}
 
-		for (int i = 0; i < ship.getType().getValue(); i++) {
+		for (int i = 0; i < ship.getType().getSize(); i++) {
 			if (ship.isHorizontal()) {
 				if (playerField[xPos + i][yPos] == CoordinateState.SHIP ||
 					playerField[xPos + i][yPos + 1] == CoordinateState.SHIP ||
@@ -140,10 +141,10 @@ public class GameModel {
 
 			for (Ship ship : ships) {
 				if (ship.isHorizontal() && yPos == ship.getyCoordinate() && xPos >= ship
-					.getxCoordinate() && xPos <= ship.getxCoordinate() + ship.getType().getValue())
+					.getxCoordinate() && xPos <= ship.getxCoordinate() + ship.getType().getSize())
 					ship.hit();
 				else if (ship.isHorizontal() && xPos == ship.getxCoordinate() && yPos >= ship
-					.getyCoordinate() && yPos <= ship.getyCoordinate() + ship.getType().getValue())
+					.getyCoordinate() && yPos <= ship.getyCoordinate() + ship.getType().getSize())
 					ship.hit();
 
 				if (ship.isDestroyed())
@@ -182,54 +183,55 @@ public class GameModel {
 		return chat;
 	}
 
-	public void switchToNextBiggerShipType() {
-		switch (currentShip) {
-			case TWO_TILES:
-				currentShip = ShipType.THREE_TILES;
-				break;
-			case THREE_TILES:
-				if (placedTwice)
-					currentShip = ShipType.FOUR_TILES;
-				else
-					placedTwice = true;
-				break;
-			case FOUR_TILES:
-				currentShip = ShipType.FIVE_TILES;
-				break;
-			case FIVE_TILES:
-				currentState = GameState.PENDING;
+	void sendShipsToServer() {
+		PlayerReadyPacket prp = new PlayerReadyPacket(this.ships);
+		ClientMain.getInstance().getConnection().writePacket(prp);
+	}
+
+	public void switchToNextBiggerShipType()
+	{
+		long currentPlacedShipsOfType = Arrays.stream(ships).filter(x -> x != null && x.getType() == currentShip).count();
+		if(currentShip.getNrPerField() <= currentPlacedShipsOfType) {
+			if(currentShip.getNext() == null) {
+				currentState= GameState.PENDING;
+				this.sendShipsToServer();
 				observer.notifyAboutGameStatusChange();
-				break;
+				return;
+			}
+			currentShip = currentShip.getNext();
 		}
 		observer.notifyAboutShipTypeChange();
 	}
 
-	public void switchToPreviousShipType() {
-		switch (currentShip) {
-			case TWO_TILES:
+	public void switchToPreviousShipType()
+	{
+		long currentPlacedShipsOfType = Arrays.stream(ships).filter(x -> x != null && x.getType() == currentShip).count();
+		if(currentPlacedShipsOfType == 0) {
+			ShipType prevType = ShipType.getPrev(currentShip);
+			if(prevType == null) {
 				currentShip = ShipType.TWO_TILES;
-				break;
-			case THREE_TILES:
-				if (placedTwice)
-					currentShip = ShipType.TWO_TILES;
-				else
-					placedTwice = false;
-				break;
-			case FOUR_TILES:
-				currentShip = ShipType.THREE_TILES;
-				break;
-			case FIVE_TILES:
-				currentShip = ShipType.FOUR_TILES;
-				break;
+			} else {
+				currentShip = prevType;
+			}
 		}
 		observer.notifyAboutShipTypeChange();
+	}
+
+	public void removeAllShips() {
+		for (int i = 0; i < 10; i++) {
+			Arrays.fill(playerField[i], CoordinateState.EMPTY);
+		}
+		this.ships = new Ship[5];
+		this.lastAdded = null;
+		this.currentShip = ShipType.getFirst();
+		observer.notifyAboutPlayerModelChange();
 	}
 
 	public void removeLastAdded() {
 		int xPos = lastAdded.getxCoordinate();
 		int yPos = lastAdded.getyCoordinate();
 
-		int shipLength = lastAdded.getType().getValue();
+		int shipLength = lastAdded.getType().getSize();
 
 		for (int i = 0; i < shipLength; i++) {
 			if (lastAdded.isHorizontal()) {

@@ -13,7 +13,7 @@ public class Ship {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.isHorizontal=isHorizontal;
-		Live=type.getValue();
+		Live=type.getSize();
 	}
 
 	public int getLive() {

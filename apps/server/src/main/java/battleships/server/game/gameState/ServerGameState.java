@@ -14,11 +14,19 @@ public interface ServerGameState {
 		return true;
 	}
 
-	default boolean canSetShip() {
+	default boolean canHostSetShip() {
 		return false;
 	}
 
-	default boolean canFire() {
+	default boolean canGuestSetShip() {
+		return false;
+	}
+
+	default boolean canHostFire() {
+		return false;
+	}
+
+	default boolean canGuestFire() {
 		return false;
 	}
 
