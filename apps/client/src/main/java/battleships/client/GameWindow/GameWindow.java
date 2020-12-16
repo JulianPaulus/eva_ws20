@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -295,9 +294,11 @@ public class GameWindow implements Initializable {
 	}
 
 	public void updateChatWindow() {
-		chatWindow.getItems().clear();
-		chatWindow.getItems().addAll(model.getChatMessages());
-		chatWindow.scrollTo(model.getChatMessages().size());
+		Platform.runLater(() -> {
+			chatWindow.getItems().clear();
+			chatWindow.getItems().addAll(model.getChatMessages());
+			chatWindow.scrollTo(model.getChatMessages().size());
+		});
 	}
 
 	public void updatePlayerField() {

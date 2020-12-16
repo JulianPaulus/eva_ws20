@@ -12,15 +12,31 @@ import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.exception.IllegalShipPositionException;
 import battleships.server.exception.ServerException;
-import battleships.server.game.gameState.*;
-import battleships.server.packet.send.*;
+import battleships.server.game.gameState.HostsTurnState;
+import battleships.server.game.gameState.ServerGameState;
+import battleships.server.game.gameState.SettingUpGuestState;
+import battleships.server.game.gameState.SettingUpHostState;
+import battleships.server.game.gameState.SettingUpState;
+import battleships.server.game.gameState.UninitializedState;
+import battleships.server.game.gameState.WaitingForGuestState;
+import battleships.server.packet.send.ChatMessagePacket;
+import battleships.server.packet.send.GameEnemiesTurnPacket;
+import battleships.server.packet.send.GameJoinedPacket;
+import battleships.server.packet.send.GamePlayerDoSetupPacket;
+import battleships.server.packet.send.GamePlayersTurnPacket;
+import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
+import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
 import battleships.util.ServerErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Game implements Observer<ConnectionEvent> {
@@ -167,9 +183,9 @@ public class Game implements Observer<ConnectionEvent> {
 			//Write non hit at coordiantes
 			targetField[xPos][yPos] = CoordinateState.MISS;
 			//TODO
-			playerConnection.writePacket();
+//			playerConnection.writePacket();
 			//write non hit at coordiantes
-			hostConnection.writePacket();
+//			hostConnection.writePacket();
 			//Let other player try a shot
 			hostConnection.writePacket(new GamePlayersTurnPacket());
 			playerConnection.writePacket(new GameEnemiesTurnPacket());
@@ -178,9 +194,9 @@ public class Game implements Observer<ConnectionEvent> {
 			//Hit a ship!
 			targetField[xPos][yPos] = CoordinateState.HIT;
 			//Write hit at coordinates
-			playerConnection.writePacket();
+//			playerConnection.writePacket();
 			//write hit at coordiantes
-			hostConnection.writePacket();
+//			hostConnection.writePacket();
 			//Let player shoot again
 			hostConnection.writePacket(new GameEnemiesTurnPacket());
 			playerConnection.writePacket(new GamePlayersTurnPacket());

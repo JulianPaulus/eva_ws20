@@ -1,8 +1,24 @@
 package battleships.client;
 
 import battleships.client.login.LoginController;
-import battleships.client.packet.receive.*;
-import battleships.client.packet.receive.factory.*;
+import battleships.client.packet.receive.ChatMessagePacket;
+import battleships.client.packet.receive.GameEnemiesTurnPacket;
+import battleships.client.packet.receive.GameJoinedPacket;
+import battleships.client.packet.receive.GameOtherPlayerSetupPacket;
+import battleships.client.packet.receive.GamePlayerDoSetupPacket;
+import battleships.client.packet.receive.GamePlayersTurnPacket;
+import battleships.client.packet.receive.IllegalShipPositionPacket;
+import battleships.client.packet.receive.LobbyListPacket;
+import battleships.client.packet.receive.LoginResponsePacket;
+import battleships.client.packet.receive.RegistrationErrorResponsePacket;
+import battleships.client.packet.receive.ServerErrorPacket;
+import battleships.client.packet.receive.factory.ChatMessagePacketFactory;
+import battleships.client.packet.receive.factory.GameJoinedPacketFactory;
+import battleships.client.packet.receive.factory.GameStartPacketFactory;
+import battleships.client.packet.receive.factory.LobbyListPacketFactory;
+import battleships.client.packet.receive.factory.LoginResponseFactory;
+import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
+import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
@@ -12,8 +28,6 @@ import battleships.observable.Observable;
 import battleships.observable.Observer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -58,6 +72,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 	public void start(final Stage primaryStage) throws Exception {
 		instance = this;
 		this.stage = primaryStage;
+		primaryStage.setResizable(false);
 
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
 		LoginController.openWindow(stage);
