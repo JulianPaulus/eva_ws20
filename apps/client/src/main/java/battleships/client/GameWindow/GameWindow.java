@@ -64,6 +64,9 @@ public class GameWindow implements Initializable {
 	@FXML
 	private Button removeShip;
 
+	@FXML
+	private Button sendMessageBtn;
+
 	private GameModel model;
 	private boolean horizontal;
 
@@ -95,7 +98,10 @@ public class GameWindow implements Initializable {
 
 	@FXML
 	public void sendMessage() {
-		ClientMain.getInstance().getConnection().writePacket(new SendChatMessagePacket(chatTextBox.getText().trim()));
+		String text = chatTextBox.getText().trim();
+		if (!text.isEmpty()) {
+			ClientMain.getInstance().getConnection().writePacket(new SendChatMessagePacket(text));
+		}
 		chatTextBox.clear();
 	}
 
@@ -424,6 +430,8 @@ public class GameWindow implements Initializable {
 
 	public void onDoSetup() {
 		model.setCurrentState(GameState.SET_UP);
+		sendMessageBtn.setDisable(false);
+		chatTextBox.setDisable(false);
 		updateRulesForPhaseChange();
 	}
 

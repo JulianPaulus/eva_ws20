@@ -100,9 +100,9 @@
 						<Separator prefWidth="200.0" visible="false" />
 						<HBox fillHeight="false" prefHeight="3.0" prefWidth="400.0">
 							<children>
-								<TextField fx:id="chatTextBox" onAction="#sendMessage" HBox.hgrow="ALWAYS" />
-								<Separator orientation="VERTICAL" prefHeight="200.0" visible="false" />
-								<Button fx:id="sendMessageBtn" mnemonicParsing="false" onAction="#sendMessage" text="Senden" />
+								<TextField fx:id="chatTextBox" onAction="#sendMessage" HBox.hgrow="ALWAYS" disable="true"/>
+								<Separator orientation="VERTICAL" prefHeight="200.0" visible="false"/>
+								<Button fx:id="sendMessageBtn" mnemonicParsing="false" onAction="#sendMessage" text="Senden" disable="true"/>
 							</children>
 						</HBox>
 					</children>
