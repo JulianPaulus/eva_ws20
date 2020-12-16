@@ -19,6 +19,7 @@ import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
 import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
 import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
+import battleships.client.util.ClientState;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
@@ -38,6 +39,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ClientMain extends Application implements Observer<ConnectionEvent> {
 
@@ -45,6 +48,8 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 
 	private static ClientMain instance;
 	private Stage stage;
+	private ClientState state;
+	private final Lock stateLock = new ReentrantLock();
 
 	private Connection connection;
 
@@ -72,8 +77,9 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 	public void start(final Stage primaryStage) throws Exception {
 		instance = this;
 		this.stage = primaryStage;
-		primaryStage.setResizable(false);
+		this.state = ClientState.DISCONNECTED;
 
+		stage.setResizable(false);
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
 		LoginController.openWindow(stage);
 	}
@@ -83,6 +89,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 			Socket socket = new Socket(address, port);
 			connection = new Connection(socket);
 			connection.addObserver(instance);
+			setState(ClientState.CONNECTED);
 
 			return connection;
 		}
@@ -103,9 +110,28 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		return this.stage;
 	}
 
+	public ClientState getState() {
+		try {
+			stateLock.lock();
+			return state;
+		} finally {
+			stateLock.unlock();
+		}
+	}
+
+	public void setState(final ClientState newState) {
+		try {
+			stateLock.lock();
+			state = newState;
+		} finally {
+			stateLock.unlock();
+		}
+	}
+
 	@Override
 	public void stop() throws Exception {
 		super.stop();
+		setState(ClientState.SHUTTING_DOWN);
 
 		if (connection != null) {
 			connection.close();
@@ -116,8 +142,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 	public void update(final Observable<ConnectionEvent> o, final ConnectionEvent event) {
 		if (event == ConnectionEvent.DISCONNECTED) {
 			this.connection = null;
-			// TODO: track login state (or something like that) and only show the following alert if the player was already logged in
-			// also: this sometimes throws an IllegalStateException when you close the client, oops.
+			if (getState() == ClientState.SHUTTING_DOWN) return;
 			Platform.runLater(() -> {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.initModality(Modality.APPLICATION_MODAL);
