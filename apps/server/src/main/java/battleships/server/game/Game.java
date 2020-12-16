@@ -113,25 +113,26 @@ public class Game implements Observer<ConnectionEvent> {
 				}
 			}
 		}
-		if(playerId == this.getHost().getId() && this.state.canHostSetShip()) {
+		if(playerId == host.getId() && this.state.canHostSetShip()) {
 			this.hostField = gameField;
 		} else if(guest != null && guest.getId() == playerId && this.state.canGuestSetShip()) {
 			this.guestField = gameField;
 		} else {
-			throw new IllegalShipPositionException("Player is part of the game or is not allowed to set his ships in this state of the game!");
+			throw new ServerException("Player is part of the game or is not allowed to set his ships in this state of the game!");
 		}
 
 		if(this.hostField != null && this.guestField != null) {
 			setState(new HostsTurnState());
-			//Todo start game
+			hostConnection.writePacket(new GamePlayersTurnPacket());
+			guestConnection.writePacket(new GameEnemiesTurnPacket());
 
 		} else if(this.hostField != null) {
 			setState(new SettingUpGuestState());
-			hostConnection.writePacket(new GameOtherPlayerSetupPacket());
+			hostConnection.writePacket(new GameWaitForOtherPlayerSetupPacket());
 
 		} else if(this.guestField != null) {
 			setState(new SettingUpHostState());
-			guestConnection.writePacket(new GameOtherPlayerSetupPacket());
+			guestConnection.writePacket(new GameWaitForOtherPlayerSetupPacket());
 
 		}
 	}

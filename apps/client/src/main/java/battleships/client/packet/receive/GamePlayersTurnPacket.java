@@ -5,8 +5,8 @@ import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
 
-public class GameOtherPlayerSetupPacket implements IPreAuthReceivePacket {
-	public static final byte IDENTIFIER = Constants.Identifiers.GAME_WAIT_FOR_OTHER_PLAYER_SETUP_MESSAGE;
+public class GamePlayersTurnPacket implements IPreAuthReceivePacket {
+	public static final byte IDENTIFIER = Constants.Identifiers.GAME_PLAYERS_TURN;
 
 	@Override
 	public byte getIdentifier() {
@@ -15,6 +15,6 @@ public class GameOtherPlayerSetupPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().onWaitForOtherPlayerSetup();
+		GameWindow.getInstance().onPlayersTurn();
 	}
 }

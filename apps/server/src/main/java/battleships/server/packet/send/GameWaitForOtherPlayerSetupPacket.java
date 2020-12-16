@@ -6,8 +6,8 @@ import battleships.util.Constants;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class GameOtherPlayerSetupPacket extends SendPacket {
-	public static final byte IDENTIFIER = Constants.Identifiers.GAME_PLAYER_OTHER_PLAYER_SETUP_MESSAGE;
+public class GameWaitForOtherPlayerSetupPacket extends SendPacket {
+	public static final byte IDENTIFIER = Constants.Identifiers.GAME_WAIT_FOR_OTHER_PLAYER_SETUP_MESSAGE;
 
 	@Override
 	public byte getIdentifier() {

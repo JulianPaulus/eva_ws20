@@ -1,5 +1,9 @@
 package battleships.model;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public enum ShipType {
 	FIVE_TILES(5, 1, null),
 	FOUR_TILES(4, 1, FIVE_TILES),
@@ -37,5 +41,11 @@ public enum ShipType {
 		return null;
 	}
 
+	public static ShipType getFirst() {
+		Set<ShipType> shipTypes = new HashSet<>(Arrays.asList(values()));
+		Arrays.stream(values()).map(ShipType::getNext).forEach(shipTypes::remove);
+		//Exactly one element left in set
+		return shipTypes.stream().findFirst().get();
+	}
 
 }

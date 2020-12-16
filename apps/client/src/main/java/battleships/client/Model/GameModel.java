@@ -222,8 +222,10 @@ public class GameModel {
 		}
 		this.ships = new Ship[5];
 		this.lastAdded = null;
+		this.currentShip = ShipType.getFirst();
 		observer.notifyAboutPlayerModelChange();
 	}
+
 	public void removeLastAdded()
 	{
 		int xPos= lastAdded.getxCoordinate();

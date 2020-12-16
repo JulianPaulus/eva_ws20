@@ -348,6 +348,7 @@ public class GameWindow implements Initializable {
 	public void updateRulesForPhaseChange() {
 		if (model.getCurrentState() == GameState.PENDING) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(false);
 				statusLabel.setText("Warte auf anderen Spieler...");
 				rulesTextArea.clear();
 				rulesTextArea.setText("Bitte warten Sie, bis ein anderer Spieler dem Spiel beitritt!");
@@ -356,6 +357,7 @@ public class GameWindow implements Initializable {
 
 		} else if (model.getCurrentState() == GameState.SET_UP) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(true);
 				statusLabel.setText("Bitte Schiffe setzen");
 				rulesTextArea.clear();
 				rulesTextArea.setText("setzen sie ihre Schiffe:\n" +
@@ -368,6 +370,7 @@ public class GameWindow implements Initializable {
 
 		} else if (model.getCurrentState() == GameState.SET_UP_WAIT_FOR_OTHER_PLAYER) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(false);
 				statusLabel.setText("Warte auf andern Spieler...");
 				rulesTextArea.clear();
 				rulesTextArea.setText("Ihre Gegner hat noch nicht alle Schiffe platziert.\n" +
@@ -377,6 +380,7 @@ public class GameWindow implements Initializable {
 
 		} else if (model.getCurrentState() == GameState.SHOOTING) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(false);
 				statusLabel.setText("Bitte Zielen");
 				rulesTextArea.clear();
 				rulesTextArea.setText(
@@ -387,6 +391,7 @@ public class GameWindow implements Initializable {
 
 		} else if (model.getCurrentState() == GameState.WAIT_FOR_ENEMY) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(false);
 				statusLabel.setText("Warten auf Gegner");
 				rulesTextArea.clear();
 				rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +
@@ -396,6 +401,7 @@ public class GameWindow implements Initializable {
 
 		} else if (model.getCurrentState() == GameState.WON) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(false);
 				statusLabel.setText("Gewonnen");
 				statusLabel.setStyle("-fx-text-fill: green");
 				rulesTextArea.clear();
@@ -403,6 +409,7 @@ public class GameWindow implements Initializable {
 
 		} else if (model.getCurrentState() == GameState.LOST) {
 			Platform.runLater(() -> {
+				removeShip.setVisible(false);
 				statusLabel.setText("Verloren");
 				statusLabel.setStyle("-fx-text-fill: red");
 				rulesTextArea.clear();
@@ -434,6 +441,16 @@ public class GameWindow implements Initializable {
 	public void removeAllShips() {
 		model.removeAllShips();
 		model.setCurrentState(GameState.SET_UP);
+		updateRulesForPhaseChange();
+	}
+
+	public void onPlayersTurn() {
+		model.setCurrentState(GameState.SHOOTING);
+		updateRulesForPhaseChange();
+	}
+
+	public void onEnemyTurn() {
+		model.setCurrentState(GameState.WAIT_FOR_ENEMY);
 		updateRulesForPhaseChange();
 	}
 }

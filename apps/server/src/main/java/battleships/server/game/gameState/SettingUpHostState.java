@@ -2,7 +2,7 @@ package battleships.server.game.gameState;
 
 public class SettingUpHostState implements ServerGameState {
 
-	public boolean canGuestSetShip() {
+	public boolean canHostSetShip() {
 		return true;
 	}
 
