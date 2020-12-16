@@ -3,6 +3,7 @@ package battleships.server.game;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;
 import battleships.model.ShipType;
+import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.packet.SendPacket;
 import battleships.observable.Observable;
@@ -136,6 +137,56 @@ public class Game implements Observer<ConnectionEvent> {
 			guestConnection.writePacket(new GameWaitForOtherPlayerSetupPacket());
 
 		}
+	}
+
+	public synchronized void shoot(final int playerId, int xPos, int yPos) {
+		CoordinateState[][] targetField;
+		Connection playerConnection;
+		Connection targetConnection;
+		if(playerId == host.getId() && state.canHostSetShip()) {
+			targetField = guestField;
+			playerConnection = hostConnection;
+			targetConnection = guestConnection;
+		} else if(playerId == guest.getId() && state.canGuestSetShip()) {
+			targetField = hostField;
+			playerConnection = guestConnection;
+			targetConnection = hostConnection;
+		} else {
+			throw new ServerException("Player doesn't belong to this game, or it's not the players turn");
+		}
+		if(xPos < 0 || xPos >= GAMEFIELD_SIZE
+			|| yPos < 0 || yPos >= GAMEFIELD_SIZE) {
+			throw new ServerException("Target-coordinates out of gamefield bounds!");
+		}
+		if(targetField[xPos][yPos] == CoordinateState.HIT
+			|| targetField[xPos][yPos] == CoordinateState.MISS) {
+			throw new ServerException("Field has already been shot!");
+
+		} else if(targetField[xPos][yPos] == CoordinateState.EMPTY) {
+
+			//Write non hit at coordiantes
+			targetField[xPos][yPos] = CoordinateState.MISS;
+			//TODO
+			playerConnection.writePacket();
+			//write non hit at coordiantes
+			hostConnection.writePacket();
+			//Let other player try a shot
+			hostConnection.writePacket(new GamePlayersTurnPacket());
+			playerConnection.writePacket(new GameEnemiesTurnPacket());
+		} else {
+
+			//Hit a ship!
+			targetField[xPos][yPos] = CoordinateState.HIT;
+			//Write hit at coordinates
+			playerConnection.writePacket();
+			//write hit at coordiantes
+			hostConnection.writePacket();
+			//Let player shoot again
+			hostConnection.writePacket(new GameEnemiesTurnPacket());
+			playerConnection.writePacket(new GamePlayersTurnPacket());
+		}
+
+
 	}
 
 	public synchronized void addGuest(final Player guest) throws ServerException {
