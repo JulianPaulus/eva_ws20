@@ -33,6 +33,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
+
+	private static final String TARGETING_CLASS = "targeting";
+	private static final String SHIP_CLASS = "ship";
+	private static final String HIT_CLASS = "hit";
+	private static final String MISS_CLASS = "miss";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameWindow.class);
 	private static GameWindow INSTANCE;
 
@@ -135,21 +141,17 @@ public class GameWindow implements Initializable {
 				labelArray[i][j] = label;
 				if (gridPane == targetGrid) {
 					label.setOnMouseEntered(event -> {
-//						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
-						onMouseHoverTargetField(label, finalI, finalJ, true);
+						onMouseEnterTargetField(label);
 					});
 					label.setOnMouseExited(event -> {
-//						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
-						onMouseHoverTargetField(label, finalI, finalJ, false);
+						onMouseExitTargetField(label, finalI, finalJ);
 					});
 					label.setOnMouseClicked(event -> onTargetFieldClicked(finalI, finalJ));
 				} else {
 					label.setOnMouseEntered(event -> {
-//						System.out.println("Mouse entered Field: " + finalI + ", " + finalJ);
 						onMouseHoverPlayerField(finalI, finalJ, true);
 					});
 					label.setOnMouseExited(event -> {
-//						System.out.println("Mouse exited Field: " + finalI + ", " + finalJ);
 						onMouseHoverPlayerField(finalI, finalJ, false);
 					});
 					label.setOnMouseClicked(event -> {
@@ -163,79 +165,50 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void onMouseHoverTargetField(Label label, int posX, int poxY, boolean isEnter) {
-		if (isEnter) {
-			if (model.getCurrentState() == GameState.SHOOTING) {
-				label.setStyle("-fx-background-color: #e6f54f;" + "-fx-border-color: black");
-			}
-		} else {
-			if (model.getCurrentState() == GameState.SHOOTING) {
+	private void onMouseEnterTargetField(final Label label) {
+		if (model.getCurrentState() != GameState.SHOOTING) return;
 
-				if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.EMPTY) {
-					label.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.HIT) {
-					label.setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
-				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.MISS) {
-					label.setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
-				}
+		label.setStyle("-fx-background-color: #e6f54f;" + "-fx-border-color: black");
+	}
+
+	private void onMouseExitTargetField(final Label label, final int posX, final int posY) {
+		if (model.getCurrentState() != GameState.SHOOTING) return;
+
+		CoordinateState targetState = model.currentStateOfTargetCoordinate(posX, posY);
+		if (targetState == CoordinateState.EMPTY) {
+			label.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
+		} else if (targetState == CoordinateState.HIT) {
+			label.setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
+		} else if (targetState == CoordinateState.MISS) {
+			label.setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
+		}
+	}
+
+	private void onMouseHoverPlayerField(final int posX, final int posY, final boolean entered) {
+		if (model.getCurrentState() != GameState.SET_UP) return;
+		if (horizontal && posX + model.getTileNumberOfCurrentShip() > 10) return;
+		if (!horizontal && posY + model.getTileNumberOfCurrentShip() > 10) return;
+
+		for (int offset = 0; offset < model.getTileNumberOfCurrentShip(); offset++) {
+			int x = posX + (horizontal ? offset : 0);
+			int y = posY + (horizontal ? 0 : offset);
+			if (entered) {
+				updateShipFieldOnEnter(x, y);
+			} else {
+				updateShipFieldOnExit(x, y);
 			}
 		}
 	}
 
-	private void onMouseHoverPlayerField(int posX, int posY, boolean isEnter) {
-		if (model.getCurrentState() == GameState.SET_UP) {
-//			System.out.println("onMouseHoverPlayerField" + isEnter + " " + posX + " " + posY);
-			if (isEnter) {
+	private void updateShipFieldOnEnter(final int posX, final int posY) {
+		playerLabels[posX][posY].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
+	}
 
-//				System.out.println("onMouseHoverPlayerField" + posX + " " + posY);
-
-
-				if (horizontal) {
-					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
-						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-//							System.out.println("" + posX + posY);
-							playerLabels[posX + x][posY]
-								.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-						}
-					}
-				} else {
-					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
-						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-//							System.out.println("" + posX + posY);
-							playerLabels[posX][posY + y]
-								.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color:black");
-						}
-					}
-				}
-			} else {
-				if (horizontal) {
-					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
-						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-//							System.out.println("" + posX + posY);
-							if (model.currentStateOfPlayerCoordinate(posX + x, posY) == CoordinateState.EMPTY)
-								playerLabels[posX + x][posY]
-									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-							else
-								playerLabels[posX + x][posY]
-									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-						}
-					}
-				} else {
-					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
-						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-//							System.out.println("" + posX + " " + (posY + y));
-							if (model.currentStateOfPlayerCoordinate(posX, posY + y) == CoordinateState.EMPTY) {
-								playerLabels[posX][posY + y]
-									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-							} else {
-//								System.out.println("Ship");
-								playerLabels[posX][posY + y]
-									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-							}
-						}
-					}
-				}
-			}
+	private void updateShipFieldOnExit(final int posX, final int posY) {
+		if (model.currentStateOfPlayerCoordinate(posX, posY) == CoordinateState.EMPTY) {
+			playerLabels[posX][posY].setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
+		} else {
+			playerLabels[posX][posY].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 		}
 	}
 

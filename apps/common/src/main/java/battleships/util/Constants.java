@@ -6,6 +6,7 @@ public class Constants {
 
 
 	public static final int UUID_BYTE_COUNT = 16;
+	public static final int SHIP_COUNT = 5;
 
 	public static class Server {
 		public static final int DEFAULT_PORT = 5555;

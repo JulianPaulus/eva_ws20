@@ -171,7 +171,7 @@ public class GameModel {
 
 	private TextFlow createTextFlow(final String fromUser, final String message) {
 		Text username = new Text(fromUser);
-		username.setStyle("-fx-font-weight: bold");
+		username.getStyleClass().add("username");
 		Text content = new Text(": " + message);
 		TextFlow flow = new TextFlow();
 		flow.getChildren().addAll(username, content);
@@ -228,6 +228,7 @@ public class GameModel {
 	}
 
 	public void removeLastAdded() {
+		if (lastAdded == null) return;
 		int xPos = lastAdded.getxCoordinate();
 		int yPos = lastAdded.getyCoordinate();
 

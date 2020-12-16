@@ -13,3 +13,23 @@
 	-fx-background-radius: 3, 2, 4, 0;
 	-fx-prompt-text-fill: transparent;
 }
+
+.username {
+	-fx-font-weight: bold;
+}
+
+.targeting {
+	-fx-background-color: #e6f54f;
+}
+
+.hit {
+	-fx-background-color: #ea1313;
+}
+
+.miss {
+	-fx-background-color: #bdbdbd;
+}
+
+.ship {
+	-fx-background-color: #0004ff;
+}
