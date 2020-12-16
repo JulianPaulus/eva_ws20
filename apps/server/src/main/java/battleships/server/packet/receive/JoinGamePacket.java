@@ -44,9 +44,7 @@ public class JoinGamePacket implements ILobbyReceivePacket {
 
 		try {
 			Game game = LOBBY_SERVICE.getGameById(gameId).orElseThrow(() -> new ServerException("Game not found!"));
-			GameConnection gameConnection = new GameConnection(connection, game);
-			game.addGuest(gameConnection.getPlayer());
-
+			game.addGuest(connection.getPlayer());
 			LOGGER.debug("{} joined game({}) hosted by {}", connection.getPlayer().getUsername(), game.getId(), game.getHost().getUsername());
 		} catch (final ServerException e) {
 			connection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, e.getMessage()));

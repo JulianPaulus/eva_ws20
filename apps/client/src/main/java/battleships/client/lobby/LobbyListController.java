@@ -32,6 +32,9 @@ public class LobbyListController implements Initializable {
 	@FXML
 	private Button createLobbyButton;
 
+	@FXML
+	private Button refreshButton;
+
 	private final ObservableList<PacketLobby> lobbyObservableList;
 
 	private static LobbyListController newestInstance;
@@ -72,8 +75,17 @@ public class LobbyListController implements Initializable {
 		ClientMain.getInstance().getConnection().writePacket(new CreateGamePacket());
 	}
 
+	@FXML
+	public void onClickRefreshButton(final ActionEvent actionEvent) {
+		if(actionEvent.getSource() != this.refreshButton) {
+			return;
+		}
+
+		ClientMain.getInstance().getConnection().writePacket(new LobbyListRequestPacket());
+	}
+
 	public void setLobbies(final Collection<PacketLobby> lobbies) {
-		lobbyObservableList.setAll(lobbies);
+		Platform.runLater(() -> lobbyObservableList.setAll(lobbies));
 	}
 
 

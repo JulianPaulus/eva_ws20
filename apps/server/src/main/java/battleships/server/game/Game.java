@@ -8,6 +8,7 @@ import battleships.net.packet.SendPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
+import battleships.server.connection.GameConnection;
 import battleships.server.exception.IllegalShipPositionException;
 import battleships.server.exception.ServerException;
 import battleships.server.game.gameState.*;
@@ -141,8 +142,8 @@ public class Game implements Observer<ConnectionEvent> {
 		if (this.guest == null && state.isWaitingForGuest()) {
 			this.guest = guest;
 
+			guestConnection = new GameConnection(loadConnection(guest), this);
 			hostConnection = loadConnection(host);
-			guestConnection = loadConnection(guest);
 			hostConnection.writePacket(new GamePlayerDoSetupPacket(guest.getUsername()));
 			guestConnection.writePacket(new GameJoinedPacket(getId()));
 			guestConnection.writePacket(new GamePlayerDoSetupPacket(host.getUsername()));
