@@ -287,10 +287,6 @@ public class GameWindow implements Initializable {
 		removeShip.setVisible(visible);
 	}
 
-	public void setStatusLabel(final String text) {
-		statusLabel.setText(text);
-	}
-
 	public void setStatusLabelStyle(final String style) {
 		statusLabel.setStyle(style);
 	}
@@ -301,9 +297,5 @@ public class GameWindow implements Initializable {
 
 	public void updateRulesText() {
 		rulesView.getEngine().loadContent(model.getCurrentState().getRuleText());
-	}
-
-	public void updateRulesText(String text) {
-		rulesView.getEngine().loadContent(text);
 	}
 }
