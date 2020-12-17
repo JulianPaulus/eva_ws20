@@ -158,7 +158,7 @@ public class GameWindow implements Initializable {
 						if (event.getButton() == MouseButton.PRIMARY)
 							onPlayerFieldClicked(finalI, finalJ);
 						else if (event.getButton() == MouseButton.SECONDARY)
-							onPlayerFieldRightClicked(label, finalI, finalJ);
+							onPlayerFieldRightClicked(finalI, finalJ);
 					});
 				}
 			}
@@ -168,20 +168,14 @@ public class GameWindow implements Initializable {
 	private void onMouseEnterTargetField(final Label label) {
 		if (model.getCurrentState() != GameState.SHOOTING) return;
 
-		label.setStyle("-fx-background-color: #e6f54f;" + "-fx-border-color: black");
+		label.setStyle(CoordinateState.TARGETING.getStyle());
 	}
 
 	private void onMouseExitTargetField(final Label label, final int posX, final int posY) {
 		if (model.getCurrentState() != GameState.SHOOTING) return;
 
 		CoordinateState targetState = model.currentStateOfTargetCoordinate(posX, posY);
-		if (targetState == CoordinateState.EMPTY) {
-			label.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-		} else if (targetState == CoordinateState.HIT) {
-			label.setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
-		} else if (targetState == CoordinateState.MISS) {
-			label.setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
-		}
+		label.setStyle(targetState.getStyle());
 	}
 
 	private void onMouseHoverPlayerField(final int posX, final int posY, final boolean entered) {
@@ -195,7 +189,7 @@ public class GameWindow implements Initializable {
 			if (entered) {
 				updateShipFieldOnEnter(x, y);
 			} else {
-				updateShipFieldOnExit(x, y);
+				resetPlayerFieldLabel(x, y);
 			}
 		}
 	}
@@ -204,72 +198,33 @@ public class GameWindow implements Initializable {
 		playerLabels[posX][posY].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
 	}
 
-	private void updateShipFieldOnExit(final int posX, final int posY) {
-		if (model.currentStateOfPlayerCoordinate(posX, posY) == CoordinateState.EMPTY) {
-			playerLabels[posX][posY].setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-		} else {
-			playerLabels[posX][posY].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-		}
+	private void resetPlayerFieldLabel(final int posX, final int posY) {
+		CoordinateState state = model.currentStateOfPlayerCoordinate(posX, posY);
+		playerLabels[posX][posY].setStyle(state.getStyle());
 	}
 
-	void onPlayerFieldRightClicked(Label label, int xPos, int yPos) {
-		if (model.getCurrentState() == GameState.SET_UP) {
-			if (horizontal) {
+	void onPlayerFieldRightClicked(final int posX, final int posY) {
+		if (model.getCurrentState() != GameState.SET_UP) return;
 
-				if (xPos + model.getTileNumberOfCurrentShip() <= 10) {
-					for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-						switch (model.currentStateOfPlayerCoordinate(xPos + x, yPos)) {
-							case SHIP:
-								playerLabels[xPos + x][yPos]
-									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
-									playerLabels[xPos][yPos + x]
-										.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-								break;
-							case EMPTY:
-								playerLabels[xPos + x][yPos]
-									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
-									playerLabels[xPos][yPos + x]
-										.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-								break;
-						}
-					}
-				}
-			} else {
-				if (yPos + model.getTileNumberOfCurrentShip() < 10) {
-					for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-						switch (model.currentStateOfPlayerCoordinate(xPos, yPos + y)) {
-							case SHIP:
-								playerLabels[xPos][yPos + y]
-									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
-									playerLabels[xPos + y][yPos]
-										.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-								break;
-							case EMPTY:
-								playerLabels[xPos][yPos + y]
-									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-								if (xPos + model.getTileNumberOfCurrentShip() <= 10)
-									playerLabels[xPos + y][yPos]
-										.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
-								break;
-						}
-					}
-				}
+		for (int offset = 0; offset < model.getTileNumberOfCurrentShip(); offset++) {
+			int x = posX + (horizontal ? offset : 0);
+			int y = posY + (horizontal ? 0 : offset);
+			if (x < 10 && y < 10) {
+				resetPlayerFieldLabel(x, y);
 			}
-			horizontal = (!horizontal);
 		}
+		horizontal = !horizontal;
+		onMouseHoverPlayerField(posX, posY, true);
 	}
 
 	void onPlayerFieldClicked(int xPos, int yPos) {
-		if (model.getCurrentState() == GameState.SET_UP)
-			model.setShip(xPos, yPos, horizontal);
+		if (model.getCurrentState() != GameState.SET_UP) return;
+		model.setShip(xPos, yPos, horizontal);
 	}
 
 	void onTargetFieldClicked(int xPos, int yPos) {
-		if (model.getCurrentState() == GameState.SHOOTING)
-			model.shootAt(xPos, yPos);
+		if (model.getCurrentState() != GameState.SHOOTING) return;
+		model.shootAt(xPos, yPos);
 	}
 
 	public void updateChatWindow() {
@@ -283,113 +238,21 @@ public class GameWindow implements Initializable {
 	public void updatePlayerField() {
 		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
 			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
-				switch (model.currentStateOfPlayerCoordinate(x, y)) {
-					case SHIP:
-						playerLabels[x][y].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: #000000");
-						break;
-					case HIT:
-						playerLabels[x][y].setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
-						break;
-
-					case MISS:
-						playerLabels[x][y].setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
-						break;
-
-					default:
-						playerLabels[x][y].setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-				}
+				CoordinateState state = model.currentStateOfPlayerCoordinate(x, y);
+				playerLabels[x][y].setStyle(state.getStyle());
 			}
 	}
 
 	public void updateTargetField() {
 		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
 			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
-				switch (model.currentStateOfTargetCoordinate(x, y)) {
-					case HIT:
-						targetLabels[x][y].setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
-						break;
-
-					case MISS:
-						targetLabels[x][y].setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
-						break;
-
-					default:
-						targetLabels[x][y].setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-				}
+				CoordinateState state = model.currentStateOfTargetCoordinate(x, y);
+				targetLabels[x][y].setStyle(state.getStyle());
 			}
 	}
 
 	public void updateRulesForPhaseChange() {
-		if (model.getCurrentState() == GameState.PENDING) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(false);
-				statusLabel.setText("Warte auf anderen Spieler...");
-				rulesTextArea.clear();
-				rulesTextArea.setText("Bitte warten Sie, bis ein anderer Spieler dem Spiel beitritt!");
-				removeShip.setVisible(true);
-			});
-
-		} else if (model.getCurrentState() == GameState.SET_UP) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(true);
-				statusLabel.setText("Bitte Schiffe setzen");
-				rulesTextArea.clear();
-				rulesTextArea.setText("setzen sie ihre Schiffe:\n" +
-					"Beim Hovern \u00FCber dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n" +
-					"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n" +
-					"Mit linksklick setzen sie das Schiff\n" +
-					"Schiffe werden Blau dargestellt");
-				removeShip.setVisible(true);
-			});
-
-		} else if (model.getCurrentState() == GameState.SET_UP_WAIT_FOR_OTHER_PLAYER) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(false);
-				statusLabel.setText("Warte auf andern Spieler...");
-				rulesTextArea.clear();
-				rulesTextArea.setText("Ihre Gegner hat noch nicht alle Schiffe platziert.\n" +
-					"Das Spiel startet automatisch, sobald Ihre Gegner seine Schiffe platziert hat!");
-				removeShip.setVisible(true);
-			});
-
-		} else if (model.getCurrentState() == GameState.SHOOTING) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(false);
-				statusLabel.setText("Bitte Zielen");
-				rulesTextArea.clear();
-				rulesTextArea.setText(
-					"Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schie\u00DFen.\n" +
-						"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
-				removeShip.setVisible(false);
-			});
-
-		} else if (model.getCurrentState() == GameState.WAIT_FOR_ENEMY) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(false);
-				statusLabel.setText("Warten auf Gegner");
-				rulesTextArea.clear();
-				rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +
-					"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
-				removeShip.setVisible(false);
-			});
-
-		} else if (model.getCurrentState() == GameState.WON) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(false);
-				statusLabel.setText("Gewonnen");
-				statusLabel.setStyle("-fx-text-fill: green");
-				rulesTextArea.clear();
-			});
-
-		} else if (model.getCurrentState() == GameState.LOST) {
-			Platform.runLater(() -> {
-				removeShip.setVisible(false);
-				statusLabel.setText("Verloren");
-				statusLabel.setStyle("-fx-text-fill: red");
-				rulesTextArea.clear();
-			});
-
-		}
+		model.getCurrentState().updateGameWindow(this);
 	}
 
 	@FXML
@@ -428,5 +291,22 @@ public class GameWindow implements Initializable {
 	public void onEnemyTurn() {
 		model.setCurrentState(GameState.WAIT_FOR_ENEMY);
 		updateRulesForPhaseChange();
+	}
+
+	public void setRemoveShipButtonVisible(final boolean visible) {
+		removeShip.setVisible(visible);
+	}
+
+	public void updateRulesText(final String text) {
+		rulesTextArea.clear();
+		rulesTextArea.setText(text);
+	}
+
+	public void setStatusLabel(final String text) {
+		statusLabel.setText(text);
+	}
+
+	public void setStatusLabelStyle(final String style) {
+		statusLabel.setStyle(style);
 	}
 }
