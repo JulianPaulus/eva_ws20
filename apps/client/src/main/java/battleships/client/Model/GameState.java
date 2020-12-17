@@ -6,35 +6,15 @@ import battleships.client.util.StringProperties;
 import javafx.application.Platform;
 
 public enum GameState {
-	PENDING((controller) -> {
-		controller.updateStatusText();
-		controller.updateRulesText();
-		controller.setRemoveShipButtonVisible(false);
-	}),
+	PENDING(defaultRunnableWithButtonVisible(false)),
 
-	SET_UP((controller) -> {
-		controller.updateStatusText();
-		controller.updateRulesText();
-		controller.setRemoveShipButtonVisible(true);
-	}),
+	SET_UP(defaultRunnableWithButtonVisible(true)),
 
-	SET_UP_WAIT_FOR_OTHER_PLAYER((controller) -> {
-		controller.updateStatusText();
-		controller.updateRulesText();
-		controller.setRemoveShipButtonVisible(false);
-	}),
+	SET_UP_WAIT_FOR_OTHER_PLAYER(defaultRunnableWithButtonVisible(false)),
 
-	SHOOTING((controller) -> {
-		controller.updateStatusText();
-		controller.updateRulesText();
-		controller.setRemoveShipButtonVisible(false);
-	}),
+	SHOOTING(defaultRunnableWithButtonVisible(false)),
 
-	WAIT_FOR_ENEMY((controller) -> {
-		controller.updateStatusText();
-		controller.updateRulesText();
-		controller.setRemoveShipButtonVisible(false);
-	}),
+	WAIT_FOR_ENEMY(defaultRunnableWithButtonVisible(false)),
 
 	WON((controller) -> {
 		controller.updateStatusText();
@@ -49,6 +29,14 @@ public enum GameState {
 		controller.setStatusLabelStyle("-fx-text-fill: red");
 		controller.setRemoveShipButtonVisible(false);
 	});
+
+	private static  GameStateRunnable defaultRunnableWithButtonVisible(final boolean visible) {
+		return (controller) -> {
+			controller.updateStatusText();
+			controller.updateRulesText();
+			controller.setRemoveShipButtonVisible(visible);
+		};
+	}
 
 	private static final StringProperties STRING_PROPERTIES = StringProperties.getInstance();
 
