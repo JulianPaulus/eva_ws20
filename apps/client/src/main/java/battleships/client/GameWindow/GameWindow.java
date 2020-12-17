@@ -6,12 +6,11 @@ import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.model.CoordinateState;
+import battleships.util.Constants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,7 +20,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -34,15 +32,8 @@ import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
 
-	private static final String TARGETING_CLASS = "targeting";
-	private static final String SHIP_CLASS = "ship";
-	private static final String HIT_CLASS = "hit";
-	private static final String MISS_CLASS = "miss";
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameWindow.class);
 	private static GameWindow INSTANCE;
-
-	private final int BOARD_SQUARE_SIZE = 10;
 
 	private Stage stage;
 
@@ -76,8 +67,8 @@ public class GameWindow implements Initializable {
 	private GameModel model;
 	private boolean horizontal;
 
-	private Label[][] playerLabels = new Label[BOARD_SQUARE_SIZE][BOARD_SQUARE_SIZE];
-	private Label[][] targetLabels = new Label[BOARD_SQUARE_SIZE][BOARD_SQUARE_SIZE];
+	private Label[][] playerLabels = new Label[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+	private Label[][] targetLabels = new Label[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
 
 	public GameWindow() {
 		model = new GameModel(new ModelObserver(this));
@@ -124,19 +115,15 @@ public class GameWindow implements Initializable {
 	}
 
 	private void setupBoard(GridPane gridPane, Label[][] labelArray) {
-		for (int i = 0; i < BOARD_SQUARE_SIZE; i++) {
+		for (int i = 0; i < Constants.BOARD_SIZE; i++) {
 			final int finalI = i;
-			for (int j = 0; j < BOARD_SQUARE_SIZE; j++) {
+			for (int j = 0; j < Constants.BOARD_SIZE; j++) {
 				final int finalJ = j;
 				final Label label = new Label();
 				label.setTextAlignment(TextAlignment.CENTER);
-				GridPane.setHalignment(label, HPos.CENTER);
-				GridPane.setValignment(label, VPos.CENTER);
 				label.setMaxHeight(Double.MAX_VALUE);
 				label.setMaxWidth(Double.MAX_VALUE);
-				label.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-				GridPane.setHgrow(label, Priority.ALWAYS);
-				GridPane.setVgrow(label, Priority.ALWAYS);
+				label.setStyle(CoordinateState.EMPTY.getStyle());
 				gridPane.add(label, i, j);
 				labelArray[i][j] = label;
 				if (gridPane == targetGrid) {
@@ -180,8 +167,8 @@ public class GameWindow implements Initializable {
 
 	private void onMouseHoverPlayerField(final int posX, final int posY, final boolean entered) {
 		if (model.getCurrentState() != GameState.SET_UP) return;
-		if (horizontal && posX + model.getTileNumberOfCurrentShip() > 10) return;
-		if (!horizontal && posY + model.getTileNumberOfCurrentShip() > 10) return;
+		if (horizontal && posX + model.getTileNumberOfCurrentShip() > Constants.BOARD_SIZE) return;
+		if (!horizontal && posY + model.getTileNumberOfCurrentShip() > Constants.BOARD_SIZE) return;
 
 		for (int offset = 0; offset < model.getTileNumberOfCurrentShip(); offset++) {
 			int x = posX + (horizontal ? offset : 0);
@@ -195,7 +182,7 @@ public class GameWindow implements Initializable {
 	}
 
 	private void updateShipFieldOnEnter(final int posX, final int posY) {
-		playerLabels[posX][posY].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
+		playerLabels[posX][posY].setStyle(CoordinateState.SHIP.getStyle());
 	}
 
 	private void resetPlayerFieldLabel(final int posX, final int posY) {
@@ -209,7 +196,7 @@ public class GameWindow implements Initializable {
 		for (int offset = 0; offset < model.getTileNumberOfCurrentShip(); offset++) {
 			int x = posX + (horizontal ? offset : 0);
 			int y = posY + (horizontal ? 0 : offset);
-			if (x < 10 && y < 10) {
+			if (x < Constants.BOARD_SIZE && y < Constants.BOARD_SIZE) {
 				resetPlayerFieldLabel(x, y);
 			}
 		}
@@ -236,16 +223,16 @@ public class GameWindow implements Initializable {
 	}
 
 	public void updatePlayerField() {
-		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
-			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
+		for (int x = 0; x < Constants.BOARD_SIZE; x++)
+			for (int y = 0; y < Constants.BOARD_SIZE; y++) {
 				CoordinateState state = model.currentStateOfPlayerCoordinate(x, y);
 				playerLabels[x][y].setStyle(state.getStyle());
 			}
 	}
 
 	public void updateTargetField() {
-		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
-			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
+		for (int x = 0; x < Constants.BOARD_SIZE; x++)
+			for (int y = 0; y < Constants.BOARD_SIZE; y++) {
 				CoordinateState state = model.currentStateOfTargetCoordinate(x, y);
 				targetLabels[x][y].setStyle(state.getStyle());
 			}
