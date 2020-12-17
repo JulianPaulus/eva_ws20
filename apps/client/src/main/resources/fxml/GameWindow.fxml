@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -13,6 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
 <HBox fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleships.client.GameWindow.GameWindow">
 	<children>
 		<VBox spacing="10.0">
@@ -49,7 +49,7 @@
 						<Button fx:id="removeShip" mnemonicParsing="false" onAction="#removeLastAddedShip" text="letztes Schiff entfernen" visible="false" />
 					</children>
 				</Pane>
-				<TextArea fx:id="rulesTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" />
+            <WebView fx:id="rulesView" contextMenuEnabled="false" disable="true" prefHeight="200.0" prefWidth="200.0" />
 				<Label text="von Maurice Didion, Julian Paulus und Alexander Liggesmeyer" textFill="#6f6f6f" />
 			</children>
 			<padding>
@@ -100,9 +100,9 @@
 						<Separator prefWidth="200.0" visible="false" />
 						<HBox fillHeight="false" prefHeight="3.0" prefWidth="400.0">
 							<children>
-								<TextField fx:id="chatTextBox" onAction="#sendMessage" HBox.hgrow="ALWAYS" disable="true"/>
-								<Separator orientation="VERTICAL" prefHeight="200.0" visible="false"/>
-								<Button fx:id="sendMessageBtn" mnemonicParsing="false" onAction="#sendMessage" text="Senden" disable="true"/>
+								<TextField fx:id="chatTextBox" disable="true" onAction="#sendMessage" HBox.hgrow="ALWAYS" />
+								<Separator orientation="VERTICAL" prefHeight="200.0" visible="false" />
+								<Button fx:id="sendMessageBtn" disable="true" mnemonicParsing="false" onAction="#sendMessage" text="Senden" />
 							</children>
 						</HBox>
 					</children>

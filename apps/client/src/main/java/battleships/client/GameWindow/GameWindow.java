@@ -15,13 +15,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 
 public class GameWindow implements Initializable {
 
@@ -56,7 +57,7 @@ public class GameWindow implements Initializable {
 	private ListView<TextFlow> chatWindow;
 
 	@FXML
-	private TextArea rulesTextArea;
+	private WebView rulesView;
 
 	@FXML
 	private Button removeShip;
@@ -77,20 +78,21 @@ public class GameWindow implements Initializable {
 		INSTANCE = this;
 	}
 
-	public static void openWindow(Stage stage) {
-		FXMLLoader loader = new FXMLLoader();
-		try {
-			loader.load(GameWindow.class.getResourceAsStream("/fxml/GameWindow.fxml"));
-			Scene scene = new Scene(loader.getRoot());
-			scene.getStylesheets().add(GameWindow.class.getResource("/fxml/style.css").toString());
-			Platform.runLater(() -> {
+	public static void openWindow(final Stage stage, final CountDownLatch latch) {
+		Platform.runLater(() -> {
+			try {
+				FXMLLoader loader = new FXMLLoader();
+				loader.load(GameWindow.class.getResourceAsStream("/fxml/GameWindow.fxml"));
+				Scene scene = new Scene(loader.getRoot());
+				scene.getStylesheets().add(GameWindow.class.getResource("/fxml/style.css").toString());
+				INSTANCE = loader.getController();
+				latch.countDown();
 				stage.setScene(scene);
 				stage.show();
-			});
-			INSTANCE = loader.getController();
-		} catch (final IOException e) {
-			LOGGER.trace("error while loading fxml", e);
-		}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@FXML
@@ -108,6 +110,7 @@ public class GameWindow implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		rulesView.getEngine().setUserStyleSheetLocation(GameWindow.class.getResource("/fxml/webView.css").toString());
 		updateRulesForPhaseChange();
 
 		setupBoard(playerGrid, playerLabels);
@@ -284,16 +287,23 @@ public class GameWindow implements Initializable {
 		removeShip.setVisible(visible);
 	}
 
-	public void updateRulesText(final String text) {
-		rulesTextArea.clear();
-		rulesTextArea.setText(text);
-	}
-
 	public void setStatusLabel(final String text) {
 		statusLabel.setText(text);
 	}
 
 	public void setStatusLabelStyle(final String style) {
 		statusLabel.setStyle(style);
+	}
+
+	public void updateStatusText() {
+		statusLabel.setText(model.getCurrentState().getStatusText());
+	}
+
+	public void updateRulesText() {
+		rulesView.getEngine().loadContent(model.getCurrentState().getRuleText());
+	}
+
+	public void updateRulesText(String text) {
+		rulesView.getEngine().loadContent(text);
 	}
 }
