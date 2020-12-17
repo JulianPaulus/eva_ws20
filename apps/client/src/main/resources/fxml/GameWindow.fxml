@@ -49,7 +49,7 @@
 						<Button fx:id="removeShip" mnemonicParsing="false" onAction="#removeLastAddedShip" text="letztes Schiff entfernen" visible="false" />
 					</children>
 				</Pane>
-            <WebView fx:id="rulesView" contextMenuEnabled="false" disable="true" prefHeight="200.0" prefWidth="200.0" />
+            <WebView fx:id="rulesView" disable="true" prefHeight="200.0" prefWidth="200.0" />
 				<Label text="von Maurice Didion, Julian Paulus und Alexander Liggesmeyer" textFill="#6f6f6f" />
 			</children>
 			<padding>
