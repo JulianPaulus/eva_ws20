@@ -166,7 +166,7 @@ public class GameWindow implements Initializable {
 	private void onMouseExitTargetField(final Label label, final int posX, final int posY) {
 		if (model.getCurrentState() != GameState.SHOOTING) return;
 
-		CoordinateState targetState = model.currentStateOfTargetCoordinate(posX, posY);
+		CoordinateState targetState = model.getTargetFieldState(posX, posY);
 		label.setStyle(targetState.getStyle());
 	}
 
@@ -249,7 +249,7 @@ public class GameWindow implements Initializable {
 	public void updateTargetField() {
 		for (int x = 0; x < Constants.BOARD_SIZE; x++)
 			for (int y = 0; y < Constants.BOARD_SIZE; y++) {
-				CoordinateState state = model.currentStateOfTargetCoordinate(x, y);
+				CoordinateState state = model.getTargetFieldState(x, y);
 				targetLabels[x][y].setStyle(state.getStyle());
 			}
 	}
