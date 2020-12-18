@@ -5,6 +5,9 @@ import battleships.client.packet.send.PlayerReadyPacket;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;
 import battleships.model.ShipType;
+import battleships.net.exception.IllegalShipPositionException;
+import battleships.util.Constants;
+import battleships.util.Utils;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -62,15 +65,18 @@ public class GameModel {
 		}
 
 		if (horizontal) {
-			if (xPos + currentShip.getSize() <= 10) {
-				for (int i = 0; i < currentShip.getSize(); i++)
+			if (xPos + currentShip.getSize() <= Constants.BOARD_SIZE) {
+				for (int i = 0; i < currentShip.getSize(); i++) {
 					playerField[xPos + i][yPos] = CoordinateState.SHIP;
+				}
 			}
 
 		} else {
-			if (yPos + currentShip.getSize() <= 10)
-				for (int i = 0; i < currentShip.getSize(); i++)
+			if (yPos + currentShip.getSize() <= Constants.BOARD_SIZE) {
+				for (int i = 0; i < currentShip.getSize(); i++) {
 					playerField[xPos][yPos + i] = CoordinateState.SHIP;
+				}
+			}
 		}
 
 		lastAdded = ship;
@@ -79,34 +85,12 @@ public class GameModel {
 		observer.notifyAboutPlayerModelChange();
 	}
 
-	private boolean checkForShipAvailability(Ship ship) {
-		int xPos = ship.getxCoordinate();
-		int yPos = ship.getyCoordinate();
-
-		if (ship.isHorizontal()) {
-			if (playerField[xPos - 1][yPos] == CoordinateState.SHIP || playerField[xPos + ship.getType()
-				.getSize()][yPos] == CoordinateState.SHIP)
-				return false;
-		} else {
-			if (playerField[xPos][yPos - 1] == CoordinateState.SHIP || playerField[xPos][yPos + ship.getType()
-				.getSize()] == CoordinateState.SHIP)
-				return false;
+	private boolean checkForShipAvailability(final Ship ship) {
+		try {
+			Utils.validateShip(ship, playerField);
+		} catch (final IllegalShipPositionException e) {
+			return false;
 		}
-
-		for (int i = 0; i < ship.getType().getSize(); i++) {
-			if (ship.isHorizontal()) {
-				if (playerField[xPos + i][yPos] == CoordinateState.SHIP ||
-					playerField[xPos + i][yPos + 1] == CoordinateState.SHIP ||
-					playerField[xPos + i][yPos - 1] == CoordinateState.SHIP)
-					return false;
-			} else {
-				if (playerField[xPos][yPos + i] == CoordinateState.SHIP ||
-					playerField[xPos + 1][yPos + i] == CoordinateState.SHIP ||
-					playerField[xPos - 1][yPos + i] == CoordinateState.SHIP)
-					return false;
-			}
-		}
-
 		return true;
 	}
 
@@ -140,11 +124,11 @@ public class GameModel {
 			playerField[xPos][yPos] = CoordinateState.HIT;
 
 			for (Ship ship : ships) {
-				if (ship.isHorizontal() && yPos == ship.getyCoordinate() && xPos >= ship
-					.getxCoordinate() && xPos <= ship.getxCoordinate() + ship.getType().getSize())
+				if (ship.isHorizontal() && yPos == ship.getYCoordinate() && xPos >= ship
+					.getXCoordinate() && xPos <= ship.getXCoordinate() + ship.getType().getSize())
 					ship.hit();
-				else if (ship.isHorizontal() && xPos == ship.getxCoordinate() && yPos >= ship
-					.getyCoordinate() && yPos <= ship.getyCoordinate() + ship.getType().getSize())
+				else if (ship.isHorizontal() && xPos == ship.getXCoordinate() && yPos >= ship
+					.getYCoordinate() && yPos <= ship.getYCoordinate() + ship.getType().getSize())
 					ship.hit();
 
 				if (ship.isDestroyed())
@@ -229,8 +213,8 @@ public class GameModel {
 
 	public void removeLastAdded() {
 		if (lastAdded == null) return;
-		int xPos = lastAdded.getxCoordinate();
-		int yPos = lastAdded.getyCoordinate();
+		int xPos = lastAdded.getXCoordinate();
+		int yPos = lastAdded.getYCoordinate();
 
 		int shipLength = lastAdded.getType().getSize();
 
