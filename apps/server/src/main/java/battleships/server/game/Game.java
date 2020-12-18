@@ -166,10 +166,11 @@ public class Game implements Observer<ConnectionEvent> {
 
 			//Write non hit at coordiantes
 			targetField[xPos][yPos] = CoordinateState.MISS;
-			//TODO
-			playerConnection.writePacket();
+			playerConnection.writePacket(new GameShootResponsePacket(true, false,
+				false, xPos, yPos));
 			//write non hit at coordiantes
-			hostConnection.writePacket();
+			hostConnection.writePacket(new GameShootResponsePacket(false, false,
+				false, xPos, yPos));
 			//Let other player try a shot
 			hostConnection.writePacket(new GamePlayersTurnPacket());
 			playerConnection.writePacket(new GameEnemiesTurnPacket());
@@ -177,16 +178,34 @@ public class Game implements Observer<ConnectionEvent> {
 
 			//Hit a ship!
 			targetField[xPos][yPos] = CoordinateState.HIT;
+			boolean isHasGameEnded = checkForGameEnd();
 			//Write hit at coordinates
-			playerConnection.writePacket();
+			playerConnection.writePacket(new GameShootResponsePacket(true,
+				false, isHasGameEnded, xPos, yPos));
 			//write hit at coordiantes
-			hostConnection.writePacket();
+			hostConnection.writePacket(new GameShootResponsePacket(false, true,
+				isHasGameEnded, xPos, yPos));
 			//Let player shoot again
 			hostConnection.writePacket(new GameEnemiesTurnPacket());
 			playerConnection.writePacket(new GamePlayersTurnPacket());
 		}
 
 
+	}
+
+	private synchronized boolean checkForGameEnd() {
+		return checkForAllHit(hostField) || checkForAllHit(guestField);
+	}
+
+	private synchronized boolean checkForAllHit(CoordinateState[][] gameField) {
+		for(CoordinateState[] col : gameField) {
+			for(CoordinateState state : col) {
+				if(state == CoordinateState.SHIP) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public synchronized void addGuest(final Player guest) throws ServerException {

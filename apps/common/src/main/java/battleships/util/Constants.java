@@ -42,6 +42,8 @@ public class Constants {
 		public static final byte PLAYER_READY_REQUEST = 0x10;
 		public static final byte GAME_PLAYERS_TURN = 0x11;
 		public static final byte GAME_ENEMIES_TURN = 0x12;
+		public static final byte GAME_SHOOT_REQUEST = 0x13;
+		public static final byte GAME_SHOOT_RESPONSE = 0x14;
 
 	}
 

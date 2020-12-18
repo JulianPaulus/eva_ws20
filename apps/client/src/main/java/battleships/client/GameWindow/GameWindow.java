@@ -5,6 +5,7 @@ import battleships.client.Model.GameModel;
 import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
+import battleships.client.packet.send.ShootPacket;
 import battleships.model.CoordinateState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -165,11 +166,11 @@ public class GameWindow implements Initializable {
 		} else {
 			if (model.getCurrentState() == GameState.SHOOTING) {
 
-				if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.EMPTY) {
+				if (model.getTargetFieldState(posX, poxY) == CoordinateState.EMPTY) {
 					label.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
-				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.HIT) {
+				} else if (model.getTargetFieldState(posX, poxY) == CoordinateState.HIT) {
 					label.setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
-				} else if (model.currentStateOfTargetCoordinate(posX, poxY) == CoordinateState.MISS) {
+				} else if (model.getTargetFieldState(posX, poxY) == CoordinateState.MISS) {
 					label.setStyle("-fx-background-color: #bdbdbd;" + "-fx-border-color: black");
 				}
 			}
@@ -206,7 +207,7 @@ public class GameWindow implements Initializable {
 					if (posX + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
 //							System.out.println("" + posX + posY);
-							if (model.currentStateOfPlayerCoordinate(posX + x, posY) == CoordinateState.EMPTY)
+							if (model.getPlayerFieldState(posX + x, posY) == CoordinateState.EMPTY)
 								playerLabels[posX + x][posY]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 							else
@@ -218,7 +219,7 @@ public class GameWindow implements Initializable {
 					if (posY + model.getTileNumberOfCurrentShip() <= 10) {
 						for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
 //							System.out.println("" + posX + " " + (posY + y));
-							if (model.currentStateOfPlayerCoordinate(posX, posY + y) == CoordinateState.EMPTY) {
+							if (model.getPlayerFieldState(posX, posY + y) == CoordinateState.EMPTY) {
 								playerLabels[posX][posY + y]
 									.setStyle("-fx-background-color: #ffffff;" + "-fx-border-color: black");
 							} else {
@@ -239,7 +240,7 @@ public class GameWindow implements Initializable {
 
 				if (xPos + model.getTileNumberOfCurrentShip() <= 10) {
 					for (int x = 0; x < model.getTileNumberOfCurrentShip(); x++) {
-						switch (model.currentStateOfPlayerCoordinate(xPos + x, yPos)) {
+						switch (model.getPlayerFieldState(xPos + x, yPos)) {
 							case SHIP:
 								playerLabels[xPos + x][yPos]
 									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
@@ -260,7 +261,7 @@ public class GameWindow implements Initializable {
 			} else {
 				if (yPos + model.getTileNumberOfCurrentShip() < 10) {
 					for (int y = 0; y < model.getTileNumberOfCurrentShip(); y++) {
-						switch (model.currentStateOfPlayerCoordinate(xPos, yPos + y)) {
+						switch (model.getPlayerFieldState(xPos, yPos + y)) {
 							case SHIP:
 								playerLabels[xPos][yPos + y]
 									.setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: black");
@@ -289,8 +290,13 @@ public class GameWindow implements Initializable {
 	}
 
 	void onTargetFieldClicked(int xPos, int yPos) {
-		if (model.getCurrentState() == GameState.SHOOTING)
-			model.shootAt(xPos, yPos);
+		if (model.getCurrentState() != GameState.SHOOTING
+			|| model.getTargetFieldState(xPos, yPos) != CoordinateState.EMPTY) {
+			return;
+		}
+		ClientMain.getInstance().getConnection().writePacket(new ShootPacket(xPos, yPos));
+		model.setCurrentState(GameState.SHOOTING_WAIT_FOR_RESPONSE);
+		//Todo Anzeigen, dass auf den Server gewartet wird?
 	}
 
 	public void updateChatWindow() {
@@ -309,7 +315,7 @@ public class GameWindow implements Initializable {
 	public void updatePlayerField() {
 		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
 			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
-				switch (model.currentStateOfPlayerCoordinate(x, y)) {
+				switch (model.getPlayerFieldState(x, y)) {
 					case SHIP:
 						playerLabels[x][y].setStyle("-fx-background-color: #0004ff;" + "-fx-border-color: #000000");
 						break;
@@ -330,7 +336,7 @@ public class GameWindow implements Initializable {
 	public void updateTargetField() {
 		for (int x = 0; x < BOARD_SQUARE_SIZE; x++)
 			for (int y = 0; y < BOARD_SQUARE_SIZE; y++) {
-				switch (model.currentStateOfTargetCoordinate(x, y)) {
+				switch (model.getTargetFieldState(x, y)) {
 					case HIT:
 						targetLabels[x][y].setStyle("-fx-background-color: #ea1313;" + "-fx-border-color: black");
 						break;
@@ -432,6 +438,14 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
+	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos) {
+		if(isPlayerField) {
+			model.setPlayerFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
+		} else {
+			model.setTargetFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
+		}
+	}
+
 	public void onWaitForOtherPlayerSetup() {
 		model.setCurrentState(GameState.SET_UP_WAIT_FOR_OTHER_PLAYER);
 		updateRulesForPhaseChange();
@@ -452,5 +466,9 @@ public class GameWindow implements Initializable {
 	public void onEnemyTurn() {
 		model.setCurrentState(GameState.WAIT_FOR_ENEMY);
 		updateRulesForPhaseChange();
+	}
+
+	public void setGameEnd(boolean isHasPlayerWon) {
+		model.setCurrentState(isHasPlayerWon? GameState.WON : GameState.LOST);
 	}
 }

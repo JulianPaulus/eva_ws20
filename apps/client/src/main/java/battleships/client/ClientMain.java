@@ -47,6 +47,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		packetFactoryMap.put(IllegalShipPositionPacket.IDENTIFIER, new StateLessPacketFactory<>(IllegalShipPositionPacket.class));
 		packetFactoryMap.put(GamePlayersTurnPacket.IDENTIFIER, new StateLessPacketFactory<>(GamePlayersTurnPacket.class));
 		packetFactoryMap.put(GameEnemiesTurnPacket.IDENTIFIER, new StateLessPacketFactory<>(GameEnemiesTurnPacket.class));
+		packetFactoryMap.put(GameShootResponsePacket.IDENTIFIER, new GameShootResponsePacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 

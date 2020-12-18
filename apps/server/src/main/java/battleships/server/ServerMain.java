@@ -21,6 +21,7 @@ public class ServerMain {
 		packetFactoryMap.put(JoinGamePacket.IDENTIFIER, new JoinGamePacketFactory());
 		packetFactoryMap.put(SendChatMessagePacket.IDENTIFIER, new SendChatMessagePacketFactory());
 		packetFactoryMap.put(PlayerReadyPacket.IDENTIFIER, new PlayerReadyPacketFactory());
+		packetFactoryMap.put(ShootPacket.IDENTIFIER, new ShootPacketFactory());
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 
