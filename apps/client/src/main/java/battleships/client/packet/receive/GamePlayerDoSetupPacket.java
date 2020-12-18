@@ -1,16 +1,19 @@
 package battleships.client.packet.receive;
 
+import battleships.client.ClientMain;
+import battleships.client.GameWindow.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
-public class GameStartPacket implements IPreAuthReceivePacket {
+public class GamePlayerDoSetupPacket implements IPreAuthReceivePacket {
 
-	public static final byte IDENTIFIER = Constants.Identifiers.START_GAME_MESSAGE;
+	public static final byte IDENTIFIER = Constants.Identifiers.GAME_PLAYER_DO_SETUP_MESSAGE;
 
 	private final String otherPlayerName;
 
-	public GameStartPacket(final String otherPlayerName) {
+	public GamePlayerDoSetupPacket(final String otherPlayerName) {
 		this.otherPlayerName = otherPlayerName;
 	}
 
@@ -23,5 +26,6 @@ public class GameStartPacket implements IPreAuthReceivePacket {
 	public void act(final Connection connection) {
 		System.out.println("start game");
 		System.out.println("other player: " + otherPlayerName);
+		Platform.runLater(() -> GameWindow.getInstance().onDoSetup());
 	}
 }

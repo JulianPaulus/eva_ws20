@@ -6,10 +6,13 @@ import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.model.CoordinateState;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,12 +25,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameWindow implements Initializable {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(GameWindow.class);
 	private static GameWindow INSTANCE;
 
 	private final int BOARD_SQUARE_SIZE = 10;
@@ -69,6 +75,22 @@ public class GameWindow implements Initializable {
 		horizontal = true;
 
 		INSTANCE = this;
+	}
+
+	public static void openWindow(Stage stage) {
+		FXMLLoader loader = new FXMLLoader();
+		try {
+			loader.load(GameWindow.class.getResourceAsStream("/fxml/GameWindow.fxml"));
+			Scene scene = new Scene(loader.getRoot());
+			scene.getStylesheets().add(GameWindow.class.getResource("/fxml/style.css").toString());
+			Platform.runLater(() -> {
+				stage.setScene(scene);
+				stage.show();
+			});
+			INSTANCE = loader.getController();
+		} catch (final IOException e) {
+			LOGGER.trace("error while loading fxml", e);
+		}
 	}
 
 	@FXML
@@ -324,43 +346,75 @@ public class GameWindow implements Initializable {
 	}
 
 	public void updateRulesForPhaseChange() {
-		if (model.getCurrentState() == GameState.SET_UP) {
-			statusLabel.setText("Bitte Schiffe setzen");
+		if (model.getCurrentState() == GameState.PENDING) {
+			Platform.runLater(() -> {
+				removeShip.setVisible(false);
+				statusLabel.setText("Warte auf anderen Spieler...");
+				rulesTextArea.clear();
+				rulesTextArea.setText("Bitte warten Sie, bis ein anderer Spieler dem Spiel beitritt!");
+				removeShip.setVisible(true);
+			});
 
-			rulesTextArea.clear();
+		} else if (model.getCurrentState() == GameState.SET_UP) {
+			Platform.runLater(() -> {
+				removeShip.setVisible(true);
+				statusLabel.setText("Bitte Schiffe setzen");
+				rulesTextArea.clear();
+				rulesTextArea.setText("setzen sie ihre Schiffe:\n" +
+					"Beim Hovern \u00FCber dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n" +
+					"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n" +
+					"Mit linksklick setzen sie das Schiff\n" +
+					"Schiffe werden Blau dargestellt");
+				removeShip.setVisible(true);
+			});
 
-			rulesTextArea.setText("setzen sie ihre Schiffe:\n" +
-				"Beim Hovern \u00FCber dem Spielfeld wird die derzeitige Position des Schiffs angezeigt.\n" +
-				"Mit Rechtsklick \u00E4ndern sie die Ausrichtung (Horizontal/Vertikal)\n" +
-				"Mit linksklick setzen sie das Schiff\n" +
-				"Schiffe werden Blau dargestellt");
+		} else if (model.getCurrentState() == GameState.SET_UP_WAIT_FOR_OTHER_PLAYER) {
+			Platform.runLater(() -> {
+				removeShip.setVisible(false);
+				statusLabel.setText("Warte auf andern Spieler...");
+				rulesTextArea.clear();
+				rulesTextArea.setText("Ihre Gegner hat noch nicht alle Schiffe platziert.\n" +
+					"Das Spiel startet automatisch, sobald Ihre Gegner seine Schiffe platziert hat!");
+				removeShip.setVisible(true);
+			});
 
-			removeShip.setVisible(true);
 		} else if (model.getCurrentState() == GameState.SHOOTING) {
-			statusLabel.setText("Bitte Zielen");
+			Platform.runLater(() -> {
+				removeShip.setVisible(false);
+				statusLabel.setText("Bitte Zielen");
+				rulesTextArea.clear();
+				rulesTextArea.setText(
+					"Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schie\u00DFen.\n" +
+						"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
+				removeShip.setVisible(false);
+			});
 
-			rulesTextArea.clear();
-			rulesTextArea.setText(
-				"Klicken sie auf das Zielen spielfeld, um auf die gew\u00FCnschte Position zu schie\u00DFen.\n" +
-					"Treffer werden rot dargestellt, Verfehlungen werden grau dargestellt");
-
-			removeShip.setVisible(false);
 		} else if (model.getCurrentState() == GameState.WAIT_FOR_ENEMY) {
-			statusLabel.setText("Warten auf gegner");
+			Platform.runLater(() -> {
+				removeShip.setVisible(false);
+				statusLabel.setText("Warten auf Gegner");
+				rulesTextArea.clear();
+				rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +
+					"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
+				removeShip.setVisible(false);
+			});
 
-			rulesTextArea.clear();
-			rulesTextArea.setText("Der Gegner schie\u00DFt, bitte warten.\n" +
-				"Treffer auf ihren Schiffen werden rot dargestellt, Verfehlungen werden grau dargestellt");
-
-			removeShip.setVisible(false);
 		} else if (model.getCurrentState() == GameState.WON) {
-			statusLabel.setText("Gewonnen");
-			statusLabel.setStyle("-fx-text-fill: green");
-			rulesTextArea.clear();
+			Platform.runLater(() -> {
+				removeShip.setVisible(false);
+				statusLabel.setText("Gewonnen");
+				statusLabel.setStyle("-fx-text-fill: green");
+				rulesTextArea.clear();
+			});
+
 		} else if (model.getCurrentState() == GameState.LOST) {
-			statusLabel.setText("Verloren");
-			statusLabel.setStyle("-fx-text-fill: red");
-			rulesTextArea.clear();
+			Platform.runLater(() -> {
+				removeShip.setVisible(false);
+				statusLabel.setText("Verloren");
+				statusLabel.setStyle("-fx-text-fill: red");
+				rulesTextArea.clear();
+			});
+
 		}
 	}
 
@@ -371,5 +425,32 @@ public class GameWindow implements Initializable {
 
 	public static GameWindow getInstance() {
 		return INSTANCE;
+	}
+
+	public void onDoSetup() {
+		model.setCurrentState(GameState.SET_UP);
+		updateRulesForPhaseChange();
+	}
+
+	public void onWaitForOtherPlayerSetup() {
+		model.setCurrentState(GameState.SET_UP_WAIT_FOR_OTHER_PLAYER);
+		updateRulesForPhaseChange();
+	}
+
+
+	public void removeAllShips() {
+		model.removeAllShips();
+		model.setCurrentState(GameState.SET_UP);
+		updateRulesForPhaseChange();
+	}
+
+	public void onPlayersTurn() {
+		model.setCurrentState(GameState.SHOOTING);
+		updateRulesForPhaseChange();
+	}
+
+	public void onEnemyTurn() {
+		model.setCurrentState(GameState.WAIT_FOR_ENEMY);
+		updateRulesForPhaseChange();
 	}
 }

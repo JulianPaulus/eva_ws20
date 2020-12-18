@@ -1,23 +1,13 @@
 package battleships.client;
 
-import battleships.client.packet.receive.ChatMessagePacket;
-import battleships.client.packet.receive.GameJoinedPacket;
-import battleships.client.packet.receive.GameStartPacket;
-import battleships.client.packet.receive.LobbyListPacket;
-import battleships.client.packet.receive.LoginResponsePacket;
-import battleships.client.packet.receive.RegistrationErrorResponsePacket;
-import battleships.client.packet.receive.ServerErrorPacket;
-import battleships.client.packet.receive.factory.ChatMessagePacketFactory;
-import battleships.client.packet.receive.factory.GameJoinedPacketFactory;
-import battleships.client.packet.receive.factory.GameStartPacketFactory;
-import battleships.client.packet.receive.factory.LobbyListPacketFactory;
-import battleships.client.packet.receive.factory.LoginResponseFactory;
-import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
-import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
+import battleships.client.login.LoginController;
+import battleships.client.packet.receive.*;
+import battleships.client.packet.receive.factory.*;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
+import battleships.net.factory.StateLessPacketFactory;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import javafx.application.Application;
@@ -51,8 +41,12 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		packetFactoryMap.put(RegistrationErrorResponsePacket.IDENTIFIER, new RegistrationErrorResponseFactory());
 		packetFactoryMap.put(GameJoinedPacket.IDENTIFIER, new GameJoinedPacketFactory());
 		packetFactoryMap.put(ServerErrorPacket.IDENTIFIER, new ServerErrorPacketFactory());
-		packetFactoryMap.put(GameStartPacket.IDENTIFIER, new GameStartPacketFactory());
+		packetFactoryMap.put(GamePlayerDoSetupPacket.IDENTIFIER, new GameStartPacketFactory());
 		packetFactoryMap.put(ChatMessagePacket.IDENTIFIER, new ChatMessagePacketFactory());
+		packetFactoryMap.put(GameOtherPlayerSetupPacket.IDENTIFIER, new StateLessPacketFactory<>(GameOtherPlayerSetupPacket.class));
+		packetFactoryMap.put(IllegalShipPositionPacket.IDENTIFIER, new StateLessPacketFactory<>(IllegalShipPositionPacket.class));
+		packetFactoryMap.put(GamePlayersTurnPacket.IDENTIFIER, new StateLessPacketFactory<>(GamePlayersTurnPacket.class));
+		packetFactoryMap.put(GameEnemiesTurnPacket.IDENTIFIER, new StateLessPacketFactory<>(GameEnemiesTurnPacket.class));
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 
@@ -66,7 +60,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		this.stage = primaryStage;
 
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
-		loadFXML("/login.fxml");
+		LoginController.openWindow(stage);
 	}
 
 	public Connection connect(final String address, final int port) throws IOException {
@@ -100,20 +94,6 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 
 		if (connection != null) {
 			connection.close();
-		}
-	}
-
-	public void loadFXML(final String path) {
-		LOGGER.debug("loading FXML from {}", path);
-		FXMLLoader loader = new FXMLLoader();
-		try {
-			loader.load(getClass().getResourceAsStream(path));
-			Scene scene = new Scene(loader.getRoot());
-			scene.getStylesheets().add(getClass().getResource("/style.css").toString());
-			stage.setScene(scene);
-			stage.show();
-		} catch (final IOException e) {
-			LOGGER.trace("error while loading fxml", e);
 		}
 	}
 

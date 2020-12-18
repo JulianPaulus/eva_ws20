@@ -1,5 +1,7 @@
 package battleships.client.packet.receive;
 
+import battleships.client.ClientMain;
+import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
@@ -24,7 +26,7 @@ public class ServerErrorPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAH");
 		System.out.println(message);
+		ErrorDialog.show(ClientMain.getInstance().getStage(), message);
 	}
 }

@@ -8,11 +8,15 @@ import battleships.net.connection.Connection;
 import battleships.util.Constants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +70,20 @@ public class LoginController {
 	@FXML
 	private void onRegister() {
 		connect(new RegisterPacket(nameField.getText(), passwordField.getText()));
+	}
+
+	public static void openWindow(Stage stage) {
+		try {
+			final Parent root = FXMLLoader.load(LoginController.class.getResource("/fxml/login.fxml"));
+			Platform.runLater(() -> {
+				Scene scene = new Scene(root);
+				scene.getStylesheets().add(LoginController.class.getResource("/fxml/style.css").toString());
+				stage.setScene(scene);
+				stage.show();
+			});
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void connect(final LoginPacket packet) {
