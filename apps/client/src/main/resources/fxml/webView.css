@@ -1,0 +1,31 @@
+body {
+	border: 1px solid #d4d4d4;
+	margin: 0;
+	padding: 5px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	margin: 1px 0;
+}
+
+.hit {
+	color: #d1462f;
+}
+
+.miss {
+	color: #8d918b;
+}
+
+.ship {
+	color: #033f63;
+}
+
+.targeting {
+	color: #FDE74C;
+}
+
+.invalid {
+	color: #f3b61f;
+}

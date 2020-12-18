@@ -5,22 +5,39 @@ import battleships.model.Ship;
 import battleships.model.ShipType;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
+import battleships.net.exception.IllegalShipPositionException;
 import battleships.net.packet.SendPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
-import battleships.server.exception.IllegalShipPositionException;
 import battleships.server.exception.ServerException;
-import battleships.server.game.gameState.*;
-import battleships.server.packet.send.*;
+import battleships.server.game.gameState.HostsTurnState;
+import battleships.server.game.gameState.ServerGameState;
+import battleships.server.game.gameState.SettingUpGuestState;
+import battleships.server.game.gameState.SettingUpHostState;
+import battleships.server.game.gameState.SettingUpState;
+import battleships.server.game.gameState.UninitializedState;
+import battleships.server.game.gameState.WaitingForGuestState;
+import battleships.server.packet.send.ChatMessagePacket;
+import battleships.server.packet.send.GameEnemiesTurnPacket;
+import battleships.server.packet.send.GameJoinedPacket;
+import battleships.server.packet.send.GamePlayerDoSetupPacket;
+import battleships.server.packet.send.GamePlayersTurnPacket;
+import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
+import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
 import battleships.util.ServerErrorType;
+import battleships.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Game implements Observer<ConnectionEvent> {
@@ -70,47 +87,10 @@ public class Game implements Observer<ConnectionEvent> {
 			Arrays.fill(gameField[i], CoordinateState.EMPTY);
 		}
 		for(Ship ship : ships) {
-			//Check that ships stay in fieldBounds and cause no ArrayOutOfBounds
-			int startX = ship.getxCoordinate();
-			int startY = ship.getyCoordinate();
-			int endX = startX;
-			int endY = startY;
-			if(ship.isHorizontal()) {
-				endX += ship.getType().getSize() - 1;
-			} else {
-				endY += ship.getType().getSize() - 1;
-			}
-			if(startX < 0 || startX >= GAMEFIELD_SIZE
-				|| endX < 0 || endX >= GAMEFIELD_SIZE
-				|| startY < 0 || startY >= GAMEFIELD_SIZE
-				|| endY < 0 || endY >= GAMEFIELD_SIZE) {
-				throw new IllegalShipPositionException("Ship out of gamefield bounds!");
-			}
-			//Set ship to field and make sure that a distance of one cell is kept between the
-			// ships (horizontal, vertical, diagonal)
-			for(int i = startX; i <= endX; i++) {
-				for(int j = startY; j <= endY; j++) {
-					boolean isPositionLegal = true;
-					//Horizontal (with outOfBounds guard)
-					isPositionLegal &= (i - 1) < 0 || gameField[i - 1][j] == CoordinateState.EMPTY;
-					isPositionLegal &= (i + 1 ) >= GAMEFIELD_SIZE || gameField[i + 1][j] == CoordinateState.EMPTY;
-					isPositionLegal &= gameField[i][j] == CoordinateState.EMPTY;
-					//Vertical
-					isPositionLegal &= (j - 1) < 0 || gameField[i][j - 1] == CoordinateState.EMPTY;
-					isPositionLegal &= (j + 1 ) >= GAMEFIELD_SIZE || gameField[i][j + 1] == CoordinateState.EMPTY;
-					//Diagonal
-					isPositionLegal &= (i - 1) < 0 || (j - 1) < 0 || gameField[i - 1][j - 1] == CoordinateState.EMPTY;
-					isPositionLegal &= (i + 1) >= GAMEFIELD_SIZE || (j + 1) >= GAMEFIELD_SIZE || gameField[i + 1][j + 1] == CoordinateState.EMPTY;
-					isPositionLegal &= (i - 1) < 0 || (j + 1) >= GAMEFIELD_SIZE || gameField[i - 1][j + 1] == CoordinateState.EMPTY;
-					isPositionLegal &= (i + 1) >= GAMEFIELD_SIZE || (j - 1) < 0 || gameField[i + 1][j - 1] == CoordinateState.EMPTY;
-					if(!isPositionLegal) {
-						throw new IllegalShipPositionException("Position Illegal! Some ships are too close together or overlap!");
-					}
-				}
-			}
+			Utils.validateShip(ship, gameField);
 			//Place Ship
-			for(int i = startX; i <= endX; i++) {
-				for(int j = startY; j <= endY; j++) {
+			for(int i = ship.getXCoordinate(); i <= ship.getEndXCoordinate(); i++) {
+				for(int j = ship.getYCoordinate(); j <= ship.getEndYCoordinate(); j++) {
 					gameField[i][j] = CoordinateState.SHIP;
 				}
 			}

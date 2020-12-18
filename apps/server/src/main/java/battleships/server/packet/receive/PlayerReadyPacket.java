@@ -1,8 +1,8 @@
 package battleships.server.packet.receive;
 
 import battleships.model.Ship;
+import battleships.net.exception.IllegalShipPositionException;
 import battleships.server.connection.GameConnection;
-import battleships.server.exception.IllegalShipPositionException;
 import battleships.server.packet.IGameReceivePacket;
 import battleships.server.packet.send.IllegalShipPositionPacket;
 import battleships.util.Constants;

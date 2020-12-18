@@ -1,8 +1,8 @@
-package battleships.server.exception;
+package battleships.net.exception;
 
 public class IllegalShipPositionException extends IllegalArgumentException {
 
-	public IllegalShipPositionException(String message) {
+	public IllegalShipPositionException(final String message) {
 		super(message);
 	}
 
