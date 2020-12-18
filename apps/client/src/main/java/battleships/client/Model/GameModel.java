@@ -126,7 +126,7 @@ public class GameModel {
 
 	public void setPlayerFieldState(int xPos, int yPos, CoordinateState state) {
 		this.playerField[xPos][yPos] = state;
-		observer.notifyAboutTargetModelChange();
+		observer.notifyAboutPlayerModelChange();
 	}
 
 	public CoordinateState currentStateOfPlayerCoordinate(int xPos, int yPos) {

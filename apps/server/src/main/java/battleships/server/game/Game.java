@@ -137,10 +137,10 @@ public class Game implements Observer<ConnectionEvent> {
 
 			//Write non hit at coordiantes
 			targetField[xPos][yPos] = CoordinateState.MISS;
-			playerConnection.writePacket(new GameShootResponsePacket(true, false,
+			playerConnection.writePacket(new GameShootResponsePacket(false, false,
 				false, xPos, yPos));
 			//write non hit at coordiantes
-			hostConnection.writePacket(new GameShootResponsePacket(false, false,
+			targetConnection.writePacket(new GameShootResponsePacket(true, false,
 				false, xPos, yPos));
 			//Let other player try a shot
 			setState(isHostsTurn? new GuestsTurnState() : new HostsTurnState());
@@ -152,14 +152,16 @@ public class Game implements Observer<ConnectionEvent> {
 			targetField[xPos][yPos] = CoordinateState.HIT;
 			boolean isHasGameEnded = checkForGameEnd();
 			//Write hit at coordinates
-			playerConnection.writePacket(new GameShootResponsePacket(true,
-				false, isHasGameEnded, xPos, yPos));
+			playerConnection.writePacket(new GameShootResponsePacket(false, true,
+				isHasGameEnded, xPos, yPos));
 			//write hit at coordiantes
-			hostConnection.writePacket(new GameShootResponsePacket(false, true,
+			targetConnection.writePacket(new GameShootResponsePacket(true, true,
 				isHasGameEnded, xPos, yPos));
 			//Let player shoot again
-			targetConnection.writePacket(new GameEnemiesTurnPacket());
-			playerConnection.writePacket(new GamePlayersTurnPacket());
+			if(!isHasGameEnded) {
+				targetConnection.writePacket(new GameEnemiesTurnPacket());
+				playerConnection.writePacket(new GamePlayersTurnPacket());
+			}
 		}
 
 

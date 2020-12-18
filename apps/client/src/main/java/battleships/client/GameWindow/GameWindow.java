@@ -225,8 +225,8 @@ public class GameWindow implements Initializable {
 			|| model.getTargetFieldState(xPos, yPos) != CoordinateState.EMPTY) {
 			return;
 		}
-		ClientMain.getInstance().getConnection().writePacket(new ShootPacket(xPos, yPos));
 		model.setCurrentState(GameState.SHOOTING_WAIT_FOR_RESPONSE);
+		ClientMain.getInstance().getConnection().writePacket(new ShootPacket(xPos, yPos));
 		//Todo Anzeigen, dass auf den Server gewartet wird?
 	}
 
