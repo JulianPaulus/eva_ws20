@@ -85,7 +85,7 @@ public class GameModel {
 		observer.notifyAboutPlayerModelChange();
 	}
 
-	private boolean checkForShipAvailability(final Ship ship) {
+	public boolean checkForShipAvailability(final Ship ship) {
 		try {
 			Utils.validateShip(ship, playerField);
 		} catch (final IllegalShipPositionException e) {
@@ -252,5 +252,8 @@ public class GameModel {
 		observer.notifyAboutGameStatusChange();
 	}
 
+	public ShipType getCurrentShip() {
+		return currentShip;
+	}
 
 }

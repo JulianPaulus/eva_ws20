@@ -6,6 +6,7 @@ import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.model.CoordinateState;
+import battleships.model.Ship;
 import battleships.util.Constants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -173,19 +174,25 @@ public class GameWindow implements Initializable {
 		if (horizontal && posX + model.getTileNumberOfCurrentShip() > Constants.BOARD_SIZE) return;
 		if (!horizontal && posY + model.getTileNumberOfCurrentShip() > Constants.BOARD_SIZE) return;
 
+		Ship tempShip = new Ship(model.getCurrentShip(), posX, posY, horizontal);
+		boolean isValid = model.checkForShipAvailability(tempShip);
 		for (int offset = 0; offset < model.getTileNumberOfCurrentShip(); offset++) {
 			int x = posX + (horizontal ? offset : 0);
 			int y = posY + (horizontal ? 0 : offset);
 			if (entered) {
-				updateShipFieldOnEnter(x, y);
+				updateShipFieldOnEnter(x, y, isValid);
 			} else {
 				resetPlayerFieldLabel(x, y);
 			}
 		}
 	}
 
-	private void updateShipFieldOnEnter(final int posX, final int posY) {
-		playerLabels[posX][posY].setStyle(CoordinateState.SHIP.getStyle());
+	private void updateShipFieldOnEnter(final int posX, final int posY, final boolean isValid) {
+		if (isValid) {
+			playerLabels[posX][posY].setStyle(CoordinateState.SHIP.getStyle());
+		} else {
+			playerLabels[posX][posY].setStyle(CoordinateState.INVALID.getStyle());
+		}
 	}
 
 	private void resetPlayerFieldLabel(final int posX, final int posY) {

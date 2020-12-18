@@ -11,9 +11,21 @@ p {
 }
 
 .hit {
-	color: #ea1313;
+	color: #d1462f;
 }
 
 .miss {
-	color: #646464;
+	color: #8d918b;
+}
+
+.ship {
+	color: #033f63;
+}
+
+.targeting {
+	color: #FDE74C;
+}
+
+.invalid {
+	color: #f3b61f;
 }
