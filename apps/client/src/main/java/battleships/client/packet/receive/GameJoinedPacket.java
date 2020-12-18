@@ -5,11 +5,11 @@ import battleships.client.GameWindow.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
-import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 public class GameJoinedPacket implements IPreAuthReceivePacket {
 
@@ -30,7 +30,12 @@ public class GameJoinedPacket implements IPreAuthReceivePacket {
 	@Override
 	public void act(final Connection connection) {
 		LOGGER.debug("joining game {}", gameId.toString());
-		ClientMain client = ClientMain.getInstance();
-		GameWindow.openWindow(ClientMain.getInstance().getStage());
+		CountDownLatch latch = new CountDownLatch(1);
+		GameWindow.openWindow(ClientMain.getInstance().getStage(), latch);
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -24,8 +24,8 @@ public class PlayerReadyPacket extends SendPacket {
 	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		for(Ship ship : ships) {
 			dos.writeInt(ship.getType().getSize());
-			dos.writeInt(ship.getxCoordinate());
-			dos.writeInt(ship.getyCoordinate());
+			dos.writeInt(ship.getXCoordinate());
+			dos.writeInt(ship.getYCoordinate());
 			dos.writeBoolean(ship.isHorizontal());
 		}
 		return dos;
