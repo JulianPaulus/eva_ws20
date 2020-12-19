@@ -104,44 +104,29 @@ public class GameModel {
 		observer.notifyAboutGameStatusChange();
 	}
 
-	public void shootAt(int xPos, int yPos) {
-		if (targetField[xPos][yPos] != CoordinateState.HIT || targetField[xPos][yPos] != CoordinateState.MISS) {
-			//Anbindung an Web, wenn antwort Feld entsprechend auf hit/miss setzen
+	public CoordinateState getTargetFieldState(int xPos, int yPos) {
+		return getFieldState(this.targetField, xPos, yPos);
+	}
 
+	public CoordinateState getPlayerFieldState(int xPos, int yPos) {
+		return getFieldState(this.playerField, xPos, yPos);
+	}
+
+	private CoordinateState getFieldState(CoordinateState[][] field, int xPos, int yPos) {
+		if(xPos < 0 || xPos >= field.length || yPos < 0 || yPos >= field.length) {
+			return null;
 		}
-	}
-
-	public void setHitOrMissAt(int xPos, int yPos, CoordinateState status) {
-		targetField[xPos][yPos] = status;
-
-		observer.notifyAboutTargetModelChange();
-		currentState = GameState.WAIT_FOR_ENEMY;
-	}
-
-	public void shootIncomingAt(int xPos, int yPos) {
-
-		if (playerField[xPos][yPos] == CoordinateState.SHIP) {
-			playerField[xPos][yPos] = CoordinateState.HIT;
-
-			for (Ship ship : ships) {
-				if (ship.isHorizontal() && yPos == ship.getYCoordinate() && xPos >= ship
-					.getXCoordinate() && xPos <= ship.getXCoordinate() + ship.getType().getSize())
-					ship.hit();
-				else if (ship.isHorizontal() && xPos == ship.getXCoordinate() && yPos >= ship
-					.getYCoordinate() && yPos <= ship.getYCoordinate() + ship.getType().getSize())
-					ship.hit();
-
-				if (ship.isDestroyed())
-					observer.notifyAboutDestroyedShip();
-			}
-		}
-		observer.notifyAboutPlayerModelChange();
-		currentState = GameState.SHOOTING;
-		observer.notifyAboutGameStatusChange();
-	}
-
-	public CoordinateState currentStateOfTargetCoordinate(int xPos, int yPos) {
 		return targetField[xPos][yPos];
+	}
+
+	public void setTargetFieldState(int xPos, int yPos, CoordinateState state) {
+		this.targetField[xPos][yPos] = state;
+		observer.notifyAboutTargetModelChange();
+	}
+
+	public void setPlayerFieldState(int xPos, int yPos, CoordinateState state) {
+		this.playerField[xPos][yPos] = state;
+		observer.notifyAboutPlayerModelChange();
 	}
 
 	public CoordinateState currentStateOfPlayerCoordinate(int xPos, int yPos) {

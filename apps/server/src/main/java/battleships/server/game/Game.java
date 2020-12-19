@@ -12,20 +12,8 @@ import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.exception.ServerException;
-import battleships.server.game.gameState.HostsTurnState;
-import battleships.server.game.gameState.ServerGameState;
-import battleships.server.game.gameState.SettingUpGuestState;
-import battleships.server.game.gameState.SettingUpHostState;
-import battleships.server.game.gameState.SettingUpState;
-import battleships.server.game.gameState.UninitializedState;
-import battleships.server.game.gameState.WaitingForGuestState;
-import battleships.server.packet.send.ChatMessagePacket;
-import battleships.server.packet.send.GameEnemiesTurnPacket;
-import battleships.server.packet.send.GameJoinedPacket;
-import battleships.server.packet.send.GamePlayerDoSetupPacket;
-import battleships.server.packet.send.GamePlayersTurnPacket;
-import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
-import battleships.server.packet.send.ServerErrorPacket;
+import battleships.server.game.gameState.*;
+import battleships.server.packet.send.*;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
 import battleships.util.ServerErrorType;
@@ -123,11 +111,14 @@ public class Game implements Observer<ConnectionEvent> {
 		CoordinateState[][] targetField;
 		Connection playerConnection;
 		Connection targetConnection;
-		if(playerId == host.getId() && state.canHostSetShip()) {
+		boolean isHostsTurn;
+		if(playerId == host.getId() && state.canHostFire()) {
+			isHostsTurn = true;
 			targetField = guestField;
 			playerConnection = hostConnection;
 			targetConnection = guestConnection;
-		} else if(playerId == guest.getId() && state.canGuestSetShip()) {
+		} else if(playerId == guest.getId() && state.canGuestFire()) {
+			isHostsTurn = false;
 			targetField = hostField;
 			playerConnection = guestConnection;
 			targetConnection = hostConnection;
@@ -146,27 +137,49 @@ public class Game implements Observer<ConnectionEvent> {
 
 			//Write non hit at coordiantes
 			targetField[xPos][yPos] = CoordinateState.MISS;
-			//TODO
-//			playerConnection.writePacket();
+			playerConnection.writePacket(new GameShootResponsePacket(false, false,
+				false, xPos, yPos));
 			//write non hit at coordiantes
-//			hostConnection.writePacket();
+			targetConnection.writePacket(new GameShootResponsePacket(true, false,
+				false, xPos, yPos));
 			//Let other player try a shot
-			hostConnection.writePacket(new GamePlayersTurnPacket());
+			setState(isHostsTurn? new GuestsTurnState() : new HostsTurnState());
+			targetConnection.writePacket(new GamePlayersTurnPacket());
 			playerConnection.writePacket(new GameEnemiesTurnPacket());
 		} else {
 
 			//Hit a ship!
 			targetField[xPos][yPos] = CoordinateState.HIT;
+			boolean isHasGameEnded = checkForGameEnd();
 			//Write hit at coordinates
-//			playerConnection.writePacket();
+			playerConnection.writePacket(new GameShootResponsePacket(false, true,
+				isHasGameEnded, xPos, yPos));
 			//write hit at coordiantes
-//			hostConnection.writePacket();
+			targetConnection.writePacket(new GameShootResponsePacket(true, true,
+				isHasGameEnded, xPos, yPos));
 			//Let player shoot again
-			hostConnection.writePacket(new GameEnemiesTurnPacket());
-			playerConnection.writePacket(new GamePlayersTurnPacket());
+			if(!isHasGameEnded) {
+				targetConnection.writePacket(new GameEnemiesTurnPacket());
+				playerConnection.writePacket(new GamePlayersTurnPacket());
+			}
 		}
 
 
+	}
+
+	private synchronized boolean checkForGameEnd() {
+		return checkForAllHit(hostField) || checkForAllHit(guestField);
+	}
+
+	private synchronized boolean checkForAllHit(CoordinateState[][] gameField) {
+		for(CoordinateState[] col : gameField) {
+			for(CoordinateState state : col) {
+				if(state == CoordinateState.SHIP) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public synchronized void addGuest(final Player guest) throws ServerException {

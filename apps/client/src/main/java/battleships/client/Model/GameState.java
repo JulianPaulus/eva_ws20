@@ -14,6 +14,8 @@ public enum GameState {
 
 	SHOOTING(defaultRunnableWithButtonVisible(false)),
 
+	SHOOTING_WAIT_FOR_RESPONSE(defaultRunnableWithButtonVisible(false)),
+
 	WAIT_FOR_ENEMY(defaultRunnableWithButtonVisible(false)),
 
 	WON((controller) -> {

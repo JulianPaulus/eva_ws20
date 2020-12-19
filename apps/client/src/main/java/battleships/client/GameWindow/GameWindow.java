@@ -5,6 +5,7 @@ import battleships.client.Model.GameModel;
 import battleships.client.Model.GameState;
 import battleships.client.Model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
+import battleships.client.packet.send.ShootPacket;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;
 import battleships.util.Constants;
@@ -165,7 +166,7 @@ public class GameWindow implements Initializable {
 	private void onMouseExitTargetField(final Label label, final int posX, final int posY) {
 		if (model.getCurrentState() != GameState.SHOOTING) return;
 
-		CoordinateState targetState = model.currentStateOfTargetCoordinate(posX, posY);
+		CoordinateState targetState = model.getTargetFieldState(posX, posY);
 		label.setStyle(targetState.getStyle());
 	}
 
@@ -220,8 +221,13 @@ public class GameWindow implements Initializable {
 	}
 
 	void onTargetFieldClicked(int xPos, int yPos) {
-		if (model.getCurrentState() != GameState.SHOOTING) return;
-		model.shootAt(xPos, yPos);
+		if (model.getCurrentState() != GameState.SHOOTING
+			|| model.getTargetFieldState(xPos, yPos) != CoordinateState.EMPTY) {
+			return;
+		}
+		model.setCurrentState(GameState.SHOOTING_WAIT_FOR_RESPONSE);
+		ClientMain.getInstance().getConnection().writePacket(new ShootPacket(xPos, yPos));
+		//Todo Anzeigen, dass auf den Server gewartet wird?
 	}
 
 	public void updateChatWindow() {
@@ -243,7 +249,7 @@ public class GameWindow implements Initializable {
 	public void updateTargetField() {
 		for (int x = 0; x < Constants.BOARD_SIZE; x++)
 			for (int y = 0; y < Constants.BOARD_SIZE; y++) {
-				CoordinateState state = model.currentStateOfTargetCoordinate(x, y);
+				CoordinateState state = model.getTargetFieldState(x, y);
 				targetLabels[x][y].setStyle(state.getStyle());
 			}
 	}
@@ -268,6 +274,14 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
+	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos) {
+		if(isPlayerField) {
+			model.setPlayerFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
+		} else {
+			model.setTargetFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
+		}
+	}
+
 	public void onWaitForOtherPlayerSetup() {
 		model.setCurrentState(GameState.SET_UP_WAIT_FOR_OTHER_PLAYER);
 		updateRulesForPhaseChange();
@@ -288,6 +302,10 @@ public class GameWindow implements Initializable {
 	public void onEnemyTurn() {
 		model.setCurrentState(GameState.WAIT_FOR_ENEMY);
 		updateRulesForPhaseChange();
+	}
+
+	public void setGameEnd(boolean isHasPlayerWon) {
+		model.setCurrentState(isHasPlayerWon? GameState.WON : GameState.LOST);
 	}
 
 	public void setRemoveShipButtonVisible(final boolean visible) {
