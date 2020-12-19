@@ -27,9 +27,10 @@ public class GameModel {
 	private Ship[] ships;
 	private Ship lastAdded;
 
-	private ModelObserver observer;
+	private final ModelObserver observer;
+	private String otherPlayerName;
 
-	public GameModel(ModelObserver observer) {
+	public GameModel(final ModelObserver observer) {
 		currentState = GameState.PENDING;
 		playerField = new CoordinateState[10][10];
 		targetField = new CoordinateState[10][10];
@@ -256,4 +257,7 @@ public class GameModel {
 		return currentShip;
 	}
 
+	public void setOtherPlayerName(final String otherPlayerName) {
+		this.otherPlayerName = otherPlayerName;
+	}
 }

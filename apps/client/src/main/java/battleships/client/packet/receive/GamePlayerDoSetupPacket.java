@@ -25,6 +25,6 @@ public class GamePlayerDoSetupPacket implements IPreAuthReceivePacket {
 	@Override
 	public void act(final Connection connection) {
 		GameWindow.getInstance().displayStatusMessage(otherPlayerName + " ist beigetreten", StatusMessageType.INFO);
-		Platform.runLater(() -> GameWindow.getInstance().onDoSetup());
+		Platform.runLater(() -> GameWindow.getInstance().onDoSetup(otherPlayerName));
 	}
 }

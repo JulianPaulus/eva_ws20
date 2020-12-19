@@ -268,7 +268,8 @@ public class GameWindow implements Initializable {
 		return INSTANCE;
 	}
 
-	public void onDoSetup() {
+	public void onDoSetup(final String otherPlayerName) {
+		model.setOtherPlayerName(otherPlayerName);
 		model.setCurrentState(GameState.SET_UP);
 		sendMessageBtn.setDisable(false);
 		chatTextBox.setDisable(false);
@@ -278,8 +279,10 @@ public class GameWindow implements Initializable {
 	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos) {
 		if(isPlayerField) {
 			model.setPlayerFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
+			displayStatusMessage("Der Gegner hat auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.", StatusMessageType.INFO);
 		} else {
 			model.setTargetFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
+			displayStatusMessage("Sie haben auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.", StatusMessageType.INFO);
 		}
 	}
 
