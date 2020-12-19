@@ -18,4 +18,8 @@
 	-fx-font-weight: bold;
 }
 
+.pos-label {
+	-fx-font-size: 10px;
+	-fx-padding: 0 1px;
+}
 

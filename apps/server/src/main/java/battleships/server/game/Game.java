@@ -12,8 +12,22 @@ import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.exception.ServerException;
-import battleships.server.game.gameState.*;
-import battleships.server.packet.send.*;
+import battleships.server.game.gameState.GuestsTurnState;
+import battleships.server.game.gameState.HostsTurnState;
+import battleships.server.game.gameState.ServerGameState;
+import battleships.server.game.gameState.SettingUpGuestState;
+import battleships.server.game.gameState.SettingUpHostState;
+import battleships.server.game.gameState.SettingUpState;
+import battleships.server.game.gameState.UninitializedState;
+import battleships.server.game.gameState.WaitingForGuestState;
+import battleships.server.packet.send.ChatMessagePacket;
+import battleships.server.packet.send.GameEnemiesTurnPacket;
+import battleships.server.packet.send.GameJoinedPacket;
+import battleships.server.packet.send.GamePlayerDoSetupPacket;
+import battleships.server.packet.send.GamePlayersTurnPacket;
+import battleships.server.packet.send.GameShootResponsePacket;
+import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
+import battleships.server.packet.send.ServerErrorPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
 import battleships.util.ServerErrorType;
@@ -219,9 +233,9 @@ public class Game implements Observer<ConnectionEvent> {
 	private synchronized void onPlayerDisconnected(final AuthenticatedConnection cause) {
 		if (state.isInitialized()) {
 			if (cause.getPlayer().equals(host)) {
-				guestConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, host.getUsername() + " disconnected!"));
+				guestConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, host.getUsername() + " hat das Spiel verlassen!"));
 			} else {
-				hostConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL,guest.getUsername() + " disconnected!"));
+				hostConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL,guest.getUsername() + " hat das Spiel verlassen!"));
 			}
 			setState(new UninitializedState());
 		}

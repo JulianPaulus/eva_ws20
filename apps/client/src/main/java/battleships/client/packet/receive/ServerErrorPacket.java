@@ -1,6 +1,9 @@
 package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
+import battleships.client.GameWindow.GameWindow;
+import battleships.client.GameWindow.StatusMessageType;
+import battleships.client.util.ClientState;
 import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
@@ -27,6 +30,10 @@ public class ServerErrorPacket implements IPreAuthReceivePacket {
 	@Override
 	public void act(final Connection connection) {
 		System.out.println(message);
-		ErrorDialog.show(ClientMain.getInstance().getStage(), message);
+		if (ClientMain.getInstance().getState() == ClientState.IN_GAME) {
+			GameWindow.getInstance().displayStatusMessage(message, StatusMessageType.CRITICAL);
+		} else {
+			ErrorDialog.show(ClientMain.getInstance().getStage(), message);
+		}
 	}
 }

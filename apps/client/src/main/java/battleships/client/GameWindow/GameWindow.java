@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -110,6 +111,10 @@ public class GameWindow implements Initializable {
 		model.receiveChatMessage(fromUser, message);
 	}
 
+	public void displayStatusMessage(final String message, final StatusMessageType type) {
+		model.receiveStatusMessage(message, type);
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		rulesView.getEngine().setUserStyleSheetLocation(GameWindow.class.getResource("/fxml/webView.css").toString());
@@ -124,11 +129,7 @@ public class GameWindow implements Initializable {
 			final int finalI = i;
 			for (int j = 0; j < Constants.BOARD_SIZE; j++) {
 				final int finalJ = j;
-				final Label label = new Label();
-				label.setTextAlignment(TextAlignment.CENTER);
-				label.setMaxHeight(Double.MAX_VALUE);
-				label.setMaxWidth(Double.MAX_VALUE);
-				label.setStyle(CoordinateState.EMPTY.getStyle());
+				final Label label = createLabelForCoordinate(i, j);
 				gridPane.add(label, i, j);
 				labelArray[i][j] = label;
 				if (gridPane == targetGrid) {
@@ -322,5 +323,32 @@ public class GameWindow implements Initializable {
 
 	public void updateRulesText() {
 		rulesView.getEngine().loadContent(model.getCurrentState().getRuleText());
+	}
+
+	public void disableChat() {
+		chatTextBox.setDisable(true);
+		sendMessageBtn.setDisable(true);
+	}
+
+	private static char intToAlphabet(int i) {
+		return (char) (65 + i);
+	}
+
+	private static Label createLabelForCoordinate(int x, int y) {
+		final Label label = new Label();
+		label.setTextAlignment(TextAlignment.CENTER);
+		label.setMaxHeight(Double.MAX_VALUE);
+		label.setMaxWidth(Double.MAX_VALUE);
+		label.setStyle(CoordinateState.EMPTY.getStyle());
+		if (y == 0) {
+			label.setText(String.valueOf(intToAlphabet(x)));
+		}
+		if (x == 0) {
+			label.setText(label.getText() + (y + 1));
+		}
+		label.setAlignment(Pos.TOP_LEFT);
+		label.getStyleClass().add("pos-label");
+
+		return label;
 	}
 }

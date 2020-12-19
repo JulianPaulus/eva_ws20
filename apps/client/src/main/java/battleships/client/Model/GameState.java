@@ -30,6 +30,10 @@ public enum GameState {
 		controller.updateRulesText();
 		controller.setStatusLabelStyle("-fx-text-fill: red");
 		controller.setRemoveShipButtonVisible(false);
+	}),
+
+	OTHER_PLAYER_DISCONNECTED((controller) -> {
+		controller.disableChat();
 	});
 
 	private static  GameStateRunnable defaultRunnableWithButtonVisible(final boolean visible) {
