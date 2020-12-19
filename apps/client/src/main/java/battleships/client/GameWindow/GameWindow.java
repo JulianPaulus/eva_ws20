@@ -354,4 +354,9 @@ public class GameWindow implements Initializable {
 
 		return label;
 	}
+
+	public void onPlayerDisconnected() {
+		displayStatusMessage(model.getOtherPlayerName() + " hat das Spiel verlassen.", StatusMessageType.CRITICAL);
+		model.setCurrentState(GameState.OTHER_PLAYER_DISCONNECTED);
+	}
 }

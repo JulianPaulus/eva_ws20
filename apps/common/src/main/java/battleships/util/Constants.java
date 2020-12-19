@@ -47,6 +47,8 @@ public class Constants {
 		public static final byte GAME_SHOOT_REQUEST = 0x13;
 		public static final byte GAME_SHOOT_RESPONSE = 0x14;
 
+		public static final byte PLAYER_DISCONNECTED = 0x15;
+
 	}
 
 }

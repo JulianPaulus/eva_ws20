@@ -260,4 +260,8 @@ public class GameModel {
 	public void setOtherPlayerName(final String otherPlayerName) {
 		this.otherPlayerName = otherPlayerName;
 	}
+
+	public String getOtherPlayerName() {
+		return otherPlayerName;
+	}
 }

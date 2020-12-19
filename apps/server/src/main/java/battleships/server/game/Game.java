@@ -27,10 +27,9 @@ import battleships.server.packet.send.GamePlayerDoSetupPacket;
 import battleships.server.packet.send.GamePlayersTurnPacket;
 import battleships.server.packet.send.GameShootResponsePacket;
 import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
-import battleships.server.packet.send.ServerErrorPacket;
+import battleships.server.packet.send.PlayerDisconnectedPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
-import battleships.util.ServerErrorType;
 import battleships.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,9 +232,9 @@ public class Game implements Observer<ConnectionEvent> {
 	private synchronized void onPlayerDisconnected(final AuthenticatedConnection cause) {
 		if (state.isInitialized()) {
 			if (cause.getPlayer().equals(host)) {
-				guestConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL, host.getUsername() + " hat das Spiel verlassen!"));
+				guestConnection.writePacket(new PlayerDisconnectedPacket());
 			} else {
-				hostConnection.writePacket(new ServerErrorPacket(ServerErrorType.CRITICAL,guest.getUsername() + " hat das Spiel verlassen!"));
+				hostConnection.writePacket(new PlayerDisconnectedPacket());
 			}
 			setState(new UninitializedState());
 		}
