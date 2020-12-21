@@ -276,13 +276,19 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
-	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos) {
+	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos, boolean isDestroyed) {
 		if(isPlayerField) {
 			model.setPlayerFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
 			displayStatusMessage("Der Gegner hat auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.", StatusMessageType.INFO);
+			if (isDestroyed) {
+				displayStatusMessage("Der Gegner hat eines Ihrer Schiffe gesunken!", StatusMessageType.INFO);
+			}
 		} else {
 			model.setTargetFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
 			displayStatusMessage("Sie haben auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.", StatusMessageType.INFO);
+			if (isDestroyed) {
+				displayStatusMessage("Sie haben ein gegnerisches Schiff gesunken!", StatusMessageType.INFO);
+			}
 		}
 	}
 

@@ -9,7 +9,7 @@ import java.io.IOException;
 public class GameShootResponsePacketFactory extends AbstractPacketFactory<GameShootResponsePacket> {
 	@Override
 	public GameShootResponsePacket unmarshal(DataInputStream stream) throws IOException {
-		return new GameShootResponsePacket(stream.readBoolean(), stream.readBoolean(),
+		return new GameShootResponsePacket(stream.readBoolean(), stream.readBoolean(), stream.readBoolean(),
 			stream.readBoolean(), stream.readInt(), stream.readInt());
 	}
 }

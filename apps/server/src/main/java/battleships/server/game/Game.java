@@ -30,6 +30,7 @@ import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
 import battleships.server.packet.send.PlayerDisconnectedPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
+import battleships.util.Constants;
 import battleships.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +43,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Game implements Observer<ConnectionEvent> {
-	private static final int GAMEFIELD_SIZE = 10;
-
 	private static final ConnectionService CONNECTION_SERVICE = ConnectionService.getInstance();
 	private static final GameService GAME_SERVICE = GameService.getInstance();
 	private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
@@ -54,6 +53,8 @@ public class Game implements Observer<ConnectionEvent> {
 	private Player guest;
 	private CoordinateState[][] hostField;
 	private CoordinateState[][] guestField;
+	private Ship[] hostShips;
+	private Ship[] guestShips;
 
 	private ServerGameState state;
 
@@ -83,8 +84,8 @@ public class Game implements Observer<ConnectionEvent> {
 		if(requiredShips.values().stream().anyMatch(x -> x != 0)) {
 			throw new IllegalShipPositionException("Not enough ships!");
 		}
-		CoordinateState[][] gameField = new CoordinateState[GAMEFIELD_SIZE][GAMEFIELD_SIZE];
-		for (int i = 0; i < GAMEFIELD_SIZE; i++) {
+		CoordinateState[][] gameField = new CoordinateState[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+		for (int i = 0; i < Constants.BOARD_SIZE; i++) {
 			Arrays.fill(gameField[i], CoordinateState.EMPTY);
 		}
 		for(Ship ship : ships) {
@@ -98,8 +99,10 @@ public class Game implements Observer<ConnectionEvent> {
 		}
 		if(playerId == host.getId() && this.state.canHostSetShip()) {
 			this.hostField = gameField;
+			this.hostShips = ships;
 		} else if(guest != null && guest.getId() == playerId && this.state.canGuestSetShip()) {
 			this.guestField = gameField;
+			this.guestShips = ships;
 		} else {
 			throw new ServerException("Player is part of the game or is not allowed to set his ships in this state of the game!");
 		}
@@ -124,22 +127,25 @@ public class Game implements Observer<ConnectionEvent> {
 		CoordinateState[][] targetField;
 		Connection playerConnection;
 		Connection targetConnection;
+		Ship[] targetShips;
 		boolean isHostsTurn;
 		if(playerId == host.getId() && state.canHostFire()) {
 			isHostsTurn = true;
 			targetField = guestField;
 			playerConnection = hostConnection;
 			targetConnection = guestConnection;
+			targetShips = guestShips;
 		} else if(playerId == guest.getId() && state.canGuestFire()) {
 			isHostsTurn = false;
 			targetField = hostField;
 			playerConnection = guestConnection;
 			targetConnection = hostConnection;
+			targetShips = hostShips;
 		} else {
 			throw new ServerException("Player doesn't belong to this game, or it's not the players turn");
 		}
-		if(xPos < 0 || xPos >= GAMEFIELD_SIZE
-			|| yPos < 0 || yPos >= GAMEFIELD_SIZE) {
+		if(xPos < 0 || xPos >= Constants.BOARD_SIZE
+			|| yPos < 0 || yPos >= Constants.BOARD_SIZE) {
 			throw new ServerException("Target-coordinates out of gamefield bounds!");
 		}
 		if(targetField[xPos][yPos] == CoordinateState.HIT
@@ -150,10 +156,10 @@ public class Game implements Observer<ConnectionEvent> {
 
 			//Write non hit at coordiantes
 			targetField[xPos][yPos] = CoordinateState.MISS;
-			playerConnection.writePacket(new GameShootResponsePacket(false, false,
+			playerConnection.writePacket(new GameShootResponsePacket(false, false, false,
 				false, xPos, yPos));
 			//write non hit at coordiantes
-			targetConnection.writePacket(new GameShootResponsePacket(true, false,
+			targetConnection.writePacket(new GameShootResponsePacket(true, false, false,
 				false, xPos, yPos));
 			//Let other player try a shot
 			setState(isHostsTurn? new GuestsTurnState() : new HostsTurnState());
@@ -163,12 +169,14 @@ public class Game implements Observer<ConnectionEvent> {
 
 			//Hit a ship!
 			targetField[xPos][yPos] = CoordinateState.HIT;
+			Ship ship = getShipAt(targetShips, xPos, yPos).orElseThrow(() -> new ServerException("Field was hit, but no corresponding ship was found"));
+			ship.hit();
 			boolean isHasGameEnded = checkForGameEnd();
 			//Write hit at coordinates
-			playerConnection.writePacket(new GameShootResponsePacket(false, true,
+			playerConnection.writePacket(new GameShootResponsePacket(false, true, ship.isDestroyed(),
 				isHasGameEnded, xPos, yPos));
 			//write hit at coordiantes
-			targetConnection.writePacket(new GameShootResponsePacket(true, true,
+			targetConnection.writePacket(new GameShootResponsePacket(true, true, ship.isDestroyed(),
 				isHasGameEnded, xPos, yPos));
 			//Let player shoot again
 			if(!isHasGameEnded) {
@@ -283,5 +291,9 @@ public class Game implements Observer<ConnectionEvent> {
 
 	public ServerGameState getState() {
 		return state;
+	}
+
+	private Optional<Ship> getShipAt(final Ship[] ships, final int x, final int y) {
+		return Arrays.stream(ships).filter(ship -> ship.isAt(x, y)).findFirst();
 	}
 }
