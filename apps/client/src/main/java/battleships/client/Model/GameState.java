@@ -34,9 +34,11 @@ public enum GameState {
 
 	OTHER_PLAYER_DISCONNECTED((controller) -> {
 		controller.disableChat();
+		controller.updateStatusText();
+		controller.updateRulesText();
 	});
 
-	private static  GameStateRunnable defaultRunnableWithButtonVisible(final boolean visible) {
+	private static GameStateRunnable defaultRunnableWithButtonVisible(final boolean visible) {
 		return (controller) -> {
 			controller.updateStatusText();
 			controller.updateRulesText();

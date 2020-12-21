@@ -305,14 +305,14 @@ public class GameWindow implements Initializable {
 			displayStatusMessage("Der Gegner hat auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.",
 				StatusMessageType.INFO);
 			if (isDestroyed) {
-				displayStatusMessage("Der Gegner hat eines Ihrer Schiffe gesunken!", StatusMessageType.INFO);
+				displayStatusMessage("Der Gegner hat eines Ihrer Schiffe versenkt!", StatusMessageType.INFO);
 			}
 		} else {
 			model.setTargetFieldState(xPos, yPos, isHit ? CoordinateState.HIT : CoordinateState.MISS);
 			displayStatusMessage("Sie haben auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.",
 				StatusMessageType.INFO);
 			if (isDestroyed) {
-				displayStatusMessage("Sie haben ein gegnerisches Schiff gesunken!", StatusMessageType.INFO);
+				displayStatusMessage("Sie haben ein gegnerisches Schiff versenkt!", StatusMessageType.INFO);
 			}
 		}
 	}
