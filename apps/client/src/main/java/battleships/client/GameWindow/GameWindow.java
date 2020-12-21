@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -98,6 +99,37 @@ public class GameWindow implements Initializable {
 		});
 	}
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		rulesView.getEngine().setUserStyleSheetLocation(GameWindow.class.getResource("/fxml/webView.css").toString());
+		initializeChatList();
+		updateRulesForPhaseChange();
+
+		setupBoard(playerGrid, playerLabels);
+		setupBoard(targetGrid, targetLabels);
+	}
+
+	private void initializeChatList() {
+		chatWindow.setCellFactory(param -> new ListCell<TextFlow>() {
+			@Override
+			protected void updateItem(final TextFlow item, final boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item==null) {
+					setGraphic(null);
+					setText(null);
+				}else{
+					setMinWidth(param.getWidth() - 2);
+					setMaxWidth(param.getWidth() - 2);
+					setPrefWidth(param.getWidth() - 2);
+
+					setWrapText(true);
+
+					setGraphic(item);
+				}
+			}
+		});
+	}
+
 	@FXML
 	public void sendMessage() {
 		String text = chatTextBox.getText().trim();
@@ -113,15 +145,6 @@ public class GameWindow implements Initializable {
 
 	public void displayStatusMessage(final String message, final StatusMessageType type) {
 		model.receiveStatusMessage(message, type);
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		rulesView.getEngine().setUserStyleSheetLocation(GameWindow.class.getResource("/fxml/webView.css").toString());
-		updateRulesForPhaseChange();
-
-		setupBoard(playerGrid, playerLabels);
-		setupBoard(targetGrid, targetLabels);
 	}
 
 	private void setupBoard(GridPane gridPane, Label[][] labelArray) {
@@ -277,15 +300,17 @@ public class GameWindow implements Initializable {
 	}
 
 	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos, boolean isDestroyed) {
-		if(isPlayerField) {
-			model.setPlayerFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
-			displayStatusMessage("Der Gegner hat auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.", StatusMessageType.INFO);
+		if (isPlayerField) {
+			model.setPlayerFieldState(xPos, yPos, isHit ? CoordinateState.HIT : CoordinateState.MISS);
+			displayStatusMessage("Der Gegner hat auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.",
+				StatusMessageType.INFO);
 			if (isDestroyed) {
 				displayStatusMessage("Der Gegner hat eines Ihrer Schiffe gesunken!", StatusMessageType.INFO);
 			}
 		} else {
-			model.setTargetFieldState(xPos, yPos, isHit? CoordinateState.HIT : CoordinateState.MISS);
-			displayStatusMessage("Sie haben auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.", StatusMessageType.INFO);
+			model.setTargetFieldState(xPos, yPos, isHit ? CoordinateState.HIT : CoordinateState.MISS);
+			displayStatusMessage("Sie haben auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.",
+				StatusMessageType.INFO);
 			if (isDestroyed) {
 				displayStatusMessage("Sie haben ein gegnerisches Schiff gesunken!", StatusMessageType.INFO);
 			}
@@ -315,7 +340,7 @@ public class GameWindow implements Initializable {
 	}
 
 	public void setGameEnd(boolean isHasPlayerWon) {
-		model.setCurrentState(isHasPlayerWon? GameState.WON : GameState.LOST);
+		model.setCurrentState(isHasPlayerWon ? GameState.WON : GameState.LOST);
 	}
 
 	public void setRemoveShipButtonVisible(final boolean visible) {
