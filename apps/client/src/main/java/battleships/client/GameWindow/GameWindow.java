@@ -388,6 +388,10 @@ public class GameWindow implements Initializable {
 
 	public void onPlayerDisconnected() {
 		displayStatusMessage(model.getOtherPlayerName() + " hat das Spiel verlassen.", StatusMessageType.CRITICAL);
-		model.setCurrentState(GameState.OTHER_PLAYER_DISCONNECTED);
+		if (model.getCurrentState() != GameState.WON && model.getCurrentState() != GameState.LOST) {
+			model.setCurrentState(GameState.AUTOMATIC_WIN);
+		} else {
+			model.setCurrentState(GameState.OTHER_PLAYER_DISCONNECTED);
+		}
 	}
 }

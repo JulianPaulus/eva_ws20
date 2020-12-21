@@ -32,11 +32,12 @@ public enum GameState {
 		controller.setRemoveShipButtonVisible(false);
 	}),
 
-	OTHER_PLAYER_DISCONNECTED((controller) -> {
+	AUTOMATIC_WIN((controller) -> {
+		defaultRunnableWithButtonVisible(false).run(controller);
 		controller.disableChat();
-		controller.updateStatusText();
-		controller.updateRulesText();
-	});
+	}),
+
+	OTHER_PLAYER_DISCONNECTED(GameWindow::disableChat);
 
 	private static GameStateRunnable defaultRunnableWithButtonVisible(final boolean visible) {
 		return (controller) -> {
