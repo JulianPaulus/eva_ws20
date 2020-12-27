@@ -68,6 +68,11 @@ public class Ship {
 		return yCoordinate + (isHorizontal ? 0 : type.getSize() - 1);
 	}
 
+	public boolean isAt(final int x, final int y) {
+		return x >= xCoordinate && x <= getEndXCoordinate()
+			&& y >= yCoordinate && y <= getEndYCoordinate();
+	}
+
 	@Override
 	public boolean equals(final Object other) {
 		if (other == this)

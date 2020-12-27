@@ -31,7 +31,7 @@ public interface ServerGameState {
 	}
 
 	default boolean canTransition(final ServerGameState newState) {
-		return false;
+		return newState instanceof UninitializedState;
 	}
 
 }

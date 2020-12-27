@@ -1,7 +1,7 @@
 package battleships.client.packet.receive;
 
-import battleships.client.ClientMain;
 import battleships.client.GameWindow.GameWindow;
+import battleships.client.GameWindow.StatusMessageType;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
@@ -24,8 +24,7 @@ public class GamePlayerDoSetupPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		System.out.println("start game");
-		System.out.println("other player: " + otherPlayerName);
-		Platform.runLater(() -> GameWindow.getInstance().onDoSetup());
+		GameWindow.getInstance().displayStatusMessage(otherPlayerName + " ist beigetreten", StatusMessageType.INFO);
+		Platform.runLater(() -> GameWindow.getInstance().onDoSetup(otherPlayerName));
 	}
 }

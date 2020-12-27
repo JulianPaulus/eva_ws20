@@ -9,6 +9,6 @@ public class UninitializedState implements ServerGameState {
 
 	@Override
 	public boolean canTransition(final ServerGameState newState) {
-		return newState instanceof SettingUpState;
+		return newState instanceof UninitializedState || newState instanceof SettingUpState;
 	}
 }

@@ -2,6 +2,7 @@ package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
 import battleships.client.GameWindow.GameWindow;
+import battleships.client.util.ClientState;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
@@ -34,8 +35,9 @@ public class GameJoinedPacket implements IPreAuthReceivePacket {
 		GameWindow.openWindow(ClientMain.getInstance().getStage(), latch);
 		try {
 			latch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			ClientMain.getInstance().setState(ClientState.IN_GAME);
+		} catch (final InterruptedException e) {
+			LOGGER.trace("error while waiting for GameWindow to open", e);
 		}
 	}
 }

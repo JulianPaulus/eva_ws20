@@ -11,14 +11,16 @@ public class GameShootResponsePacket extends SendPacket {
 
 	private final boolean isPlayerField;
 	private final boolean isHit;
+	private final boolean isDestroyed;
 	private final boolean isGameEnd;
 	private final int xPos;
 	private final int yPos;
 
-	public GameShootResponsePacket(boolean isPlayerField, boolean isHit,
+	public GameShootResponsePacket(boolean isPlayerField, boolean isHit, boolean isDestroyed,
 								   boolean isGameEnd, int xPos, int yPos) {
 		this.isPlayerField = isPlayerField;
 		this.isHit = isHit;
+		this.isDestroyed = isDestroyed;
 		this.isGameEnd = isGameEnd;
 		this.xPos = xPos;
 		this.yPos = yPos;
@@ -33,6 +35,7 @@ public class GameShootResponsePacket extends SendPacket {
 	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
 		dos.writeBoolean(isPlayerField);
 		dos.writeBoolean(isHit);
+		dos.writeBoolean(isDestroyed);
 		dos.writeBoolean(isGameEnd);
 		dos.writeInt(xPos);
 		dos.writeInt(yPos);

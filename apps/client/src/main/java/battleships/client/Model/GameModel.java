@@ -1,6 +1,7 @@
 package battleships.client.Model;
 
 import battleships.client.ClientMain;
+import battleships.client.GameWindow.StatusMessageType;
 import battleships.client.packet.send.PlayerReadyPacket;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;
@@ -26,9 +27,10 @@ public class GameModel {
 	private Ship[] ships;
 	private Ship lastAdded;
 
-	private ModelObserver observer;
+	private final ModelObserver observer;
+	private String otherPlayerName;
 
-	public GameModel(ModelObserver observer) {
+	public GameModel(final ModelObserver observer) {
 		currentState = GameState.PENDING;
 		playerField = new CoordinateState[10][10];
 		targetField = new CoordinateState[10][10];
@@ -134,16 +136,30 @@ public class GameModel {
 	}
 
 	public void receiveChatMessage(final String fromUser, final String message) {
-		chat.add(createTextFlow(fromUser, message));
+		chat.add(createChatMessage(fromUser, message));
 		observer.notifyAboutChatMessage();
 	}
 
-	private TextFlow createTextFlow(final String fromUser, final String message) {
+	public void receiveStatusMessage(final String message, final StatusMessageType type) {
+		chat.add(createStatusMessage(message, type.getStyle()));
+		observer.notifyAboutChatMessage();
+	}
+
+	private TextFlow createChatMessage(final String fromUser, final String message) {
 		Text username = new Text(fromUser);
 		username.getStyleClass().add("username");
 		Text content = new Text(": " + message);
 		TextFlow flow = new TextFlow();
 		flow.getChildren().addAll(username, content);
+
+		return flow;
+	}
+
+	private TextFlow createStatusMessage(final String message, final String style) {
+		TextFlow flow = new TextFlow();
+		Text text = new Text(message);
+		text.setStyle(style);
+		flow.getChildren().add(text);
 
 		return flow;
 	}
@@ -241,4 +257,11 @@ public class GameModel {
 		return currentShip;
 	}
 
+	public void setOtherPlayerName(final String otherPlayerName) {
+		this.otherPlayerName = otherPlayerName;
+	}
+
+	public String getOtherPlayerName() {
+		return otherPlayerName;
+	}
 }

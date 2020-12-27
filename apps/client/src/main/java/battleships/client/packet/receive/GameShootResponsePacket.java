@@ -10,14 +10,16 @@ public class GameShootResponsePacket implements IPreAuthReceivePacket {
 
 	private final boolean isPlayerField;
 	private final boolean isHit;
+	private final boolean isDestroyed;
 	private final boolean isGameEnd;
 	private final int xPos;
 	private final int yPos;
 
-	public GameShootResponsePacket(boolean isPlayerField, boolean isHit,
+	public GameShootResponsePacket(boolean isPlayerField, boolean isHit, boolean isDestroyed,
 								   boolean isGameEnd, int xPos, int yPos) {
 		this.isPlayerField = isPlayerField;
 		this.isHit = isHit;
+		this.isDestroyed = isDestroyed;
 		this.isGameEnd = isGameEnd;
 		this.xPos = xPos;
 		this.yPos = yPos;
@@ -30,7 +32,7 @@ public class GameShootResponsePacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().setHitOrMiss(isPlayerField, isHit, xPos, yPos);
+		GameWindow.getInstance().setHitOrMiss(isPlayerField, isHit, xPos, yPos, isDestroyed);
 		if(isGameEnd) {
 			GameWindow.getInstance().setGameEnd(!isPlayerField);
 		}
