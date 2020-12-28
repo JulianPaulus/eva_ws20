@@ -24,8 +24,7 @@ public class JoinGamePacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		Utils.writeUUIDToStream(dos, gameId);
-		return dos;
 	}
 }

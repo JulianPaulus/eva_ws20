@@ -25,9 +25,8 @@ public class ServerErrorPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeUTF(type.toString());
 		dos.writeUTF(message);
-		return dos;
 	}
 }

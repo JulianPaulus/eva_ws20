@@ -32,13 +32,12 @@ public class GameShootResponsePacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
+	protected void writeContent(DataOutputStream dos) throws IOException {
 		dos.writeBoolean(isPlayerField);
 		dos.writeBoolean(isHit);
 		dos.writeBoolean(isDestroyed);
 		dos.writeBoolean(isGameEnd);
 		dos.writeInt(xPos);
 		dos.writeInt(yPos);
-		return dos;
 	}
 }

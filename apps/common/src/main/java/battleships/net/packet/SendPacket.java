@@ -14,6 +14,6 @@ public abstract class SendPacket implements IPacket {
 		return bos.toByteArray();
 	}
 
-	protected abstract DataOutputStream writeContent(final DataOutputStream dos) throws IOException;
+	protected abstract void writeContent(final DataOutputStream dos) throws IOException;
 
 }

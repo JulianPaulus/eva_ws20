@@ -23,9 +23,8 @@ public class LoginPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
+	protected void writeContent(DataOutputStream dos) throws IOException {
 		dos.writeUTF(username);
 		dos.writeUTF(password);
-		return dos;
 	}
 }

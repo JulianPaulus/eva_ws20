@@ -31,9 +31,8 @@ public class ShootPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
+	protected void writeContent(DataOutputStream dos) throws IOException {
 		dos.writeInt(xPos);
 		dos.writeInt(yPos);
-		return dos;
 	}
 }

@@ -22,8 +22,7 @@ public class GamePlayerDoSetupPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeUTF(otherPlayerName);
-		return dos;
 	}
 }

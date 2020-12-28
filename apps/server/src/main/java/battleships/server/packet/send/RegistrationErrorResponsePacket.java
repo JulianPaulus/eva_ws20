@@ -22,12 +22,10 @@ public class RegistrationErrorResponsePacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeBoolean(successful);
 		dos.writeUTF(registrationError.toString());
 		dos.writeUTF(message);
-
-		return dos;
 	}
 
 	@Override

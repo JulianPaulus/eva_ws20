@@ -15,7 +15,6 @@ public class IllegalShipPositionPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(DataOutputStream dos) throws IOException {
-		return dos;
+	protected void writeContent(DataOutputStream dos) throws IOException {
 	}
 }

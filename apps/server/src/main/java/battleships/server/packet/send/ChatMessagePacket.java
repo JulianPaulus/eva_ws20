@@ -23,10 +23,8 @@ public class ChatMessagePacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeUTF(fromUser);
 		dos.writeUTF(message);
-
-		return dos;
 	}
 }

@@ -24,12 +24,11 @@ public class LobbyListPacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeShort(games.size());
 		for (final Game game : games) {
 			Utils.writeUUIDToStream(dos, game.getId());
 			dos.writeUTF(game.getHost().getUsername());
 		}
-		return dos;
 	}
 }

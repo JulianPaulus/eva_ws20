@@ -24,11 +24,9 @@ public class LoginResponsePacket extends SendPacket {
 	}
 
 	@Override
-	protected DataOutputStream writeContent(final DataOutputStream dos) throws IOException {
+	protected void writeContent(final DataOutputStream dos) throws IOException {
 		dos.writeInt(playerId);
 		dos.writeBoolean(successful);
-
-		return dos;
 	}
 
 	public int getPlayerId() {
