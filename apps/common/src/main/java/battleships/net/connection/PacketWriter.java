@@ -16,13 +16,13 @@ public class PacketWriter {
 		this.stream = stream;
 	}
 
-	public void write(final SendPacket packet) throws IOException {
+	public synchronized void write(final SendPacket packet) throws IOException {
 		byte[] data = packet.marshal();
 		stream.write(data);
 		stream.flush();
 	}
 
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		stream.close();
 	}
 }
