@@ -1,6 +1,6 @@
-plugins {
-    id 'application'
-}
+apply plugin: 'application'
+mainClassName = 'battleships.server.ServerMain'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
     implementation project(path: ':apps:common')

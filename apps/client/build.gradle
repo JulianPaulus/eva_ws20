@@ -1,4 +1,6 @@
 apply plugin: 'application'
+mainClassName = 'battleships.client.ClientMain'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
     implementation project(path: ':apps:common')
