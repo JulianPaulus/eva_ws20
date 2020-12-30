@@ -2,16 +2,11 @@ package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
 import battleships.client.lobby.LobbyListController;
+import battleships.client.util.ClientState;
 import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
-import java.io.IOException;
 
 public class LoginResponsePacket implements IPreAuthReceivePacket {
 
@@ -28,6 +23,7 @@ public class LoginResponsePacket implements IPreAuthReceivePacket {
 	@Override
 	public void act(final Connection connection) {
 		if (successful) {
+			ClientMain.getInstance().setState(ClientState.LOGGED_IN);
 			LobbyListController.openWindow(ClientMain.getInstance().getStage());
 		} else {
 			ErrorDialog.show(ClientMain.getInstance().getStage(), "Login fehlgeschlagen!");

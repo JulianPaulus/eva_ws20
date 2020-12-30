@@ -147,16 +147,18 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 	public void update(final Observable<ConnectionEvent> o, final ConnectionEvent event) {
 		if (event == ConnectionEvent.DISCONNECTED) {
 			this.connection = null;
-			if (getState() == ClientState.SHUTTING_DOWN) return;
-			Platform.runLater(() -> {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.initModality(Modality.APPLICATION_MODAL);
-				alert.initOwner(getStage());
-				alert.setHeaderText("Verbindung zum Server verloren!");
-				alert.setContentText("Das Programm wird geschlossen.");
-				alert.showAndWait();
-				System.exit(1);
-			});
+			if (getState() != ClientState.SHUTTING_DOWN && getState() != ClientState.CONNECTED) {
+				Platform.runLater(() -> {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.initModality(Modality.APPLICATION_MODAL);
+					alert.initOwner(getStage());
+					alert.setHeaderText("Verbindung zum Server verloren!");
+					alert.setContentText("Das Programm wird geschlossen.");
+					alert.showAndWait();
+					System.exit(1);
+				});
+			}
+			setState(ClientState.DISCONNECTED);
 		}
 	}
 }
