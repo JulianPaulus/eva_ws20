@@ -7,6 +7,7 @@ import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.game.Player;
+import battleships.server.socket.ServerConfig;
 import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +126,8 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 			unauthorizedLock.readLock().lock();
 			long currentMS = System.currentTimeMillis();
 			unauthorizedConnections.stream()
-				.filter(con -> (currentMS - con.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS)
+				.filter(con -> (currentMS - con.getLastInteractionMS()) > ServerConfig.getInstance()
+					.getConnectionTimeoutMs())
 				.forEach(removes::add);
 		} finally {
 			unauthorizedLock.readLock().unlock();

@@ -3,7 +3,6 @@ package battleships.server.socket;
 import battleships.net.connection.Connection;
 import battleships.server.service.ConnectionService;
 import battleships.server.util.ConnectionManager;
-import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,31 +12,31 @@ import java.net.Socket;
 
 public class Server extends Thread {
 
-	private static final Server INSTANCE = new Server();
+	private static Server INSTANCE;
 	private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
 	private final ConnectionService connectionService = ConnectionService.getInstance();
 	private final ConnectionManager connectionManager;
 	private ServerSocket serverSocket;
 
-	private Server()  {
+	public Server()  {
 		super("server");
+		INSTANCE = this;
 
 		try {
-			this.serverSocket = new ServerSocket(Constants.Server.DEFAULT_PORT);
+			this.serverSocket = new ServerSocket(ServerConfig.getInstance().getPort());
 		} catch (final IOException e) {
 			LOGGER.error("critical error during startup", e);
 			System.exit(1);
 		}
 
 		this.connectionManager = new ConnectionManager();
-
 		this.connectionManager.start();
 	}
 
 	@Override
 	public void run() {
-		LOGGER.info("Server starting...");
+		LOGGER.info("Server starting on port {}...", serverSocket.getLocalPort());
 		while (!serverSocket.isClosed() && !isInterrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
