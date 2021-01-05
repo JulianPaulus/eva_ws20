@@ -1,7 +1,7 @@
 package battleships.server.util;
 
 import battleships.server.service.ConnectionService;
-import battleships.util.Constants;
+import battleships.server.socket.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class ConnectionManager extends Thread {
 	public void run() {
 		while (!isInterrupted()) {
 			try {
-				TimeUnit.MILLISECONDS.sleep(Constants.Server.CONNECTION_MANAGER_INTERVAL_MS);
+				TimeUnit.MILLISECONDS.sleep(ServerConfig.getInstance().getConnectionManagerIntervalMs());
 
 				long startMS = System.currentTimeMillis();
 				connectionService.closeStaleConnections();
