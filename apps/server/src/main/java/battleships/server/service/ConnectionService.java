@@ -13,7 +13,12 @@ import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -136,7 +141,7 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 			long currentMS = System.currentTimeMillis();
 			authorizedConnections.values().stream().filter(
 				authenticatedConnection -> (currentMS - authenticatedConnection
-					.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_S).forEach(removes::add);
+					.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(Constants.Server.CONNECTION_TIMEOUT_S)).forEach(removes::add);
 		} finally {
 			authorizedLock.readLock().unlock();
 		}
