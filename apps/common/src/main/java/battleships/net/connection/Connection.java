@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
@@ -75,6 +76,10 @@ public class Connection extends Observable<ConnectionEvent> {
 				LOGGER.warn("error while closing connection", e);
 			}
 		}
+	}
+
+	public synchronized boolean isClosed() {
+		return closed;
 	}
 
 	public AbstractPacketHandler<?, ?> getPacketHandler() {

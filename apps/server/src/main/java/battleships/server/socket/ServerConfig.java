@@ -7,8 +7,8 @@ public class ServerConfig {
 	private static final ServerConfig INSTANCE = new ServerConfig();
 
 	private int port = Constants.Server.DEFAULT_PORT;
-	private long connectionManagerIntervalMs = Constants.Server.CONNECTION_MANAGER_INTERVAL_MS;
-	private long connectionTimeoutMs = Constants.Server.CONNECTION_TIMEOUT_MS;
+	private long connectionManagerIntervalS = Constants.Server.CONNECTION_MANAGER_INTERVAL_S;
+	private long connectionTimeoutS = Constants.Server.CONNECTION_TIMEOUT_S;
 
 	private ServerConfig() {}
 
@@ -24,19 +24,19 @@ public class ServerConfig {
 		this.port = port;
 	}
 
-	public long getConnectionManagerIntervalMs() {
-		return connectionManagerIntervalMs;
+	public long getConnectionManagerIntervalS() {
+		return connectionManagerIntervalS;
 	}
 
-	public void setConnectionManagerIntervalMs(final long connectionManagerIntervalMs) {
-		this.connectionManagerIntervalMs = connectionManagerIntervalMs;
+	public void setConnectionManagerIntervalS(final long connectionManagerIntervalS) {
+		this.connectionManagerIntervalS = connectionManagerIntervalS;
 	}
 
-	public long getConnectionTimeoutMs() {
-		return connectionTimeoutMs;
+	public long getConnectionTimeoutS() {
+		return connectionTimeoutS;
 	}
 
-	public void setConnectionTimeoutMs(final long connectionTimeoutMs) {
-		this.connectionTimeoutMs = connectionTimeoutMs;
+	public void setConnectionTimeoutS(final long connectionTimeoutS) {
+		this.connectionTimeoutS = connectionTimeoutS;
 	}
 }

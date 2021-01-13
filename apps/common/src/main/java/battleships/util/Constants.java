@@ -1,5 +1,6 @@
 package battleships.util;
 
+import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 public class Constants {
@@ -12,8 +13,9 @@ public class Constants {
 	public static class Server {
 		public static final int DEFAULT_PORT = 5555;
 		public static final int MAX_PLAYER_COUNT = 100;
-		public static final long CONNECTION_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(10);
-		public static final long CONNECTION_MANAGER_INTERVAL_MS = TimeUnit.MINUTES.toMillis(2);
+		public static final long HEARTBEAT_REPEAT_TIME_IN_S = TimeUnit.SECONDS.toSeconds(5);
+		public static final long CONNECTION_TIMEOUT_S = TimeUnit.MINUTES.toSeconds(10);
+		public static final long CONNECTION_MANAGER_INTERVAL_S = TimeUnit.MINUTES.toSeconds(2);
 	}
 
 	public static class Identifiers {
@@ -48,6 +50,7 @@ public class Constants {
 		public static final byte GAME_SHOOT_RESPONSE = 0x14;
 
 		public static final byte PLAYER_DISCONNECTED = 0x15;
+		public static final byte HEARTBEAT = 0x16;
 
 	}
 
