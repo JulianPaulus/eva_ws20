@@ -70,6 +70,9 @@ public class GameWindow implements Initializable {
 	private Button sendMessageBtn;
 
 	private GameModel model;
+	private Integer currentMouseHoverX;
+	private Integer currentMouseHoverY;
+
 	private boolean horizontal;
 
 	private Label[][] playerLabels = new Label[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
@@ -78,6 +81,8 @@ public class GameWindow implements Initializable {
 	public GameWindow() {
 		model = new GameModel(new ModelObserver(this));
 		horizontal = true;
+		currentMouseHoverX = null;
+		currentMouseHoverY = null;
 
 		INSTANCE = this;
 	}
@@ -157,7 +162,7 @@ public class GameWindow implements Initializable {
 				labelArray[i][j] = label;
 				if (gridPane == targetGrid) {
 					label.setOnMouseEntered(event -> {
-						onMouseEnterTargetField(label);
+						onMouseEnterTargetField(label, finalI, finalJ);
 					});
 					label.setOnMouseExited(event -> {
 						onMouseExitTargetField(label, finalI, finalJ);
@@ -181,13 +186,17 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void onMouseEnterTargetField(final Label label) {
+	private void onMouseEnterTargetField(final Label label, int xPos, int yPos) {
+		currentMouseHoverX = xPos;
+		currentMouseHoverY = yPos;
 		if (model.getCurrentState() != GameState.SHOOTING) return;
 
 		label.setStyle(CoordinateState.TARGETING.getStyle());
 	}
 
 	private void onMouseExitTargetField(final Label label, final int posX, final int posY) {
+		currentMouseHoverX = null;
+		currentMouseHoverY = null;
 		if (model.getCurrentState() != GameState.SHOOTING) return;
 
 		CoordinateState targetState = model.getTargetFieldState(posX, posY);
@@ -331,6 +340,10 @@ public class GameWindow implements Initializable {
 
 	public void onPlayersTurn() {
 		model.setCurrentState(GameState.SHOOTING);
+		if(currentMouseHoverX != null && currentMouseHoverY != null
+			&& this.model.getTargetFieldState(currentMouseHoverX, currentMouseHoverY) == CoordinateState.EMPTY) {
+			targetLabels[currentMouseHoverX][currentMouseHoverY].setStyle(CoordinateState.TARGETING.getStyle());
+		}
 		updateRulesForPhaseChange();
 	}
 
