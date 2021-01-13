@@ -27,11 +27,13 @@ public class HeartbeatService extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		while (!isInterrupted() && !ClientMain.getInstance().getConnection().isClosed()) {
+		while (!isInterrupted() && ClientMain.getInstance().getConnection() != null
+			&& !ClientMain.getInstance().getConnection().isClosed()) {
 			try {
 				TimeUnit.SECONDS.sleep(10);
 				synchronized (this) {
-					if(lastHeartbeat < System.currentTimeMillis() - maxHeartbeatPause) {
+					if(lastHeartbeat < System.currentTimeMillis() - maxHeartbeatPause
+						&& ClientMain.getInstance().getConnection() != null) {
 						ClientMain.getInstance().getConnection().close();
 					}
 				}
