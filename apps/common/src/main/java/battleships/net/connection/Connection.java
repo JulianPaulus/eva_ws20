@@ -78,6 +78,10 @@ public class Connection extends Observable<ConnectionEvent> {
 		}
 	}
 
+	public synchronized boolean isClosed() {
+		return closed;
+	}
+
 	public AbstractPacketHandler<?, ?> getPacketHandler() {
 		return this.packetHandler;
 	}

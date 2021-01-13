@@ -1,5 +1,6 @@
 package battleships.client.packet.receive;
 
+import battleships.client.service.HeartbeatService;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
@@ -16,5 +17,6 @@ public class HeartbeatPacket implements IPreAuthReceivePacket {
 	@Override
 	public void act(Connection connection) {
 		System.out.println("Heartbeat");
+		HeartbeatService.getInstance().receiveHeartbeat();
 	}
 }
