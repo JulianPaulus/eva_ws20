@@ -141,7 +141,8 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 			long currentMS = System.currentTimeMillis();
 			authorizedConnections.values().stream().filter(
 				authenticatedConnection -> (currentMS - authenticatedConnection
-					.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(Constants.Server.CONNECTION_TIMEOUT_S)).forEach(removes::add);
+					.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(ServerConfig.getInstance()
+					.getConnectionTimeoutS())).forEach(removes::add);
 		} finally {
 			authorizedLock.readLock().unlock();
 		}
