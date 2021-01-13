@@ -7,16 +7,14 @@ import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.game.Player;
+import battleships.server.packet.send.HeartbeatPacket;
 import battleships.server.socket.ServerConfig;
 import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -126,8 +124,8 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 			unauthorizedLock.readLock().lock();
 			long currentMS = System.currentTimeMillis();
 			unauthorizedConnections.stream()
-				.filter(con -> (currentMS - con.getLastInteractionMS()) > ServerConfig.getInstance()
-					.getConnectionTimeoutMs())
+				.filter(con -> (currentMS - con.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(ServerConfig.getInstance()
+					.getConnectionTimeoutS()))
 				.forEach(removes::add);
 		} finally {
 			unauthorizedLock.readLock().unlock();
@@ -138,18 +136,21 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 			long currentMS = System.currentTimeMillis();
 			authorizedConnections.values().stream().filter(
 				authenticatedConnection -> (currentMS - authenticatedConnection
-					.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_MS).forEach(removes::add);
+					.getLastInteractionMS()) > Constants.Server.CONNECTION_TIMEOUT_S).forEach(removes::add);
 		} finally {
 			authorizedLock.readLock().unlock();
 		}
 
-		try {
-			unauthorizedLock.writeLock().lock();
-			authorizedLock.writeLock().lock();
-			removes.forEach(Connection::close);
-		} finally {
-			authorizedLock.writeLock().unlock();
-			unauthorizedLock.writeLock().unlock();
-		}
+		removes.forEach(Connection::close);
+	}
+
+	public void sendHeartbeat() {
+		unauthorizedLock.readLock().lock();
+		List<Connection> connections = new ArrayList<>(unauthorizedConnections);
+		unauthorizedLock.readLock().unlock();
+		authorizedLock.readLock().lock();
+		connections.addAll(authorizedConnections.values());
+		authorizedLock.readLock().unlock();
+		connections.forEach(con -> con.writePacket(new HeartbeatPacket()));
 	}
 }
