@@ -20,7 +20,6 @@ public class HeartbeatPacket extends SendPacket implements IReceivePacket<Connec
 
 	@Override
 	public void act(Connection connection) {
-		System.out.println("Received Heartbeat");
 		connection.updateHeartbeat();
 	}
 }
