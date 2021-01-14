@@ -38,7 +38,6 @@ public class PacketReader extends Thread {
 				byte identifier = stream.readByte();
 				AbstractPacketFactory<?> packetFactory = factoryMap.get(identifier);
 				if (packetFactory != null) {
-					connection.updateInteractionTime();
 					IReceivePacket<?> packet = packetFactory.unmarshal(stream);
 					try {
 						connection.getPacketHandler().handle(packet, connection);

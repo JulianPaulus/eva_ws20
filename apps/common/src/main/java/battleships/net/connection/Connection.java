@@ -26,15 +26,12 @@ public class Connection extends Observable<ConnectionEvent> {
 	protected AbstractPacketHandler<?, ?> packetHandler;
 	protected long lastHeartbeat = System.currentTimeMillis();
 
-	private final AtomicLong lastInteractionMS;
-
 	public Connection(final Socket socket) throws IOException {
 		this.socket = socket;
 		this.reader = new PacketReader(socket.getInputStream(), this);
 		this.writer = new PacketWriter(socket.getOutputStream());
 		this.packetHandler = new PreAuthPacketHandler();
 		this.uuid = UUID.randomUUID();
-		this.lastInteractionMS = new AtomicLong(System.currentTimeMillis());
 		reader.start();
 
 		LOGGER.info("established connection with {}", socket.getInetAddress().getHostAddress());
@@ -47,14 +44,12 @@ public class Connection extends Observable<ConnectionEvent> {
 		this.packetHandler = connection.packetHandler;
 		this.closed = connection.closed;
 		this.uuid = connection.uuid;
-		this.lastInteractionMS = connection.lastInteractionMS;
 		this.observers = connection.observers;
 	}
 
 	public void writePacket(final SendPacket packet) {
 		try {
 			writer.write(packet);
-			updateInteractionTime();
 		} catch (final IOException e) {
 			LOGGER.error("error while writing a packet to {}", this, e);
 			close();
@@ -102,14 +97,6 @@ public class Connection extends Observable<ConnectionEvent> {
 		return uuid;
 	}
 
-	public void updateInteractionTime() {
-		lastInteractionMS.set(System.currentTimeMillis());
-	}
-
-	public long getLastInteractionMS() {
-		return lastInteractionMS.get();
-	}
-
 	@Override
 	public String toString() {
 		return "Connection{" +
@@ -129,12 +116,11 @@ public class Connection extends Observable<ConnectionEvent> {
 		Connection that = (Connection) o;
 		return closed == that.closed && socket.equals(that.socket) && reader.equals(that.reader) && writer
 			.equals(that.writer) && uuid.equals(that.uuid) && packetHandler
-			.equals(that.packetHandler) && lastInteractionMS
-			.equals(that.lastInteractionMS);
+			.equals(that.packetHandler) && lastHeartbeat == that.lastHeartbeat;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(socket, reader, writer, uuid, closed, packetHandler, lastInteractionMS);
+		return Objects.hash(socket, reader, writer, uuid, closed, packetHandler, lastHeartbeat);
 	}
 }
