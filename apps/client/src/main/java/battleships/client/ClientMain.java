@@ -74,6 +74,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		instance = this;
 		this.stage = primaryStage;
 		this.state = ClientState.DISCONNECTED;
+		HeartbeatService.getAndStartInstance();
 
 		stage.setResizable(false);
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
@@ -86,8 +87,6 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 			connection = new Connection(socket);
 			connection.addObserver(instance);
 			setState(ClientState.CONNECTED);
-			HeartbeatService.getAndStartInstance();
-
 			return connection;
 		}
 

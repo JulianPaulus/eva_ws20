@@ -15,7 +15,7 @@ public class HeartbeatService extends Thread {
 	private long lastSentHeartbeat = System.currentTimeMillis();
 
 	private HeartbeatService() {
-
+		this.setDaemon(true);
 	}
 
 	public static HeartbeatService getAndStartInstance() {
@@ -29,17 +29,19 @@ public class HeartbeatService extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		while (!isInterrupted() && ClientMain.getInstance().getConnection() != null
-			&& !ClientMain.getInstance().getConnection().isClosed()) {
-			Connection clientCon = ClientMain.getInstance().getConnection();
-			try {
-				if(System.currentTimeMillis() - lastSentHeartbeat > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_SEND_INTERVAL_IN_S)) {
+		while (!isInterrupted()) {
+			if (ClientMain.getInstance().getConnection() != null
+				&& !ClientMain.getInstance().getConnection().isClosed()) {
+				Connection clientCon = ClientMain.getInstance().getConnection();
+				if (System.currentTimeMillis() - lastSentHeartbeat > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_SEND_INTERVAL_IN_S)) {
 					clientCon.writePacket(new HeartbeatPacket());
 					lastSentHeartbeat = System.currentTimeMillis();
 				}
 				if (System.currentTimeMillis() - clientCon.getLastHeartbeat() > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S)) {
 					clientCon.close();
 				}
+			}
+			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (final InterruptedException e) {
 				LOGGER.trace("Heartbeat sleep interrupted", e);
