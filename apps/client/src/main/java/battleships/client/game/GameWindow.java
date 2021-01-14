@@ -1,9 +1,9 @@
-package battleships.client.GameWindow;
+package battleships.client.game;
 
 import battleships.client.ClientMain;
-import battleships.client.Model.GameModel;
-import battleships.client.Model.GameState;
-import battleships.client.Model.ModelObserver;
+import battleships.client.model.GameModel;
+import battleships.client.model.GameState;
+import battleships.client.model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.client.packet.send.ShootPacket;
 import battleships.model.CoordinateState;

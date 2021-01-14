@@ -1,6 +1,6 @@
 package battleships.client.util;
 
-import battleships.client.GameWindow.GameWindow;
+import battleships.client.game.GameWindow;
 
 public interface GameStateRunnable {
 

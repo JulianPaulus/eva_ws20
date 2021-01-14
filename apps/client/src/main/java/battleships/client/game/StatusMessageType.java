@@ -1,4 +1,4 @@
-package battleships.client.GameWindow;
+package battleships.client.game;
 
 public enum StatusMessageType {
 
