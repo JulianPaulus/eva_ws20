@@ -15,8 +15,6 @@ public class Constants {
 	public static class Server {
 		public static final int DEFAULT_PORT = 5555;
 		public static final int MAX_PLAYER_COUNT = 100;
-		public static final long CONNECTION_TIMEOUT_S = TimeUnit.MINUTES.toSeconds(10);
-		public static final long CONNECTION_MANAGER_INTERVAL_S = TimeUnit.MINUTES.toSeconds(2);
 	}
 
 	public static class Identifiers {

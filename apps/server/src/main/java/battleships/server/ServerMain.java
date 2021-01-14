@@ -52,12 +52,6 @@ public class ServerMain {
 		ArgumentParser argumentParser = new ArgumentParser();
 		argumentParser.addArgument(new Argument<>("--port", "port to bind the server to", Number.class,
 			(value) -> ServerConfig.getInstance().setPort(value.intValue())));
-		argumentParser.addArgument(
-			new Argument<>("--cm-interval", "defines how often the ConnectionManager should run (in seconds)",
-				Number.class, (value) -> ServerConfig.getInstance().setConnectionManagerIntervalS(value.longValue())));
-		argumentParser.addArgument(new Argument<>("--connection-timeout",
-			"defines how long a connection can idle before being closed (in seconds)", Number.class,
-			(value) -> ServerConfig.getInstance().setConnectionTimeoutS(value.longValue())));
 
 		try {
 			argumentParser.parse(args);
