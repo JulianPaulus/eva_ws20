@@ -1,6 +1,6 @@
 package battleships.client.packet.receive;
 
-import battleships.client.GameWindow.GameWindow;
+import battleships.client.game.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;

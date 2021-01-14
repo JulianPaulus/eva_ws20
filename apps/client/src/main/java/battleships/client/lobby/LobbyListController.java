@@ -1,7 +1,7 @@
 package battleships.client.lobby;
 
 import battleships.client.ClientMain;
-import battleships.client.GameWindow.GameWindow;
+import battleships.client.game.GameWindow;
 import battleships.client.login.LoginController;
 import battleships.client.packet.send.CreateGamePacket;
 import battleships.client.packet.send.LobbyListRequestPacket;
@@ -13,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;

@@ -1,7 +1,7 @@
 package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
-import battleships.client.GameWindow.GameWindow;
+import battleships.client.game.GameWindow;
 import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;

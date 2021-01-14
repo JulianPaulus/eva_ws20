@@ -1,8 +1,8 @@
 package battleships.client.packet.receive;
 
 import battleships.client.ClientMain;
-import battleships.client.GameWindow.GameWindow;
-import battleships.client.GameWindow.StatusMessageType;
+import battleships.client.game.GameWindow;
+import battleships.client.game.StatusMessageType;
 import battleships.client.util.ClientState;
 import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;

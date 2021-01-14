@@ -2,12 +2,12 @@ package battleships.server.service;
 
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
+import battleships.net.packet.HeartbeatPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.game.Player;
-import battleships.server.packet.send.HeartbeatPacket;
 import battleships.server.socket.ServerConfig;
 import battleships.util.Constants;
 import org.slf4j.Logger;
@@ -124,33 +124,23 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 	}
 
 	public void closeStaleConnections() {
-		List<Connection> removes = new LinkedList<>();
-		try {
-			unauthorizedLock.readLock().lock();
-			long currentMS = System.currentTimeMillis();
-			unauthorizedConnections.stream()
-				.filter(con -> (currentMS - con.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(ServerConfig.getInstance()
-					.getConnectionTimeoutS()))
-				.forEach(removes::add);
-		} finally {
-			unauthorizedLock.readLock().unlock();
-		}
+		unauthorizedLock.readLock().lock();
+		List<Connection> connections = new ArrayList<>(unauthorizedConnections);
+		unauthorizedLock.readLock().unlock();
+		authorizedLock.readLock().lock();
+		connections.addAll(authorizedConnections.values());
+		authorizedLock.readLock().unlock();
 
-		try {
-			authorizedLock.readLock().lock();
-			long currentMS = System.currentTimeMillis();
-			authorizedConnections.values().stream().filter(
-				authenticatedConnection -> (currentMS - authenticatedConnection
-					.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(ServerConfig.getInstance()
-					.getConnectionTimeoutS())).forEach(removes::add);
-		} finally {
-			authorizedLock.readLock().unlock();
-		}
-
-		removes.forEach(Connection::close);
+		final long currentTime = System.currentTimeMillis();
+		final long timeoutInMs = TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S);
+		connections.stream().filter(x -> currentTime - x.getLastHeartbeat() > timeoutInMs)
+			.forEach(x -> {
+				LOGGER.info("Heartbeat timed out!");
+				x.close();
+			});
 	}
 
-	public void sendHeartbeat() {
+	public void sendHeartbeats() {
 		unauthorizedLock.readLock().lock();
 		List<Connection> connections = new ArrayList<>(unauthorizedConnections);
 		unauthorizedLock.readLock().unlock();

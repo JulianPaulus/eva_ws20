@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
@@ -25,8 +24,7 @@ public class Connection extends Observable<ConnectionEvent> {
 
 	protected boolean closed = false;
 	protected AbstractPacketHandler<?, ?> packetHandler;
-
-	private final AtomicLong lastInteractionMS;
+	protected long lastHeartbeat = System.currentTimeMillis();
 
 	public Connection(final Socket socket) throws IOException {
 		this.socket = socket;
@@ -34,7 +32,6 @@ public class Connection extends Observable<ConnectionEvent> {
 		this.writer = new PacketWriter(socket.getOutputStream());
 		this.packetHandler = new PreAuthPacketHandler();
 		this.uuid = UUID.randomUUID();
-		this.lastInteractionMS = new AtomicLong(System.currentTimeMillis());
 		reader.start();
 
 		LOGGER.info("established connection with {}", socket.getInetAddress().getHostAddress());
@@ -47,14 +44,12 @@ public class Connection extends Observable<ConnectionEvent> {
 		this.packetHandler = connection.packetHandler;
 		this.closed = connection.closed;
 		this.uuid = connection.uuid;
-		this.lastInteractionMS = connection.lastInteractionMS;
 		this.observers = connection.observers;
 	}
 
 	public void writePacket(final SendPacket packet) {
 		try {
 			writer.write(packet);
-			updateInteractionTime();
 		} catch (final IOException e) {
 			LOGGER.error("error while writing a packet to {}", this, e);
 			close();
@@ -82,6 +77,14 @@ public class Connection extends Observable<ConnectionEvent> {
 		return closed;
 	}
 
+	public synchronized void updateHeartbeat() {
+		this.lastHeartbeat = System.currentTimeMillis();
+	}
+
+	public synchronized long getLastHeartbeat() {
+		return lastHeartbeat;
+	}
+
 	public AbstractPacketHandler<?, ?> getPacketHandler() {
 		return this.packetHandler;
 	}
@@ -92,14 +95,6 @@ public class Connection extends Observable<ConnectionEvent> {
 
 	public UUID getUUID() {
 		return uuid;
-	}
-
-	public void updateInteractionTime() {
-		lastInteractionMS.set(System.currentTimeMillis());
-	}
-
-	public long getLastInteractionMS() {
-		return lastInteractionMS.get();
 	}
 
 	@Override
@@ -121,12 +116,11 @@ public class Connection extends Observable<ConnectionEvent> {
 		Connection that = (Connection) o;
 		return closed == that.closed && socket.equals(that.socket) && reader.equals(that.reader) && writer
 			.equals(that.writer) && uuid.equals(that.uuid) && packetHandler
-			.equals(that.packetHandler) && lastInteractionMS
-			.equals(that.lastInteractionMS);
+			.equals(that.packetHandler) && lastHeartbeat == that.lastHeartbeat;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(socket, reader, writer, uuid, closed, packetHandler, lastInteractionMS);
+		return Objects.hash(socket, reader, writer, uuid, closed, packetHandler, lastHeartbeat);
 	}
 }

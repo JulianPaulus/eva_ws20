@@ -1,7 +1,7 @@
-package battleships.client.Model;
+package battleships.client.model;
 
 import battleships.client.ClientMain;
-import battleships.client.GameWindow.StatusMessageType;
+import battleships.client.game.StatusMessageType;
 import battleships.client.packet.send.PlayerReadyPacket;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;

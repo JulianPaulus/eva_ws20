@@ -10,12 +10,14 @@ import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
 import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
 import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
+import battleships.client.service.HeartbeatService;
 import battleships.client.util.ClientState;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
 import battleships.net.factory.StateLessPacketFactory;
+import battleships.net.packet.HeartbeatPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import javafx.application.Application;
@@ -72,6 +74,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		instance = this;
 		this.stage = primaryStage;
 		this.state = ClientState.DISCONNECTED;
+		HeartbeatService.getAndStartInstance();
 
 		stage.setResizable(false);
 		stage.setTitle("Schiffe Versenken - EVA WS20/21");
@@ -84,7 +87,6 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 			connection = new Connection(socket);
 			connection.addObserver(instance);
 			setState(ClientState.CONNECTED);
-
 			return connection;
 		}
 

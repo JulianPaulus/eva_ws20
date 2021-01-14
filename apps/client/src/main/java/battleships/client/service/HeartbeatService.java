@@ -1,6 +1,9 @@
 package battleships.client.service;
 
 import battleships.client.ClientMain;
+import battleships.net.connection.Connection;
+import battleships.net.packet.HeartbeatPacket;
+import battleships.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,15 +12,14 @@ import java.util.concurrent.TimeUnit;
 public class HeartbeatService extends Thread {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatService.class);
 	private static HeartbeatService instance;
-	private long lastHeartbeat = System.currentTimeMillis();
-	private static final long maxHeartbeatPause = TimeUnit.SECONDS.toMillis(10);
+	private long lastSentHeartbeat = System.currentTimeMillis();
 
 	private HeartbeatService() {
-
+		this.setDaemon(true);
 	}
 
-	public static HeartbeatService getInstance() {
-		if(instance == null) {
+	public static HeartbeatService getAndStartInstance() {
+		if (instance == null) {
 			instance = new HeartbeatService();
 			instance.start();
 		}
@@ -27,23 +29,24 @@ public class HeartbeatService extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		while (!isInterrupted() && ClientMain.getInstance().getConnection() != null
-			&& !ClientMain.getInstance().getConnection().isClosed()) {
-			try {
-				TimeUnit.SECONDS.sleep(10);
-				synchronized (this) {
-					if(lastHeartbeat < System.currentTimeMillis() - maxHeartbeatPause
-						&& ClientMain.getInstance().getConnection() != null) {
-						ClientMain.getInstance().getConnection().close();
-					}
+		while (!isInterrupted()) {
+			if (ClientMain.getInstance().getConnection() != null
+				&& !ClientMain.getInstance().getConnection().isClosed()) {
+				Connection clientCon = ClientMain.getInstance().getConnection();
+				if (System.currentTimeMillis() - lastSentHeartbeat > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_SEND_INTERVAL_IN_S)) {
+					clientCon.writePacket(new HeartbeatPacket());
+					lastSentHeartbeat = System.currentTimeMillis();
 				}
+				if (System.currentTimeMillis() - clientCon.getLastHeartbeat() > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S)) {
+					LOGGER.info("Heartbeat timed out!");
+					clientCon.close();
+				}
+			}
+			try {
+				TimeUnit.SECONDS.sleep(1);
 			} catch (final InterruptedException e) {
-				LOGGER.trace("ConnectionManager sleep interrupted", e);
+				LOGGER.trace("Heartbeat sleep interrupted", e);
 			}
 		}
-	}
-
-	public synchronized void receiveHeartbeat() {
-		lastHeartbeat = System.currentTimeMillis();
 	}
 }

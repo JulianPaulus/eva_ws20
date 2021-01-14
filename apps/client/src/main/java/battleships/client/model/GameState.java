@@ -1,6 +1,6 @@
-package battleships.client.Model;
+package battleships.client.model;
 
-import battleships.client.GameWindow.GameWindow;
+import battleships.client.game.GameWindow;
 import battleships.client.util.GameStateRunnable;
 import battleships.client.util.StringProperties;
 import javafx.application.Platform;

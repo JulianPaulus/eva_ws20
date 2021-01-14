@@ -1,9 +1,9 @@
-package battleships.client.GameWindow;
+package battleships.client.game;
 
 import battleships.client.ClientMain;
-import battleships.client.Model.GameModel;
-import battleships.client.Model.GameState;
-import battleships.client.Model.ModelObserver;
+import battleships.client.model.GameModel;
+import battleships.client.model.GameState;
+import battleships.client.model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.client.packet.send.ShootPacket;
 import battleships.model.CoordinateState;
@@ -105,7 +105,7 @@ public class GameWindow implements Initializable {
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	public synchronized void initialize(URL location, ResourceBundle resources) {
 		rulesView.getEngine().setUserStyleSheetLocation(GameWindow.class.getResource("/fxml/webView.css").toString());
 		initializeChatList();
 		updateRulesForPhaseChange();
@@ -114,7 +114,7 @@ public class GameWindow implements Initializable {
 		setupBoard(targetGrid, targetLabels);
 	}
 
-	private void initializeChatList() {
+	private synchronized void initializeChatList() {
 		chatWindow.setCellFactory(param -> new ListCell<TextFlow>() {
 			@Override
 			protected void updateItem(final TextFlow item, final boolean empty) {
@@ -136,7 +136,7 @@ public class GameWindow implements Initializable {
 	}
 
 	@FXML
-	public void sendMessage() {
+	public synchronized void sendMessage() {
 		String text = chatTextBox.getText().trim();
 		if (!text.isEmpty()) {
 			ClientMain.getInstance().getConnection().writePacket(new SendChatMessagePacket(text));
@@ -144,15 +144,15 @@ public class GameWindow implements Initializable {
 		chatTextBox.clear();
 	}
 
-	public void receiveMessage(final String fromUser, final String message) {
+	public synchronized void receiveMessage(final String fromUser, final String message) {
 		model.receiveChatMessage(fromUser, message);
 	}
 
-	public void displayStatusMessage(final String message, final StatusMessageType type) {
+	public synchronized void displayStatusMessage(final String message, final StatusMessageType type) {
 		model.receiveStatusMessage(message, type);
 	}
 
-	private void setupBoard(GridPane gridPane, Label[][] labelArray) {
+	private synchronized void setupBoard(GridPane gridPane, Label[][] labelArray) {
 		for (int i = 0; i < Constants.BOARD_SIZE; i++) {
 			final int finalI = i;
 			for (int j = 0; j < Constants.BOARD_SIZE; j++) {
@@ -186,7 +186,7 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void onMouseEnterTargetField(final Label label, int xPos, int yPos) {
+	private synchronized void onMouseEnterTargetField(final Label label, int xPos, int yPos) {
 		currentMouseHoverX = xPos;
 		currentMouseHoverY = yPos;
 		if (model.getCurrentState() != GameState.SHOOTING) return;
@@ -194,7 +194,7 @@ public class GameWindow implements Initializable {
 		label.setStyle(CoordinateState.TARGETING.getStyle());
 	}
 
-	private void onMouseExitTargetField(final Label label, final int posX, final int posY) {
+	private synchronized void onMouseExitTargetField(final Label label, final int posX, final int posY) {
 		currentMouseHoverX = null;
 		currentMouseHoverY = null;
 		if (model.getCurrentState() != GameState.SHOOTING) return;
@@ -203,7 +203,7 @@ public class GameWindow implements Initializable {
 		label.setStyle(targetState.getStyle());
 	}
 
-	private void onMouseHoverPlayerField(final int posX, final int posY, final boolean entered) {
+	private synchronized void onMouseHoverPlayerField(final int posX, final int posY, final boolean entered) {
 		if (model.getCurrentState() != GameState.SET_UP) return;
 		if (horizontal && posX + model.getTileNumberOfCurrentShip() > Constants.BOARD_SIZE) return;
 		if (!horizontal && posY + model.getTileNumberOfCurrentShip() > Constants.BOARD_SIZE) return;
@@ -221,7 +221,7 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void updateShipFieldOnEnter(final int posX, final int posY, final boolean isValid) {
+	private synchronized void updateShipFieldOnEnter(final int posX, final int posY, final boolean isValid) {
 		if (isValid) {
 			playerLabels[posX][posY].setStyle(CoordinateState.SHIP.getStyle());
 		} else {
@@ -229,12 +229,12 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	private void resetPlayerFieldLabel(final int posX, final int posY) {
+	private synchronized void resetPlayerFieldLabel(final int posX, final int posY) {
 		CoordinateState state = model.currentStateOfPlayerCoordinate(posX, posY);
 		playerLabels[posX][posY].setStyle(state.getStyle());
 	}
 
-	void onPlayerFieldRightClicked(final int posX, final int posY) {
+	private synchronized void onPlayerFieldRightClicked(final int posX, final int posY) {
 		if (model.getCurrentState() != GameState.SET_UP) return;
 
 		for (int offset = 0; offset < model.getTileNumberOfCurrentShip(); offset++) {
@@ -248,12 +248,12 @@ public class GameWindow implements Initializable {
 		onMouseHoverPlayerField(posX, posY, true);
 	}
 
-	void onPlayerFieldClicked(int xPos, int yPos) {
+	private synchronized void onPlayerFieldClicked(int xPos, int yPos) {
 		if (model.getCurrentState() != GameState.SET_UP) return;
 		model.setShip(xPos, yPos, horizontal);
 	}
 
-	void onTargetFieldClicked(int xPos, int yPos) {
+	private synchronized void onTargetFieldClicked(int xPos, int yPos) {
 		if (model.getCurrentState() != GameState.SHOOTING
 			|| model.getTargetFieldState(xPos, yPos) != CoordinateState.EMPTY) {
 			return;
@@ -263,7 +263,7 @@ public class GameWindow implements Initializable {
 		//Todo Anzeigen, dass auf den Server gewartet wird?
 	}
 
-	public void updateChatWindow() {
+	public synchronized void updateChatWindow() {
 		Platform.runLater(() -> {
 			chatWindow.getItems().clear();
 			chatWindow.getItems().addAll(model.getChatMessages());
@@ -271,7 +271,7 @@ public class GameWindow implements Initializable {
 		});
 	}
 
-	public void updatePlayerField() {
+	public synchronized void updatePlayerField() {
 		for (int x = 0; x < Constants.BOARD_SIZE; x++)
 			for (int y = 0; y < Constants.BOARD_SIZE; y++) {
 				CoordinateState state = model.currentStateOfPlayerCoordinate(x, y);
@@ -279,7 +279,7 @@ public class GameWindow implements Initializable {
 			}
 	}
 
-	public void updateTargetField() {
+	public synchronized void updateTargetField() {
 		for (int x = 0; x < Constants.BOARD_SIZE; x++)
 			for (int y = 0; y < Constants.BOARD_SIZE; y++) {
 				CoordinateState state = model.getTargetFieldState(x, y);
@@ -287,12 +287,12 @@ public class GameWindow implements Initializable {
 			}
 	}
 
-	public void updateRulesForPhaseChange() {
+	public synchronized void updateRulesForPhaseChange() {
 		model.getCurrentState().updateGameWindow(this);
 	}
 
 	@FXML
-	public void removeLastAddedShip() {
+	public synchronized void removeLastAddedShip() {
 		model.removeLastAdded();
 	}
 
@@ -300,7 +300,7 @@ public class GameWindow implements Initializable {
 		return INSTANCE;
 	}
 
-	public void onDoSetup(final String otherPlayerName) {
+	public synchronized void onDoSetup(final String otherPlayerName) {
 		model.setOtherPlayerName(otherPlayerName);
 		model.setCurrentState(GameState.SET_UP);
 		sendMessageBtn.setDisable(false);
@@ -308,7 +308,7 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
-	public void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos, boolean isDestroyed) {
+	public synchronized void setHitOrMiss(boolean isPlayerField, boolean isHit, int xPos, int yPos, boolean isDestroyed) {
 		if (isPlayerField) {
 			model.setPlayerFieldState(xPos, yPos, isHit ? CoordinateState.HIT : CoordinateState.MISS);
 			displayStatusMessage("Der Gegner hat auf " + intToAlphabet(xPos) + (yPos + 1) + " geschossen.",
@@ -326,19 +326,19 @@ public class GameWindow implements Initializable {
 		}
 	}
 
-	public void onWaitForOtherPlayerSetup() {
+	public synchronized void onWaitForOtherPlayerSetup() {
 		model.setCurrentState(GameState.SET_UP_WAIT_FOR_OTHER_PLAYER);
 		updateRulesForPhaseChange();
 	}
 
 
-	public void removeAllShips() {
+	public synchronized void removeAllShips() {
 		model.removeAllShips();
 		model.setCurrentState(GameState.SET_UP);
 		updateRulesForPhaseChange();
 	}
 
-	public void onPlayersTurn() {
+	public synchronized void onPlayersTurn() {
 		model.setCurrentState(GameState.SHOOTING);
 		if(currentMouseHoverX != null && currentMouseHoverY != null
 			&& this.model.getTargetFieldState(currentMouseHoverX, currentMouseHoverY) == CoordinateState.EMPTY) {
@@ -347,32 +347,32 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
-	public void onEnemyTurn() {
+	public synchronized void onEnemyTurn() {
 		model.setCurrentState(GameState.WAIT_FOR_ENEMY);
 		updateRulesForPhaseChange();
 	}
 
-	public void setGameEnd(boolean isHasPlayerWon) {
+	public synchronized void setGameEnd(boolean isHasPlayerWon) {
 		model.setCurrentState(isHasPlayerWon ? GameState.WON : GameState.LOST);
 	}
 
-	public void setRemoveShipButtonVisible(final boolean visible) {
+	public synchronized void setRemoveShipButtonVisible(final boolean visible) {
 		removeShip.setVisible(visible);
 	}
 
-	public void setStatusLabelStyle(final String style) {
+	public synchronized void setStatusLabelStyle(final String style) {
 		statusLabel.setStyle(style);
 	}
 
-	public void updateStatusText() {
+	public synchronized void updateStatusText() {
 		statusLabel.setText(model.getCurrentState().getStatusText());
 	}
 
-	public void updateRulesText() {
+	public synchronized void updateRulesText() {
 		rulesView.getEngine().loadContent(model.getCurrentState().getRuleText());
 	}
 
-	public void disableChat() {
+	public synchronized void disableChat() {
 		chatTextBox.setDisable(true);
 		sendMessageBtn.setDisable(true);
 	}
@@ -399,7 +399,7 @@ public class GameWindow implements Initializable {
 		return label;
 	}
 
-	public void onPlayerDisconnected() {
+	public synchronized void onPlayerDisconnected() {
 		displayStatusMessage(model.getOtherPlayerName() + " hat das Spiel verlassen.", StatusMessageType.CRITICAL);
 		if (model.getCurrentState() != GameState.WON && model.getCurrentState() != GameState.LOST) {
 			model.setCurrentState(GameState.AUTOMATIC_WIN);
