@@ -37,7 +37,7 @@ public class HeartbeatService extends Thread {
 					clientCon.writePacket(new HeartbeatPacket());
 					lastSentHeartbeat = System.currentTimeMillis();
 				}
-				if (System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S) > clientCon.getLastHeartbeat()) {
+				if (System.currentTimeMillis() - clientCon.getLastHeartbeat() > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S)) {
 					clientCon.close();
 				}
 				TimeUnit.SECONDS.sleep(1);
