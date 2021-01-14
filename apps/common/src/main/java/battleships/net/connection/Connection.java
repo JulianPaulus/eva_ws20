@@ -25,6 +25,7 @@ public class Connection extends Observable<ConnectionEvent> {
 
 	protected boolean closed = false;
 	protected AbstractPacketHandler<?, ?> packetHandler;
+	protected long lastHeartbeat = System.currentTimeMillis();
 
 	private final AtomicLong lastInteractionMS;
 
@@ -80,6 +81,14 @@ public class Connection extends Observable<ConnectionEvent> {
 
 	public synchronized boolean isClosed() {
 		return closed;
+	}
+
+	public synchronized void updateHeartbeat() {
+		this.lastHeartbeat = System.currentTimeMillis();
+	}
+
+	public synchronized long getLastHeartbeat() {
+		return lastHeartbeat;
 	}
 
 	public AbstractPacketHandler<?, ?> getPacketHandler() {

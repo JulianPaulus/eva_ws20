@@ -16,6 +16,7 @@ import battleships.net.connection.ConnectionEvent;
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
 import battleships.net.factory.StateLessPacketFactory;
+import battleships.net.packet.HeartbeatPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import javafx.application.Application;

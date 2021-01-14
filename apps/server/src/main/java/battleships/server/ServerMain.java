@@ -2,6 +2,8 @@ package battleships.server;
 
 import battleships.net.connection.PacketReader;
 import battleships.net.factory.AbstractPacketFactory;
+import battleships.net.factory.StateLessPacketFactory;
+import battleships.net.packet.HeartbeatPacket;
 import battleships.server.cli.Argument;
 import battleships.server.cli.ArgumentParser;
 import battleships.server.exception.ArgumentParseException;
@@ -40,6 +42,7 @@ public class ServerMain {
 		packetFactoryMap.put(SendChatMessagePacket.IDENTIFIER, new SendChatMessagePacketFactory());
 		packetFactoryMap.put(PlayerReadyPacket.IDENTIFIER, new PlayerReadyPacketFactory());
 		packetFactoryMap.put(ShootPacket.IDENTIFIER, new ShootPacketFactory());
+		packetFactoryMap.put(HeartbeatPacket.IDENTIFIER, new StateLessPacketFactory<>(HeartbeatPacket.class));
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 

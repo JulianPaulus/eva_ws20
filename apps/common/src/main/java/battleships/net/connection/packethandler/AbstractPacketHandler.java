@@ -2,6 +2,7 @@ package battleships.net.connection.packethandler;
 
 import battleships.net.connection.Connection;
 import battleships.net.exception.IllegalPacketTypeException;
+import battleships.net.packet.HeartbeatPacket;
 import battleships.net.packet.IReceivePacket;
 
 public abstract class AbstractPacketHandler<ConnectionT extends Connection, PacketT extends IReceivePacket<ConnectionT>> {
@@ -15,6 +16,11 @@ public abstract class AbstractPacketHandler<ConnectionT extends Connection, Pack
 
 
 	public void handle(final IReceivePacket<?> packet, final Connection connection) {
+		if(packet instanceof HeartbeatPacket) {
+			((HeartbeatPacket) packet).act(connection);
+			return;
+		}
+
 		if(!packetClass.isAssignableFrom(packet.getClass())) {
 			throw new IllegalPacketTypeException("Packet doesn't match the Packethandler Packet-Type: Expected packet type: " + packetClass.getName() + ". Received packet: " + packet.getClass().getName());
 		}

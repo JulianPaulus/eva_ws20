@@ -2,12 +2,12 @@ package battleships.server.service;
 
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
+import battleships.net.packet.HeartbeatPacket;
 import battleships.observable.Observable;
 import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.game.Player;
-import battleships.server.packet.send.HeartbeatPacket;
 import battleships.server.socket.ServerConfig;
 import battleships.util.Constants;
 import org.slf4j.Logger;

@@ -9,11 +9,12 @@ public class Constants {
 	public static final int UUID_BYTE_COUNT = 16;
 	public static final int SHIP_COUNT = 5;
 	public static final int BOARD_SIZE = 10;
+	public static final long HEARTBEAT_SEND_INTERVAL_IN_S = TimeUnit.SECONDS.toSeconds(5);
+	public static final long HEARTBEAT_TIMEOUT_IN_S = TimeUnit.SECONDS.toSeconds(10);
 
 	public static class Server {
 		public static final int DEFAULT_PORT = 5555;
 		public static final int MAX_PLAYER_COUNT = 100;
-		public static final long HEARTBEAT_REPEAT_TIME_IN_S = TimeUnit.SECONDS.toSeconds(5);
 		public static final long CONNECTION_TIMEOUT_S = TimeUnit.MINUTES.toSeconds(10);
 		public static final long CONNECTION_MANAGER_INTERVAL_S = TimeUnit.MINUTES.toSeconds(2);
 	}
