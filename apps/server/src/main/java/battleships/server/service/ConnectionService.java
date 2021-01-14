@@ -124,32 +124,20 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 	}
 
 	public void closeStaleConnections() {
-		List<Connection> removes = new LinkedList<>();
-		try {
-			unauthorizedLock.readLock().lock();
-			long currentMS = System.currentTimeMillis();
-			unauthorizedConnections.stream()
-				.filter(con -> (currentMS - con.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(ServerConfig.getInstance()
-					.getConnectionTimeoutS()))
-				.forEach(removes::add);
-		} finally {
-			unauthorizedLock.readLock().unlock();
-		}
+		unauthorizedLock.readLock().lock();
+		List<Connection> connections = new ArrayList<>(unauthorizedConnections);
+		unauthorizedLock.readLock().unlock();
+		authorizedLock.readLock().lock();
+		connections.addAll(authorizedConnections.values());
+		authorizedLock.readLock().unlock();
 
-		try {
-			authorizedLock.readLock().lock();
-			long currentMS = System.currentTimeMillis();
-			authorizedConnections.values().stream().filter(
-				authenticatedConnection -> (currentMS - authenticatedConnection
-					.getLastInteractionMS()) > TimeUnit.SECONDS.toMillis(Constants.Server.CONNECTION_TIMEOUT_S)).forEach(removes::add);
-		} finally {
-			authorizedLock.readLock().unlock();
-		}
-
-		removes.forEach(Connection::close);
+		final long currentTime = System.currentTimeMillis();
+		final long timeoutInMs = TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S);
+		connections.stream().filter(x -> currentTime - x.getLastHeartbeat() > timeoutInMs)
+			.forEach(Connection::close);
 	}
 
-	public void sendHeartbeat() {
+	public void sendHeartbeats() {
 		unauthorizedLock.readLock().lock();
 		List<Connection> connections = new ArrayList<>(unauthorizedConnections);
 		unauthorizedLock.readLock().unlock();

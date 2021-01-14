@@ -10,6 +10,7 @@ import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
 import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
 import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
+import battleships.client.service.HeartbeatService;
 import battleships.client.util.ClientState;
 import battleships.net.connection.Connection;
 import battleships.net.connection.ConnectionEvent;
@@ -85,6 +86,7 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 			connection = new Connection(socket);
 			connection.addObserver(instance);
 			setState(ClientState.CONNECTED);
+			HeartbeatService.getAndStartInstance();
 
 			return connection;
 		}

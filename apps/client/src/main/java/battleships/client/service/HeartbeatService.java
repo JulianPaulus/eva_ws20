@@ -12,12 +12,13 @@ import java.util.concurrent.TimeUnit;
 public class HeartbeatService extends Thread {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatService.class);
 	private static HeartbeatService instance;
+	private long lastSentHeartbeat = System.currentTimeMillis();
 
 	private HeartbeatService() {
 
 	}
 
-	public static HeartbeatService getInstance() {
+	public static HeartbeatService getAndStartInstance() {
 		if (instance == null) {
 			instance = new HeartbeatService();
 			instance.start();
@@ -32,12 +33,14 @@ public class HeartbeatService extends Thread {
 			&& !ClientMain.getInstance().getConnection().isClosed()) {
 			Connection clientCon = ClientMain.getInstance().getConnection();
 			try {
-				clientCon.writePacket(new HeartbeatPacket());
-				if (clientCon.getLastHeartbeat() < System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S)) {
+				if(System.currentTimeMillis() - lastSentHeartbeat > TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_SEND_INTERVAL_IN_S)) {
+					clientCon.writePacket(new HeartbeatPacket());
+					lastSentHeartbeat = System.currentTimeMillis();
+				}
+				if (System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S) > clientCon.getLastHeartbeat()) {
 					clientCon.close();
 				}
-				TimeUnit.SECONDS.sleep(Math.min(Constants.HEARTBEAT_TIMEOUT_IN_S,
-					Constants.HEARTBEAT_SEND_INTERVAL_IN_S));
+				TimeUnit.SECONDS.sleep(1);
 			} catch (final InterruptedException e) {
 				LOGGER.trace("Heartbeat sleep interrupted", e);
 			}
