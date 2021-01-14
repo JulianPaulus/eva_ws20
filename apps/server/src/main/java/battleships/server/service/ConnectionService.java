@@ -134,7 +134,10 @@ public class ConnectionService implements Observer<ConnectionEvent> {
 		final long currentTime = System.currentTimeMillis();
 		final long timeoutInMs = TimeUnit.SECONDS.toMillis(Constants.HEARTBEAT_TIMEOUT_IN_S);
 		connections.stream().filter(x -> currentTime - x.getLastHeartbeat() > timeoutInMs)
-			.forEach(Connection::close);
+			.forEach(x -> {
+				LOGGER.info("Heartbeat timed out!");
+				x.close();
+			});
 	}
 
 	public void sendHeartbeats() {
