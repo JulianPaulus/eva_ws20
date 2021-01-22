@@ -124,8 +124,8 @@ public class GameWindow implements Initializable {
 					setText(null);
 				}else{
 					setMinWidth(param.getWidth() - 2);
-					setMaxWidth(param.getWidth() - 2);
-					setPrefWidth(param.getWidth() - 2);
+					setMaxWidth(param.getWidth() - 20);
+					setPrefWidth(param.getWidth() - 20);
 
 					setWrapText(true);
 
