@@ -10,8 +10,4 @@ public class GamePacketHandler extends AbstractPacketHandler<GameConnection, IGa
 		super(GameConnection.class, IGameReceivePacket.class);
 	}
 
-	@Override
-	protected void handleImplementedPacketType(final IGameReceivePacket packet, final GameConnection connection) {
-		packet.act(connection);
-	}
 }

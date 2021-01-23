@@ -9,8 +9,4 @@ public class PreAuthPacketHandler extends AbstractPacketHandler<Connection, IPre
 		super(Connection.class, IPreAuthReceivePacket.class);
 	}
 
-	@Override
-	protected void handleImplementedPacketType(final IPreAuthReceivePacket packet, final Connection connection) {
-		packet.act(connection);
-	}
 }

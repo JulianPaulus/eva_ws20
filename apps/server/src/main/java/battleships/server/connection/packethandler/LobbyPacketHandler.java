@@ -10,8 +10,4 @@ public class LobbyPacketHandler extends AbstractPacketHandler<AuthenticatedConne
 		super(AuthenticatedConnection.class, ILobbyReceivePacket.class);
 	}
 
-	@Override
-	protected void handleImplementedPacketType(final ILobbyReceivePacket packet, final AuthenticatedConnection connection) {
-		packet.act(connection);
-	}
 }

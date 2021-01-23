@@ -27,9 +27,8 @@ public abstract class AbstractPacketHandler<ConnectionT extends Connection, Pack
 		if(!connectionTClass.isAssignableFrom(connection.getClass())) {
 			throw new IllegalPacketTypeException("Connection doesn't match the Packethandler Connection-Type");
 		}
-		handleImplementedPacketType(packetClass.cast(packet), connectionTClass.cast(connection));
+		PacketT packetInstance = packetClass.cast(packet);
+		ConnectionT connectionInstance = connectionTClass.cast(connection);
+		packetInstance.act(connectionInstance);
 	}
-
-	protected abstract void handleImplementedPacketType(final PacketT packet, final ConnectionT connection);
-
 }
