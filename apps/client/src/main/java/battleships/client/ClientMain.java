@@ -1,7 +1,21 @@
 package battleships.client;
 
 import battleships.client.login.LoginController;
-import battleships.client.packet.receive.*;
+import battleships.client.packet.receive.ChatMessagePacket;
+import battleships.client.packet.receive.GameEnemiesTurnPacket;
+import battleships.client.packet.receive.GameJoinedPacket;
+import battleships.client.packet.receive.GameOtherPlayerSetupPacket;
+import battleships.client.packet.receive.GamePlayerDoSetupPacket;
+import battleships.client.packet.receive.GamePlayersTurnPacket;
+import battleships.client.packet.receive.GameShootResponsePacket;
+import battleships.client.packet.receive.IllegalShipPositionPacket;
+import battleships.client.packet.receive.LobbyListPacket;
+import battleships.client.packet.receive.LoginResponsePacket;
+import battleships.client.packet.receive.PlayerDisconnectedPacket;
+import battleships.client.packet.receive.RegistrationErrorResponsePacket;
+import battleships.client.packet.receive.RematchPacket;
+import battleships.client.packet.receive.ServerErrorPacket;
+import battleships.client.packet.receive.VotedRematchPacket;
 import battleships.client.packet.receive.factory.ChatMessagePacketFactory;
 import battleships.client.packet.receive.factory.GameJoinedPacketFactory;
 import battleships.client.packet.receive.factory.GameShootResponsePacketFactory;
@@ -10,6 +24,7 @@ import battleships.client.packet.receive.factory.LobbyListPacketFactory;
 import battleships.client.packet.receive.factory.LoginResponseFactory;
 import battleships.client.packet.receive.factory.RegistrationErrorResponseFactory;
 import battleships.client.packet.receive.factory.ServerErrorPacketFactory;
+import battleships.client.packet.receive.factory.VotedRematchPacketFactory;
 import battleships.client.service.HeartbeatService;
 import battleships.client.util.ClientState;
 import battleships.net.connection.Connection;
@@ -62,6 +77,8 @@ public class ClientMain extends Application implements Observer<ConnectionEvent>
 		packetFactoryMap.put(GameShootResponsePacket.IDENTIFIER, new GameShootResponsePacketFactory());
 		packetFactoryMap.put(PlayerDisconnectedPacket.IDENTIFIER, new StateLessPacketFactory<>(PlayerDisconnectedPacket.class));
 		packetFactoryMap.put(HeartbeatPacket.IDENTIFIER, new StateLessPacketFactory<>(HeartbeatPacket.class));
+		packetFactoryMap.put(VotedRematchPacket.IDENTIFIER, new VotedRematchPacketFactory());
+		packetFactoryMap.put(RematchPacket.IDENTIFIER, new StateLessPacketFactory<>(RematchPacket.class));
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 

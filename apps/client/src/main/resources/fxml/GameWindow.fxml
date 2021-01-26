@@ -46,7 +46,12 @@
 				</GridPane>
 				<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0">
 					<children>
-						<Button fx:id="removeShip" mnemonicParsing="false" onAction="#removeLastAddedShip" text="letztes Schiff entfernen" visible="false" />
+                  <HBox>
+                     <children>
+      						<Button fx:id="removeShip" mnemonicParsing="false" onAction="#removeLastAddedShip" text="letztes Schiff entfernen" visible="false" />
+                        <Button fx:id="rematchButton" disable="true" mnemonicParsing="false" onAction="#onRematchButtonClicked" text="Rematch" visible="false" />
+                     </children>
+                  </HBox>
 					</children>
 				</Pane>
             <WebView fx:id="rulesView" disable="true" prefHeight="200.0" prefWidth="200.0" />

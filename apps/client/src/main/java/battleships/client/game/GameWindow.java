@@ -6,6 +6,7 @@ import battleships.client.model.GameState;
 import battleships.client.model.ModelObserver;
 import battleships.client.packet.send.SendChatMessagePacket;
 import battleships.client.packet.send.ShootPacket;
+import battleships.client.packet.send.VoteRematchPacket;
 import battleships.model.CoordinateState;
 import battleships.model.Ship;
 import battleships.util.Constants;
@@ -36,6 +37,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 
 public class GameWindow implements Initializable {
+
+	private static final int ASCII_A = 65;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameWindow.class);
 	private static GameWindow INSTANCE;
@@ -68,6 +71,9 @@ public class GameWindow implements Initializable {
 
 	@FXML
 	private Button sendMessageBtn;
+
+	@FXML
+	private Button rematchButton;
 
 	private GameModel model;
 	private Integer currentMouseHoverX;
@@ -352,8 +358,14 @@ public class GameWindow implements Initializable {
 		updateRulesForPhaseChange();
 	}
 
-	public synchronized void setGameEnd(boolean isHasPlayerWon) {
-		model.setCurrentState(isHasPlayerWon ? GameState.WON : GameState.LOST);
+	public synchronized void setGameEnd(final boolean hasPlayerWon) {
+		if (hasPlayerWon) {
+			model.setCurrentState(GameState.WON);
+			displayStatusMessage("Sie haben gewonnen!", StatusMessageType.CRITICAL);
+		} else {
+			model.setCurrentState(GameState.LOST);
+			displayStatusMessage("Der Gegner hat gewonnen!", StatusMessageType.CRITICAL);
+		}
 	}
 
 	public synchronized void setRemoveShipButtonVisible(final boolean visible) {
@@ -377,8 +389,8 @@ public class GameWindow implements Initializable {
 		sendMessageBtn.setDisable(true);
 	}
 
-	private static char intToAlphabet(int i) {
-		return (char) (65 + i);
+	private static char intToAlphabet(final int i) {
+		return (char) (ASCII_A + i);
 	}
 
 	private static Label createLabelForCoordinate(int x, int y) {
@@ -406,5 +418,26 @@ public class GameWindow implements Initializable {
 		} else {
 			model.setCurrentState(GameState.OTHER_PLAYER_DISCONNECTED);
 		}
+	}
+
+	public synchronized void onRematchButtonClicked() {
+		GameState currentState = model.getCurrentState();
+		if (currentState == GameState.WON || currentState == GameState.LOST) {
+			ClientMain.getInstance().getConnection().writePacket(new VoteRematchPacket());
+			model.setCurrentState(GameState.WAITING_FOR_REMATCH);
+		}
+	}
+
+	public synchronized void setRematchButtonActive(final boolean active) {
+		rematchButton.setDisable(!active);
+		rematchButton.setVisible(active);
+	}
+
+	public synchronized void rematch() {
+		displayStatusMessage("Rematch gestartet", StatusMessageType.CRITICAL);
+		model.rematch();
+		onDoSetup(model.getOtherPlayerName());
+		updateTargetField();
+		updatePlayerField();
 	}
 }

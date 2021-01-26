@@ -1,6 +1,5 @@
 package battleships.util;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 public class Constants {
@@ -50,6 +49,10 @@ public class Constants {
 
 		public static final byte PLAYER_DISCONNECTED = 0x15;
 		public static final byte HEARTBEAT = 0x16;
+
+		public static final byte VOTE_REMATCH = 0x17;
+		public static final byte VOTED_REMATCH = 0x18;
+		public static final byte START_REMATCH = 0x19;
 
 	}
 

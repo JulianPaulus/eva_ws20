@@ -32,19 +32,28 @@ public class GameModel {
 
 	public GameModel(final ModelObserver observer) {
 		currentState = GameState.PENDING;
-		playerField = new CoordinateState[10][10];
-		targetField = new CoordinateState[10][10];
 		chat = new LinkedList<>();
-		ships = new Ship[5];
+		reset();
 
-		for (int i = 0; i < 10; i++) {
+		this.observer = observer;
+	}
+
+	private void reset() {
+		playerField = new CoordinateState[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+		targetField = new CoordinateState[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+		ships = new Ship[Constants.SHIP_COUNT];
+
+		for (int i = 0; i < Constants.BOARD_SIZE; i++) {
 			Arrays.fill(playerField[i], CoordinateState.EMPTY);
 			Arrays.fill(targetField[i], CoordinateState.EMPTY);
 		}
 
 		currentShip = ShipType.TWO_TILES;
+	}
 
-		this.observer = observer;
+	public void rematch() {
+		reset();
+		setCurrentState(GameState.SET_UP);
 	}
 
 	public int getTileNumberOfCurrentShip() {
