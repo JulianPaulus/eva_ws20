@@ -22,6 +22,6 @@ public class VotedRematchPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().displayStatusMessage(user + " hat für ein Rematch gestimmt!", StatusMessageType.CRITICAL);
+		GameWindow.getInstance().displayStatusMessage(user + " hat f\u01D6r ein Rematch gestimmt!", StatusMessageType.CRITICAL);
 	}
 }

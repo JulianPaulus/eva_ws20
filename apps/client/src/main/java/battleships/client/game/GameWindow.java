@@ -364,7 +364,7 @@ public class GameWindow implements Initializable {
 			displayStatusMessage("Sie haben gewonnen!", StatusMessageType.CRITICAL);
 		} else {
 			model.setCurrentState(GameState.LOST);
-			displayStatusMessage("Der Gegner hat gewonnen!", StatusMessageType.CRITICAL);
+			displayStatusMessage(model.getOtherPlayerName() + " hat gewonnen!", StatusMessageType.CRITICAL);
 		}
 	}
 
