@@ -54,6 +54,8 @@ public class ServerMain {
 		ArgumentParser argumentParser = new ArgumentParser();
 		argumentParser.addArgument(new Argument<>("--port", "port to bind the server to", Number.class,
 			(value) -> ServerConfig.getInstance().setPort(value.intValue())));
+		argumentParser.addArgument(new Argument<>("--no-entropy", "Disables the secure salt-generation and uses an unsafe one", Boolean.class,
+			(value) -> ServerConfig.getInstance().setNoEntropy(value)));
 
 		try {
 			argumentParser.parse(args);

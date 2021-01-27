@@ -1,5 +1,7 @@
 package battleships.server.util;
 
+import battleships.server.socket.ServerConfig;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -8,12 +10,18 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Objects;
+import java.util.Random;
 
 public class PasswordHasher {
 	private static final int iterations = 4096;
 	private static final int saltLength = 32;
 
 	public static byte[] genSalt() {
+		if(ServerConfig.getInstance().isNoEntropy()) {
+			byte[] salt = new byte[saltLength];
+			new Random().nextBytes(salt);
+			return salt;
+		}
 		return new SecureRandom().generateSeed(saltLength);
 	}
 
