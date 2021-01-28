@@ -189,11 +189,8 @@ public class Game implements Observer<ConnectionEvent> {
 			} else {
 				setState(new GameFinishedState());
 
-				// warum? warum muss das so sein? ich hab' dafür ne halbe stunde gebraucht
-				boolean hostWon = checkForAllHit(hostField);
-				if (hostWon) {
-					// das macht kein sinn -> host hat gewonnen, also schicken wir dem host die schiffe des gasts, damit
-					// der gast dann die schiffe des hosts bekommt? is da irgendwo was vertauscht?
+				boolean hostLost = checkForAllHit(hostField);
+				if (hostLost) {
 					hostConnection.writePacket(new EnemyShipPositionsPacket(guestShips));
 				} else {
 					guestConnection.writePacket(new EnemyShipPositionsPacket(hostShips));
