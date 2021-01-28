@@ -440,4 +440,10 @@ public class GameWindow implements Initializable {
 		updateTargetField();
 		updatePlayerField();
 	}
+
+	public synchronized void setEnemyShips(final Ship[] enemyShips) {
+		if (model.getCurrentState() != GameState.LOST) return;
+
+		model.setEnemyLeftOverShipPositions(enemyShips);
+	}
 }

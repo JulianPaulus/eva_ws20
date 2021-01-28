@@ -37,6 +37,7 @@ public class PacketReader extends Thread {
 			try {
 				byte identifier = stream.readByte();
 				AbstractPacketFactory<?> packetFactory = factoryMap.get(identifier);
+				LOGGER.debug("read packet identifier {}", identifier);
 				if (packetFactory != null) {
 					IReceivePacket<?> packet = packetFactory.unmarshal(stream);
 					try {

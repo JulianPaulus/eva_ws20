@@ -22,6 +22,7 @@ import battleships.server.game.gameState.SettingUpState;
 import battleships.server.game.gameState.UninitializedState;
 import battleships.server.game.gameState.WaitingForGuestState;
 import battleships.server.packet.send.ChatMessagePacket;
+import battleships.server.packet.send.EnemyShipPositionsPacket;
 import battleships.server.packet.send.GameEnemiesTurnPacket;
 import battleships.server.packet.send.GameJoinedPacket;
 import battleships.server.packet.send.GamePlayerDoSetupPacket;
@@ -187,6 +188,17 @@ public class Game implements Observer<ConnectionEvent> {
 				playerConnection.writePacket(new GamePlayersTurnPacket());
 			} else {
 				setState(new GameFinishedState());
+
+				// warum? warum muss das so sein? ich hab' dafür ne halbe stunde gebraucht
+				boolean hostWon = checkForAllHit(hostField);
+				if (hostWon) {
+					// das macht kein sinn -> host hat gewonnen, also schicken wir dem host die schiffe des gasts, damit
+					// der gast dann die schiffe des hosts bekommt? is da irgendwo was vertauscht?
+					hostConnection.writePacket(new EnemyShipPositionsPacket(guestShips));
+				} else {
+					guestConnection.writePacket(new EnemyShipPositionsPacket(hostShips));
+				}
+
 			}
 		}
 

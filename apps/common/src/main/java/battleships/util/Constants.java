@@ -54,6 +54,8 @@ public class Constants {
 		public static final byte VOTED_REMATCH = 0x18;
 		public static final byte START_REMATCH = 0x19;
 
+		public static final byte GAME_OVER_SHIP_LOCATIONS = 0x1A;
+
 	}
 
 }
