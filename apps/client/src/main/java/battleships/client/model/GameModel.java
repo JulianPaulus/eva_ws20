@@ -244,6 +244,10 @@ public class GameModel {
 				if (i > 0) {
 					lastAdded = ships[i - 1];
 				}
+				else
+				{
+					lastAdded=null;
+				}
 				switchToPreviousShipType();
 				break;
 			}
