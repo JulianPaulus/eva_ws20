@@ -238,7 +238,7 @@ public class GameModel {
 		}
 
 		for (int i = 0; i < ships.length; i++) {
-			if (ships[i].equals(lastAdded)) {
+			if (ships[i]!=null&&ships[i].equals(lastAdded)) {
 				ships[i] = null;
 
 				if (i > 0) {
