@@ -6,6 +6,7 @@ import battleships.client.util.ClientState;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class PlayerDisconnectedPacket implements IPreAuthReceivePacket {
 
@@ -18,8 +19,10 @@ public class PlayerDisconnectedPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		if (ClientMain.getInstance().getState() == ClientState.IN_GAME) {
-			GameWindow.getInstance().onPlayerDisconnected();
-		}
+		Platform.runLater(() -> {
+			if (ClientMain.getInstance().getState() == ClientState.IN_GAME) {
+				GameWindow.getInstance().onPlayerDisconnected();
+			}
+		});
 	}
 }

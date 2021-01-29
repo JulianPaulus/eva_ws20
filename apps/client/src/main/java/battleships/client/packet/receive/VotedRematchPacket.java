@@ -5,6 +5,7 @@ import battleships.client.game.StatusMessageType;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class VotedRematchPacket implements IPreAuthReceivePacket {
 
@@ -22,6 +23,6 @@ public class VotedRematchPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().displayStatusMessage(user + " hat f\u01D6r ein Rematch gestimmt!", StatusMessageType.CRITICAL);
+		Platform.runLater(() -> GameWindow.getInstance().displayStatusMessage(user + " hat f\u01D6r ein Rematch gestimmt!", StatusMessageType.CRITICAL));
 	}
 }

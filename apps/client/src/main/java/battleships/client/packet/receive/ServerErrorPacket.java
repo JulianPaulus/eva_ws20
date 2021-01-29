@@ -9,6 +9,7 @@ import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
 import battleships.util.ServerErrorType;
+import javafx.application.Platform;
 
 public class ServerErrorPacket implements IPreAuthReceivePacket {
 
@@ -29,11 +30,12 @@ public class ServerErrorPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		System.out.println(message);
-		if (ClientMain.getInstance().getState() == ClientState.IN_GAME) {
-			GameWindow.getInstance().displayStatusMessage(message, StatusMessageType.CRITICAL);
-		} else {
-			ErrorDialog.show(ClientMain.getInstance().getStage(), message);
-		}
+		Platform.runLater(() -> {
+			if (ClientMain.getInstance().getState() == ClientState.IN_GAME) {
+				GameWindow.getInstance().displayStatusMessage(message, StatusMessageType.CRITICAL);
+			} else {
+				ErrorDialog.show(ClientMain.getInstance().getStage(), message);
+			}
+		});
 	}
 }

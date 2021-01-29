@@ -4,6 +4,7 @@ import battleships.client.game.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class RematchPacket implements IPreAuthReceivePacket {
 
@@ -16,6 +17,6 @@ public class RematchPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().rematch();
+		Platform.runLater(() -> GameWindow.getInstance().rematch());
 	}
 }

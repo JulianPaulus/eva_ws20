@@ -5,6 +5,7 @@ import battleships.model.Ship;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class EnemyShipPositionsPacket implements IPreAuthReceivePacket {
 
@@ -23,6 +24,6 @@ public class EnemyShipPositionsPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		GameWindow.getInstance().setEnemyShips(enemyShips);
+		Platform.runLater(() -> GameWindow.getInstance().setEnemyShips(enemyShips));
 	}
 }

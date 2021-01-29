@@ -4,6 +4,7 @@ import battleships.client.game.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class GameEnemiesTurnPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = Constants.Identifiers.GAME_ENEMIES_TURN;
@@ -15,6 +16,6 @@ public class GameEnemiesTurnPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().onEnemyTurn();
+		Platform.runLater(() -> GameWindow.getInstance().onEnemyTurn());
 	}
 }
