@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 
@@ -413,10 +414,12 @@ public class GameWindow implements Initializable {
 
 	public synchronized void onPlayerDisconnected() {
 		displayStatusMessage(model.getOtherPlayerName() + " hat das Spiel verlassen.", StatusMessageType.CRITICAL);
-		if (model.getCurrentState() != GameState.WON && model.getCurrentState() != GameState.LOST) {
+		if (!Arrays.asList(GameState.WON, GameState.LOST, GameState.WAITING_FOR_REMATCH)
+			.contains(model.getCurrentState())) {
 			model.setCurrentState(GameState.AUTOMATIC_WIN);
 		} else {
 			model.setCurrentState(GameState.OTHER_PLAYER_DISCONNECTED);
+			setRematchButtonActive(false);
 		}
 	}
 
@@ -425,6 +428,7 @@ public class GameWindow implements Initializable {
 		if (currentState == GameState.WON || currentState == GameState.LOST) {
 			ClientMain.getInstance().getConnection().writePacket(new VoteRematchPacket());
 			model.setCurrentState(GameState.WAITING_FOR_REMATCH);
+			setRematchButtonActive(false);
 		}
 	}
 

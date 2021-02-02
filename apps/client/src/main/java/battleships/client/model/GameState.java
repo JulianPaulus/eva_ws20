@@ -40,7 +40,11 @@ public enum GameState {
 		controller.disableChat();
 	}),
 
-	OTHER_PLAYER_DISCONNECTED(GameWindow::disableChat),
+	OTHER_PLAYER_DISCONNECTED((controller) -> {
+		defaultRunnableWithButtonVisible(false).run(controller);
+		controller.setStatusLabelStyle("-fx-text-fill: black");
+		controller.disableChat();
+	}),
 
 	WAITING_FOR_REMATCH((controller) -> {
 		controller.updateStatusText();
