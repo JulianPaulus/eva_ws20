@@ -4,6 +4,7 @@ import battleships.client.game.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class ChatMessagePacket implements IPreAuthReceivePacket {
 
@@ -24,7 +25,6 @@ public class ChatMessagePacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(final Connection connection) {
-		System.out.println(fromUser + ": " + message);
-		GameWindow.getInstance().receiveMessage(fromUser, message);
+		Platform.runLater(() -> GameWindow.getInstance().receiveMessage(fromUser, message));
 	}
 }

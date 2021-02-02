@@ -1,4 +1,4 @@
-package battleships.client.packet.send;
+package battleships.server.packet.send;
 
 import battleships.model.Ship;
 import battleships.net.packet.SendPacket;
@@ -7,22 +7,22 @@ import battleships.util.Constants;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PlayerReadyPacket extends SendPacket {
-	public static final byte IDENTIFIER = Constants.Identifiers.PLAYER_READY_REQUEST;
-	private final Ship[] ships;
+public class EnemyShipPositionsPacket extends SendPacket {
 
-	public PlayerReadyPacket(final Ship[] ships) {
-		this.ships = ships;
+	private final Ship[] enemyShips;
+
+	public EnemyShipPositionsPacket(final Ship[] enemyShips) {
+		this.enemyShips = enemyShips;
 	}
 
 	@Override
 	public byte getIdentifier() {
-		return IDENTIFIER;
+		return Constants.Identifiers.GAME_OVER_SHIP_LOCATIONS;
 	}
 
 	@Override
 	protected void writeContent(DataOutputStream dos) throws IOException {
-		for(final Ship ship : ships) {
+		for (final Ship ship : enemyShips) {
 			ship.writeToStream(dos);
 		}
 	}

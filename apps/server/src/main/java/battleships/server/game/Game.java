@@ -12,6 +12,7 @@ import battleships.observable.Observer;
 import battleships.server.connection.AuthenticatedConnection;
 import battleships.server.connection.GameConnection;
 import battleships.server.exception.ServerException;
+import battleships.server.game.gameState.GameFinishedState;
 import battleships.server.game.gameState.GuestsTurnState;
 import battleships.server.game.gameState.HostsTurnState;
 import battleships.server.game.gameState.ServerGameState;
@@ -21,6 +22,7 @@ import battleships.server.game.gameState.SettingUpState;
 import battleships.server.game.gameState.UninitializedState;
 import battleships.server.game.gameState.WaitingForGuestState;
 import battleships.server.packet.send.ChatMessagePacket;
+import battleships.server.packet.send.EnemyShipPositionsPacket;
 import battleships.server.packet.send.GameEnemiesTurnPacket;
 import battleships.server.packet.send.GameJoinedPacket;
 import battleships.server.packet.send.GamePlayerDoSetupPacket;
@@ -28,6 +30,8 @@ import battleships.server.packet.send.GamePlayersTurnPacket;
 import battleships.server.packet.send.GameShootResponsePacket;
 import battleships.server.packet.send.GameWaitForOtherPlayerSetupPacket;
 import battleships.server.packet.send.PlayerDisconnectedPacket;
+import battleships.server.packet.send.RematchPacket;
+import battleships.server.packet.send.RematchVotedPacket;
 import battleships.server.service.ConnectionService;
 import battleships.server.service.GameService;
 import battleships.util.Constants;
@@ -171,17 +175,27 @@ public class Game implements Observer<ConnectionEvent> {
 			targetField[xPos][yPos] = CoordinateState.HIT;
 			Ship ship = getShipAt(targetShips, xPos, yPos).orElseThrow(() -> new ServerException("Field was hit, but no corresponding ship was found"));
 			ship.hit();
-			boolean isHasGameEnded = checkForGameEnd();
+			boolean hasGameEnded = checkForGameEnd();
 			//Write hit at coordinates
 			playerConnection.writePacket(new GameShootResponsePacket(false, true, ship.isDestroyed(),
-				isHasGameEnded, xPos, yPos));
+				hasGameEnded, xPos, yPos));
 			//write hit at coordiantes
 			targetConnection.writePacket(new GameShootResponsePacket(true, true, ship.isDestroyed(),
-				isHasGameEnded, xPos, yPos));
+				hasGameEnded, xPos, yPos));
 			//Let player shoot again
-			if(!isHasGameEnded) {
+			if(!hasGameEnded) {
 				targetConnection.writePacket(new GameEnemiesTurnPacket());
 				playerConnection.writePacket(new GamePlayersTurnPacket());
+			} else {
+				setState(new GameFinishedState());
+
+				boolean hostLost = checkForAllHit(hostField);
+				if (hostLost) {
+					hostConnection.writePacket(new EnemyShipPositionsPacket(guestShips));
+				} else {
+					guestConnection.writePacket(new EnemyShipPositionsPacket(hostShips));
+				}
+
 			}
 		}
 
@@ -218,11 +232,11 @@ public class Game implements Observer<ConnectionEvent> {
 		}
 	}
 
-	public UUID getId() {
+	public synchronized UUID getId() {
 		return id;
 	}
 
-	public Player getHost() {
+	public synchronized Player getHost() {
 		return host;
 	}
 
@@ -231,7 +245,7 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	@Override
-	public void update(final Observable<ConnectionEvent> connection, final ConnectionEvent event) {
+	public synchronized void update(final Observable<ConnectionEvent> connection, final ConnectionEvent event) {
 		if (event == ConnectionEvent.DISCONNECTED) {
 			onPlayerDisconnected((AuthenticatedConnection) connection);
 		}
@@ -249,7 +263,7 @@ public class Game implements Observer<ConnectionEvent> {
 		GAME_SERVICE.removeGame(this);
 	}
 
-	public void sendChatMessage(final String fromUser, final String message) {
+	public synchronized void sendChatMessage(final String fromUser, final String message) {
 		LOGGER.info("[{}] CHAT: {}: {}", id.toString(), fromUser, message);
 		broadcastPacket(new ChatMessagePacket(fromUser, message));
 	}
@@ -275,7 +289,7 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	@Override
-	public boolean equals(final Object o) {
+	public synchronized boolean equals(final Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Game game = (Game) o;
@@ -285,15 +299,39 @@ public class Game implements Observer<ConnectionEvent> {
 	}
 
 	@Override
-	public int hashCode() {
+	public synchronized int hashCode() {
 		return Objects.hash(id, host, guest, state, hostConnection, guestConnection);
 	}
 
-	public ServerGameState getState() {
+	public synchronized ServerGameState getState() {
 		return state;
 	}
 
-	private Optional<Ship> getShipAt(final Ship[] ships, final int x, final int y) {
+	private synchronized Optional<Ship> getShipAt(final Ship[] ships, final int x, final int y) {
 		return Arrays.stream(ships).filter(ship -> ship.isAt(x, y)).findFirst();
+	}
+
+	public synchronized void voteRematch(final Player player) {
+		if (getState() instanceof GameFinishedState) {
+			GameFinishedState gameFinishedState = (GameFinishedState) state;
+
+			gameFinishedState.addVote(player.getUsername());
+			broadcastPacket(new RematchVotedPacket(player.getUsername()));
+
+
+			if (gameFinishedState.canStartRematch()) {
+				broadcastPacket(new RematchPacket());
+				resetGame();
+			}
+		}
+	}
+
+	private synchronized void resetGame() {
+		hostField = null;
+		guestField = null;
+		hostShips = null;
+		guestShips = null;
+
+		setState(new SettingUpState());
 	}
 }

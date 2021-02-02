@@ -9,7 +9,7 @@ public class HostsTurnState implements ServerGameState {
 
 	@Override
 	public boolean canTransition(final ServerGameState newState) {
-		return newState instanceof UninitializedState || newState instanceof GuestsTurnState;
+		return newState instanceof UninitializedState || newState instanceof GuestsTurnState || newState instanceof GameFinishedState;
 	}
 
 }

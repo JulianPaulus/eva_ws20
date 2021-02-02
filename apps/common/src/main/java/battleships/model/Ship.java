@@ -1,5 +1,11 @@
 package battleships.model;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+
 public class Ship {
 	private ShipType type;
 	private int xCoordinate;
@@ -71,6 +77,23 @@ public class Ship {
 	public boolean isAt(final int x, final int y) {
 		return x >= xCoordinate && x <= getEndXCoordinate()
 			&& y >= yCoordinate && y <= getEndYCoordinate();
+	}
+
+	public void writeToStream(final DataOutputStream stream) throws IOException {
+		stream.writeInt(getType().getSize());
+		stream.writeInt(getXCoordinate());
+		stream.writeInt(getYCoordinate());
+		stream.writeBoolean(isHorizontal());
+	}
+
+	public static Ship fromStream(final DataInputStream stream) throws IOException {
+		int shipSize = stream.readInt();
+		Optional<ShipType> oShipType = Arrays.stream(ShipType.values())
+			.filter(x -> x.getSize() == shipSize).findFirst();
+		if (!oShipType.isPresent()) {
+			//TODO error -> write serverexceptionpacket and goodbye?
+		}
+		return new Ship(oShipType.get(), stream.readInt(), stream.readInt(), stream.readBoolean());
 	}
 
 	@Override

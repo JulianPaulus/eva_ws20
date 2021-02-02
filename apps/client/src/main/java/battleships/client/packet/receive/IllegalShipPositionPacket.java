@@ -6,6 +6,7 @@ import battleships.client.util.ErrorDialog;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class IllegalShipPositionPacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = Constants.Identifiers.GAME_PLAYER_ILLEGAL_SHIP_POSITION;
@@ -17,8 +18,9 @@ public class IllegalShipPositionPacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().removeAllShips();
-		ErrorDialog.show(ClientMain.getInstance().getStage(), "Schiffe an illegalen Positionen festgestellt!");
-
+		Platform.runLater(() -> {
+			GameWindow.getInstance().removeAllShips();
+			ErrorDialog.show(ClientMain.getInstance().getStage(), "Schiffe an illegalen Positionen festgestellt!");
+		});
 	}
 }

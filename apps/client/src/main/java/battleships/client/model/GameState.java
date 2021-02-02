@@ -23,6 +23,7 @@ public enum GameState {
 		controller.updateRulesText();
 		controller.setStatusLabelStyle("-fx-text-fill: green");
 		controller.setRemoveShipButtonVisible(false);
+		controller.setRematchButtonActive(true);
 	}),
 
 	LOST((controller) -> {
@@ -30,20 +31,29 @@ public enum GameState {
 		controller.updateRulesText();
 		controller.setStatusLabelStyle("-fx-text-fill: red");
 		controller.setRemoveShipButtonVisible(false);
+		controller.setRematchButtonActive(true);
 	}),
 
 	AUTOMATIC_WIN((controller) -> {
 		defaultRunnableWithButtonVisible(false).run(controller);
+		controller.setStatusLabelStyle("-fx-text-fill: black");
 		controller.disableChat();
 	}),
 
-	OTHER_PLAYER_DISCONNECTED(GameWindow::disableChat);
+	OTHER_PLAYER_DISCONNECTED(GameWindow::disableChat),
+
+	WAITING_FOR_REMATCH((controller) -> {
+		controller.updateStatusText();
+		controller.updateRulesText();
+		controller.setStatusLabelStyle("-fx-text-fill: black");
+	});
 
 	private static GameStateRunnable defaultRunnableWithButtonVisible(final boolean visible) {
 		return (controller) -> {
 			controller.updateStatusText();
 			controller.updateRulesText();
 			controller.setRemoveShipButtonVisible(visible);
+			controller.setRematchButtonActive(false);
 		};
 	}
 

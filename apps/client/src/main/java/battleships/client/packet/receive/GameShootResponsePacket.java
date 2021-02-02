@@ -4,6 +4,7 @@ import battleships.client.game.GameWindow;
 import battleships.net.connection.Connection;
 import battleships.net.packet.IPreAuthReceivePacket;
 import battleships.util.Constants;
+import javafx.application.Platform;
 
 public class GameShootResponsePacket implements IPreAuthReceivePacket {
 	public static final byte IDENTIFIER = Constants.Identifiers.GAME_SHOOT_RESPONSE;
@@ -32,9 +33,11 @@ public class GameShootResponsePacket implements IPreAuthReceivePacket {
 
 	@Override
 	public void act(Connection connection) {
-		GameWindow.getInstance().setHitOrMiss(isPlayerField, isHit, xPos, yPos, isDestroyed);
-		if(isGameEnd) {
-			GameWindow.getInstance().setGameEnd(!isPlayerField);
-		}
+		Platform.runLater(() -> {
+			GameWindow.getInstance().setHitOrMiss(isPlayerField, isHit, xPos, yPos, isDestroyed);
+			if(isGameEnd) {
+				GameWindow.getInstance().setGameEnd(!isPlayerField);
+			}
+		});
 	}
 }

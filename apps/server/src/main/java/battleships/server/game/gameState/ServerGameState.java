@@ -10,10 +10,6 @@ public interface ServerGameState {
 		return false;
 	}
 
-	default boolean canChat() {
-		return true;
-	}
-
 	default boolean canHostSetShip() {
 		return false;
 	}
@@ -27,6 +23,10 @@ public interface ServerGameState {
 	}
 
 	default boolean canGuestFire() {
+		return false;
+	}
+
+	default boolean canVoteRematch() {
 		return false;
 	}
 

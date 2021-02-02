@@ -8,6 +8,8 @@ public class ServerConfig {
 
 	private int port = Constants.Server.DEFAULT_PORT;
 
+	private boolean isNoEntropy = false;
+
 	private ServerConfig() {}
 
 	public static ServerConfig getInstance() {
@@ -20,5 +22,13 @@ public class ServerConfig {
 
 	public void setPort(final int port) {
 		this.port = port;
+	}
+
+	public boolean isNoEntropy() {
+		return isNoEntropy;
+	}
+
+	public void setNoEntropy(boolean noEntropy) {
+		isNoEntropy = noEntropy;
 	}
 }

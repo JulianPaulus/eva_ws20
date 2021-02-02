@@ -15,6 +15,7 @@ import battleships.server.packet.receive.PlayerReadyPacket;
 import battleships.server.packet.receive.RegisterPacket;
 import battleships.server.packet.receive.SendChatMessagePacket;
 import battleships.server.packet.receive.ShootPacket;
+import battleships.server.packet.receive.VoteRematchPacket;
 import battleships.server.packet.receive.factory.CreateGamePacketFactory;
 import battleships.server.packet.receive.factory.JoinGamePacketFactory;
 import battleships.server.packet.receive.factory.LobbyListRequestPacketFactory;
@@ -43,6 +44,7 @@ public class ServerMain {
 		packetFactoryMap.put(PlayerReadyPacket.IDENTIFIER, new PlayerReadyPacketFactory());
 		packetFactoryMap.put(ShootPacket.IDENTIFIER, new ShootPacketFactory());
 		packetFactoryMap.put(HeartbeatPacket.IDENTIFIER, new StateLessPacketFactory<>(HeartbeatPacket.class));
+		packetFactoryMap.put(VoteRematchPacket.IDENTIFIER, new StateLessPacketFactory<>(VoteRematchPacket.class));
 		PacketReader.setFactoryMap(packetFactoryMap);
 	}
 
@@ -52,6 +54,8 @@ public class ServerMain {
 		ArgumentParser argumentParser = new ArgumentParser();
 		argumentParser.addArgument(new Argument<>("--port", "port to bind the server to", Number.class,
 			(value) -> ServerConfig.getInstance().setPort(value.intValue())));
+		argumentParser.addArgument(new Argument<>("--no-entropy", "Disables the secure salt-generation and uses an unsafe one", Boolean.class,
+			(value) -> ServerConfig.getInstance().setNoEntropy(value)));
 
 		try {
 			argumentParser.parse(args);
