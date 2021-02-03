@@ -91,7 +91,7 @@ public class Ship {
 		Optional<ShipType> oShipType = Arrays.stream(ShipType.values())
 			.filter(x -> x.getSize() == shipSize).findFirst();
 		if (!oShipType.isPresent()) {
-			//TODO error -> write serverexceptionpacket and goodbye?
+			throw new IOException("unable to read shipType from stream");
 		}
 		return new Ship(oShipType.get(), stream.readInt(), stream.readInt(), stream.readBoolean());
 	}

@@ -267,7 +267,6 @@ public class GameWindow implements Initializable {
 		}
 		model.setCurrentState(GameState.SHOOTING_WAIT_FOR_RESPONSE);
 		ClientMain.getInstance().getConnection().writePacket(new ShootPacket(xPos, yPos));
-		//Todo Anzeigen, dass auf den Server gewartet wird?
 	}
 
 	public synchronized void updateChatWindow() {

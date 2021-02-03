@@ -10,7 +10,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-// TODO: make this threadsafe
 public class GameService {
 
 	private final static GameService INSTANCE = new GameService();
